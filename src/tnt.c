@@ -4,6 +4,15 @@
 
 #include "common.h"
 
+void rmonPrintf(const char* fmt, ...) {
+  int ans;
+  va_list ap;
+
+  va_start(ap, fmt);
+  ans = vprintf(fmt, ap);
+  va_end(ap);
+}
+
 u8 *n64HeapAlloc(s32 size) {
   return malloc(size);
 }
@@ -409,13 +418,13 @@ void game_init() {
   game_ptr->unkE4FC.unk4 = (255.0f - game_ptr->unkE4FC.alpha) / 16.0f;
   game_ptr->unkE508 = TRUE;
 
-  gameVars.seed = 0;
+  gameVars.seed = 3;
   gameVars.unk4 = &game_ptr->unkE080;
   gameVars.unk8 = game_ptr->unkE4F8;  // which screen? (0..7)
   gameVars.gameType = game_ptr->gameType;
 
 
-  game_ptr->tetris_ptr_arr[0] = (Tetris *)n64HeapAlloc(0x6848);
+  game_ptr->tetris_ptr_arr[0] = (Tetris *)n64HeapAlloc(sizeof(Tetris));
   Game_SetGlobalPointers(0);
   PlayerVars_SetGlobalPointers(0);
 
@@ -439,13 +448,26 @@ void game_deinit() {
   }
   game_ptr->active = FALSE;
 
+  //FUN_027BF0_Deinit(0);
+  //aiplayer_80042b3c_calls_heap_unalloc();
+  //FUN_8004129c_fourliner();
+
   Game_SetGlobalPointers(0);
   Tetris_Deinit(game_ptr->tetris_ptr_arr[0]);
   n64HeapUnalloc((u8 *)game_ptr->tetris_ptr_arr[0]);
   game_ptr->tetris_ptr_arr[0] = NULL;
 
+  //gamefinish_800534A4_fiveliner();
+  //MultisquareGlow_8006b384_oneliner_calls_fun();
+  //func_800763B4();
+  //FUN_SRAM_n64HeapUnalloc_and_set_to_NULL(&game_ptr->unk8);  // deinit font?
+  //Landfill_Deinit(&game_ptr->landfill);
+  //CubeTiles_Deinit(&game_ptr->cubeTiles);
+  //func_80075F5C(&game_ptr->unkE080);
+
   g_playercount = 0;
   game_ptr->unk0 = 3;
+  rmonPrintf("Game_Deinit() : Done\n");
 }
 
 void _game_update(Game *game_ptr) {

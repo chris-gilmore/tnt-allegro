@@ -1,6 +1,7 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_ttf.h>  // $ dnf install allegro5-addon-ttf-devel
 
 #include "common.h"
 
@@ -84,7 +85,7 @@ static void Game_ControllerRepeat_Update(Game *game_ptr) {
 u8 D_800CFEE8 = 0xF;
 
 // TODO: decomp these
-void LineScan_80069830_elevenliner_loops_20_times(LineScan *) {}
+u8 LineEffect_Update(LineEffect *, u8) { return 1; }
 void LineScan_800698e0_largeliner_loops_20_times_plays_sfx(LineScan *) {}
 
 // 01D6E0
@@ -330,7 +331,10 @@ void cursor_draw() {
 ALLEGRO_FONT* font;
 
 void hud_init() {
-  font = al_create_builtin_font();
+  //font = al_create_builtin_font();
+  al_init_ttf_addon();
+  // https://www.dafont.com/rollerball-1975.font
+  font = al_load_ttf_font("rollerball_1975.ttf", 12, ALLEGRO_TTF_MONOCHROME);
   must_init(font, "font");
 }
 

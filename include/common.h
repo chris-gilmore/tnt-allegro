@@ -100,6 +100,7 @@ typedef void *OSMesg;
 #include "newtetris/board.h"
 #include "newtetris/keyspin.h"
 #include "newtetris/multisquare.h"
+#include "newtetris/lineeffect.h"
 #include "newtetris/linescan.h"
 #include "newtetris/01D6E0.h"
 #include "newtetris/00E440.h"

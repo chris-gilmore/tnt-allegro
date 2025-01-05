@@ -42,7 +42,7 @@ INCLUDE_DIRS := include $(TNT_SPLAT_DIR)/include
 
 CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i))
 
-LDFLAGS := -lallegro_font -lallegro_primitives -lallegro -lm
+LDFLAGS := -lallegro_primitives -lallegro_ttf -lallegro_font -lallegro -lm
 
 
 #==============================================================================#

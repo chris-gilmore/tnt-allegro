@@ -5,6 +5,17 @@
 
 #include "common.h"
 
+typedef struct {
+  u8 btn_a;
+  u8 btn_b;
+  u8 trig_l;
+  u8 trig_r;
+  u8 trig_z;
+  u8 btn_start;
+  u8 dpad;
+} CtrlCfg;
+
+
 void rmonPrintf(const char* fmt, ...) {
   int ans;
   va_list ap;
@@ -211,11 +222,40 @@ void keyboard_update(ALLEGRO_EVENT* event) {
 
 // Joystick stuff
 
+CtrlCfg ctrlCfg;
+
+void joystick_init(ALLEGRO_JOYSTICK *joy) {
+  print_joystick_info(joy);
+
+  if (!joy)
+    return;
+
+  if (strcmp(al_get_joystick_name(joy), "8Bitdo FC30 Pro    8Bitdo FC30 Pro") == 0) {
+    // 8Bitdo
+    ctrlCfg.btn_a = 1;
+    ctrlCfg.btn_b = 4;
+    ctrlCfg.trig_l = 8;
+    ctrlCfg.trig_r = 9;
+    ctrlCfg.trig_z = 10;
+    ctrlCfg.btn_start = 11;
+    ctrlCfg.dpad = 4;
+  } else {
+    // N64 controller
+    ctrlCfg.btn_a = 1;
+    ctrlCfg.btn_b = 2;
+    ctrlCfg.trig_l = 4;
+    ctrlCfg.trig_r = 5;
+    ctrlCfg.trig_z = 6;
+    ctrlCfg.btn_start = 9;
+    ctrlCfg.dpad = 2;
+  }
+}
+
 void joystick_update(ALLEGRO_EVENT* event) {
   switch(event->type) {
   case ALLEGRO_EVENT_JOYSTICK_CONFIGURATION:
     al_reconfigure_joysticks();
-    print_joystick_info(al_get_joystick(0));
+    joystick_init(al_get_joystick(0));
     break;
   }
 }
@@ -227,7 +267,7 @@ OSContPad contpad;
 
 void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   ALLEGRO_JOYSTICK_STATE jst;
-  int i;
+  int i, j;
 
   if (joy == NULL) {
     return;
@@ -240,24 +280,26 @@ void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   for (i = 0; i < al_get_joystick_num_buttons(joy); i++) {
     printf("jst.button[%d] = %d\n", i, jst.button[i]);
   }
-  for (i = 0; i < al_get_joystick_num_axes(joy, 2); i++) {
-    printf("jst.stick[2].axis[%d] = %f\n", i, jst.stick[2].axis[i]);
+  for (j = 0; j < al_get_joystick_num_sticks(joy); j++) {
+    for (i = 0; i < al_get_joystick_num_axes(joy, j); i++) {
+      printf("jst.stick[%d].axis[%d] = %f\n", j, i, jst.stick[j].axis[i]);
+    }
   }
   */
 
   contpad->button = 0x0000;
 
-  if (jst.button[1] >= 16384) contpad->button |= 0x8000;         // A_BUTTON     / CONT_A
-  if (jst.button[2] >= 16384) contpad->button |= 0x4000;         // B_BUTTON     / CONT_B
-  if (jst.button[4] >= 16384) contpad->button |= 0x0020;         // L_TRIG       / CONT_L
-  if (jst.button[5] >= 16384) contpad->button |= 0x0010;         // R_TRIG       / CONT_R
-  if (jst.button[6] >= 16384) contpad->button |= 0x2000;         // Z_TRIG       / CONT_G
-  if (jst.button[9] >= 16384) contpad->button |= 0x1000;         // START_BUTTON / CONT_START
+  if (jst.button[ctrlCfg.btn_a]     >= 16384) contpad->button |= 0x8000;    // A_BUTTON     / CONT_A
+  if (jst.button[ctrlCfg.btn_b]     >= 16384) contpad->button |= 0x4000;    // B_BUTTON     / CONT_B
+  if (jst.button[ctrlCfg.trig_l]    >= 16384) contpad->button |= 0x0020;    // L_TRIG       / CONT_L
+  if (jst.button[ctrlCfg.trig_r]    >= 16384) contpad->button |= 0x0010;    // R_TRIG       / CONT_R
+  if (jst.button[ctrlCfg.trig_z]    >= 16384) contpad->button |= 0x2000;    // Z_TRIG       / CONT_G
+  if (jst.button[ctrlCfg.btn_start] >= 16384) contpad->button |= 0x1000;    // START_BUTTON / CONT_START
 
-  if (jst.stick[2].axis[0] < 0) contpad->button |= 0x0200;       // L_JPAD       / CONT_LEFT
-  else if (jst.stick[2].axis[0] > 0) contpad->button |= 0x0100;  // R_JPAD       / CONT_RIGHT
-  if (jst.stick[2].axis[1] < 0) contpad->button |= 0x0800;       // U_JPAD       / CONT_UP
-  else if (jst.stick[2].axis[1] > 0) contpad->button |= 0x0400;  // D_JPAD       / CONT_DOWN
+  if (jst.stick[ctrlCfg.dpad].axis[0] < 0) contpad->button |= 0x0200;       // L_JPAD / CONT_LEFT
+  else if (jst.stick[ctrlCfg.dpad].axis[0] > 0) contpad->button |= 0x0100;  // R_JPAD / CONT_RIGHT
+  if (jst.stick[ctrlCfg.dpad].axis[1] < 0) contpad->button |= 0x0800;       // U_JPAD / CONT_UP
+  else if (jst.stick[ctrlCfg.dpad].axis[1] > 0) contpad->button |= 0x0400;  // D_JPAD / CONT_DOWN
 }
 
 void print_contpad(OSContPad *contpad) {
@@ -630,7 +672,7 @@ int main() {
   keyboard_init();
   cursor_init();
 
-  print_joystick_info(al_get_joystick(0));
+  joystick_init(al_get_joystick(0));
 
   al_start_timer(timer);
   main_loop(queue);

@@ -111,9 +111,138 @@ s32 func_800A2EF0(f32 arg0) { return arg0; }
 
 // pfgfx
 PfGfx *g_pfGfx_ptr;
+
+static UnkStruct_26 D_800D01A0[8] = {
+  { { 0x00D7, 0x0031 }, { 0x00D7, 0x0077 } },
+  { { 0x00E1, 0x0031 }, { 0x00E1, 0x0077 } },
+  { { 0x00D7, 0x0031 }, { 0x00D7, 0x0077 } },
+  { { 0x00D7, 0x0031 }, { 0x00D7, 0x0084 } },
+  { { 0x00DC, 0x004B }, { 0x00DC, 0x0084 } },
+  { { 0x00D6, 0x0031 }, { 0x00D6, 0x0077 } },
+  { { 0x00DC, 0x0044 }, { 0x00DC, 0x0078 } },
+  { { 0x00DC, 0x0031 }, { 0x00DC, 0x0078 } },
+};
+
+void PFGFX_Sets_x58_x59_Checks_NumPlayers_CurrPlayer(void) {
+  s16 var_t4;
+
+  switch (g_playercount) {
+  case 1:
+    g_pfGfx_ptr->unkB0.y = 0x90;
+    g_pfGfx_ptr->unkB0.x = 0x14C;
+    return;
+  case 2:
+    switch (g_currentplayer) {
+    case 0:
+      g_pfGfx_ptr->unkB0.y = 0xAC;
+      g_pfGfx_ptr->unkB0.x = 0xE4;
+      return;
+    case 1:
+      g_pfGfx_ptr->unkB0.y = 0xAC;
+      g_pfGfx_ptr->unkB0.x = 0x3DC;
+      return;
+    }
+    break;
+  case 3:
+    switch (g_currentplayer) {
+    case 0:
+      g_pfGfx_ptr->unkB0.y = 0x110;
+      g_pfGfx_ptr->unkB0.x = 0x88;
+      return;
+    case 1:
+      var_t4 = 0x1D8;
+      g_pfGfx_ptr->unkB0.y = 0x110;
+    block_27:
+      g_pfGfx_ptr->unkB0.x = var_t4;
+      return;
+    case 2:
+      g_pfGfx_ptr->unkB0.y = 0x110;
+      g_pfGfx_ptr->unkB0.x = 0x328;
+      return;
+    }
+    break;
+  case 4:
+    switch (g_currentplayer) {
+    case 0:
+      g_pfGfx_ptr->unkB0.y = 0x110;
+      g_pfGfx_ptr->unkB0.x = 0x88;
+      return;
+    case 1:
+      g_pfGfx_ptr->unkB0.y = 0x110;
+      g_pfGfx_ptr->unkB0.x = 0x1D8;
+      return;
+    case 2:
+      g_pfGfx_ptr->unkB0.y = 0x110;
+      g_pfGfx_ptr->unkB0.x = 0x328;
+      return;
+    case 3:
+      var_t4 = 0x478;
+      g_pfGfx_ptr->unkB0.y = 0x110;
+      goto block_27;
+    }
+    break;
+  }
+}
+
 void GameCamera_Render(void) {}
-Point *PFGFX_Init(Point *arg0, PfGfx *arg1) { return arg0; }
-void PFGFX_Playfield_Init(u8) {}
+
+Point *PFGFX_Init(Point *arg0, PfGfx *arg1) {
+  Point p;
+
+  p.x = arg1->unkB0.x >> 2;
+  p.y = arg1->unkB0.y >> 2;
+  *arg0 = p;
+  return arg0;
+}
+
+// arg0 : screen num
+void PFGFX_SetTextDisplayPos_1p(u8 arg0) {
+  UnkStruct_17 sp28;
+  UnkStruct_10 sp1C;
+
+  Minos_80070c40_twoliner_set_OR_1(0xB00);
+  Minos_80070c70_threeliner_set_OR_8(0x500, 0xA00);
+  Minos_80070cb8_threeliner_set_OR_4(g_pfGfx_ptr->unkB0.x, g_pfGfx_ptr->unkB0.y);
+  Minos_80070a34_twentyliner();
+  sp1C.unk0 = D_800D01A0[arg0].unk0;
+  sp1C.unk8 = D_800D01A0[arg0].unk4;
+  sp1C.unk4.x = (sp1C.unk8.x + sp1C.unk0.x) >> 1;
+  sp1C.unk4.y = (sp1C.unk8.y + sp1C.unk0.y) >> 1;
+  Minos_8007104c_fiveliner_nuts(&sp28.unk0[0], sp1C.unk0.x * 4, sp1C.unk0.y * 4);
+  Minos_8007104c_fiveliner_nuts(&sp28.unk0[1], sp1C.unk4.x * 4, sp1C.unk4.y * 4);
+  Minos_8007104c_fiveliner_nuts(&sp28.unk0[2], sp1C.unk8.x * 4, sp1C.unk8.y * 4);
+  Minos_8007104c_fiveliner_nuts(&sp28.unk0[3], sp1C.unk8.x * 4, sp1C.unk8.y * 4);
+  sp28.unk10 = 0xFF;
+  sp28.unk11 = 0xFF;
+  sp28.unk12 = 0xC0;
+  sp28.unk14 = 0xC0;
+  NextPieces_80068b7c_largeliner_sets_lots_of_struct_elems(&sp28);
+  g_gameStats_ptr->linesInfo.x = 0x127;
+  g_gameStats_ptr->linesInfo.y = 0xB7;
+}
+
+void PFGFX_Playfield_Init(u8 arg0) {
+  PFGFX_Sets_x58_x59_Checks_NumPlayers_CurrPlayer();
+  switch (g_playercount) {
+  case 1:
+    PFGFX_SetTextDisplayPos_1p(arg0);
+    break;
+    /*
+  case 2:
+    PFGFX_SetTextDisplayPos_2p(arg0);
+    break;
+  case 3:
+    PFGFX_SetTextDisplayPos_3p(arg0);
+    break;
+  case 4:
+    PFGFX_SetTextDisplayPos_4p(arg0);
+    break;
+    */
+  default:
+    debug_print_reason_routine("Playfield:Init invalid playercount", "pfgfx.c");
+    break;
+  }
+}
 
 
 u32 framecount = 0;
@@ -373,10 +502,10 @@ void cursor_draw() {
 ALLEGRO_FONT* font;
 
 void hud_init() {
-  //font = al_create_builtin_font();
-  al_init_ttf_addon();
+  font = al_create_builtin_font();
+  //al_init_ttf_addon();
   // https://www.dafont.com/rollerball-1975.font
-  font = al_load_ttf_font("rollerball_1975.ttf", 12, ALLEGRO_TTF_MONOCHROME);
+  //font = al_load_ttf_font("rollerball_1975.ttf", 12, ALLEGRO_TTF_MONOCHROME);
   must_init(font, "font");
 }
 
@@ -464,7 +593,7 @@ void game_init() {
   game_ptr->unkE4FC.unk4 = (255.0f - game_ptr->unkE4FC.alpha) / 16.0f;
   game_ptr->unkE508 = TRUE;
 
-  gameVars.seed = 3;
+  gameVars.seed = 7;
   gameVars.unk4 = &game_ptr->unkE080;
   gameVars.unk8 = game_ptr->unkE4F8;  // which screen? (0..7)
   gameVars.gameType = game_ptr->gameType;
@@ -626,7 +755,7 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
     if(redraw && al_is_event_queue_empty(queue)) {
       disp_pre_draw();
-      al_clear_to_color(al_map_rgb(0,0,0));
+      al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
 
       cursor_draw();
 
@@ -649,7 +778,7 @@ int main() {
   must_init(al_install_joystick(), "joystick");
 
   ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
-  //ALLEGRO_TIMER* timer = al_create_timer(1.0 / 1.0);
+  //ALLEGRO_TIMER* timer = al_create_timer(1.0 / 10.0);
   must_init(timer, "timer");
 
   ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();

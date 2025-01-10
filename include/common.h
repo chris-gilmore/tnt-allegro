@@ -118,4 +118,6 @@ typedef void *OSMesg;
 #include "newtetris/game.h"
 #include "newtetris/setplayer.h"
 
+extern void rmonPrintf(const char *, ...);
+
 #endif /* !_COMMON_H_ */

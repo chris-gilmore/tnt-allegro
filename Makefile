@@ -7,10 +7,9 @@ default: all
 #==============================================================================#
 
 TARGET := tnt-allegro
-
-TNT_SPLAT_C_FILES := 026900.c 026C80.c sprite.c color.c contq.c piecedefs.c playervars.c gamevars.c 033310.c mobilepiece.c ghostpiece.c currentpiece.c piecehold.c boardinfo.c frameact.c cube.c ids.c boardpieces.c bag63.c nextpieces.c fallingcubes.c mobilecubes.c board.c multisquare.c linescan.c gamestats.c dbgprntrrl.c tetris.c setplayer.c
-
 TNT_SPLAT_DIR := ../tnt-splat
+
+TNT_SPLAT_C_FILES := 003E40.c 006B30.c 0073F0.c 0074E0.c 026900.c 026C80.c sprite.c color.c contq.c piecedefs.c playervars.c gamevars.c 033310.c mobilepiece.c ghostpiece.c currentpiece.c piecehold.c boardinfo.c frameact.c cube.c ids.c boardpieces.c bag63.c nextpieces.c fallingcubes.c mobilecubes.c board.c multisquare.c linescan.c gamestats.c dbgprntrrl.c tetris.c setplayer.c gamefinish.c pfgfx.c lineeffect.c
 
 
 #==============================================================================#
@@ -42,7 +41,8 @@ INCLUDE_DIRS := include $(TNT_SPLAT_DIR)/include
 
 CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i))
 
-LDFLAGS := -lallegro_primitives -lallegro_ttf -lallegro_font -lallegro -lm
+LDFLAGS := -lallegro_primitives -lallegro_font -lallegro -lm
+#LDFLAGS := -lallegro_primitives -lallegro_ttf -lallegro_font -lallegro -lm
 
 
 #==============================================================================#

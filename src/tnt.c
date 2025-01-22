@@ -1,7 +1,10 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_ttf.h>  // $ dnf install allegro5-addon-ttf-devel
+/*
+// $ dnf install allegro5-addon-ttf-devel
+#include <allegro5/allegro_ttf.h>
+*/
 
 #include "common.h"
 
@@ -16,6 +19,13 @@ typedef struct {
 } CtrlCfg;
 
 
+u8 *n64HeapAlloc(s32 size) {
+  return malloc(size);
+}
+void n64HeapUnalloc(u8 *pBlock) {
+  free(pBlock);
+}
+
 void rmonPrintf(const char* fmt, ...) {
   int ans;
   va_list ap;
@@ -24,17 +34,6 @@ void rmonPrintf(const char* fmt, ...) {
   ans = vprintf(fmt, ap);
   va_end(ap);
 }
-
-u8 *n64HeapAlloc(s32 size) {
-  return malloc(size);
-}
-void n64HeapUnalloc(u8 *pBlock) {
-  free(pBlock);
-}
-
-// playervars
-u16 D_800CFED4 = 1;
-void func_80075DF4(void) {}  // cubetiles
 
 void debug_print_reason_routine(u8 *arg0, u8 *arg1) {  // dbgprntrrl
   printf("Reason: %s\n Routine: %s\n", arg0, arg1);
@@ -46,203 +45,17 @@ void debug_print2(const u8 *arg0, const u8 *arg1) {
   */
 }
 
-OSMesg D_801235B0;  // audio
-void *Audio2_Play_SFX(OSMesg *, s32 *, u8) {}
-s32 D_800D3A90;
+ALLEGRO_FONT* font;
 
-// TODO: will need to decomp these 003E40 funcs
-u8 FUN_003E40_8003dbc0_twentyliner_nested_loops(u8, u8, u8) { return FALSE; }
-u8 FUN_003E40_8003dda8_twentyfiveliner_nested_loops(u8, u8, u8) { return FALSE; }
-
-u32 D_801109F4;
-s32 D_800D0550;
-
-// game
-
-// handicap values
-u8 D_800CFF00[] = {
-  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,
-  0,  5, 10, 15, 20, 25, 30, 35, 40, 45,  0,  0,
-  0, 10, 20, 30, 40, 50, 60, 70, 80, 90,  0,  0,
-  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-  0,  0, 28,  0,  0,  0, 32,  0,  0,  0, 36,  0,
-  0,  0, 40,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-  0,  0,  0,  0,  0,  0,  0,  0,
-};
-u8 D_800CFF50 = 1;
-Game g_game;
-
-static void Game_ControllerRepeat_Update(Game *game_ptr) {
-  register s32 i;
-  register PlayerVars *temp_s1;
-  register UnkStruct_1 *temp_s2;
-
-  temp_s1 = &g_PV_arr[0];
-  temp_s2 = &temp_s1->unk28;
-  temp_s2->unk88 = temp_s1->unk1C->unk0;
-  temp_s2->unk8C = temp_s1->unk24;
-  debug_print2("ControllerRepeat_Update", "GU");
-  FUN_026900_GU_or_ControllerRepeat_Update(temp_s2, temp_s2->unk88, D_801109F4);
-
-  /*
-  printf("temp_s2->unk80 = %d\n", temp_s2->unk80);
-  printf("temp_s2->unk84 = %d\n", temp_s2->unk84);
-  printf("temp_s2->unk88 = %d\n", temp_s2->unk88);
-  printf("temp_s2->unk8C = %d\n", temp_s2->unk8C);
-  */
+void displayText_XY_RGBA_2(Gfx **arg0, void *arg1, s16 x, s16 y, u8 *text, s32 red, s32 green, s32 blue, s32 alpha) {
+  al_draw_textf(font, al_map_rgba(red, green, blue, alpha), x, y, 0, text);
 }
 
 
-u8 D_800CFEE8 = 0xF;
+u16 D_800CFED4 = 1;
 
-// TODO: decomp these
-u8 LineEffect_Update(LineEffect *, u8) { return 1; }
-void LineScan_800698e0_largeliner_loops_20_times_plays_sfx(LineScan *) {}
 
-// 01D6E0
-Gfx *g_gdl;
-void func_8005BBFC(Gfx **) {}
-void func_8005BE40(Gfx **) {}
-
-void displayText_XY_RGBA_2(Gfx **, void *, s16, s16, u8 *, s32, s32, s32, s32) {}
-
-// 066700
-s32 func_800A2EF0(f32 arg0) { return arg0; }
-
-// pfgfx
-PfGfx *g_pfGfx_ptr;
-
-static UnkStruct_26 D_800D01A0[8] = {
-  { { 0x00D7, 0x0031 }, { 0x00D7, 0x0077 } },
-  { { 0x00E1, 0x0031 }, { 0x00E1, 0x0077 } },
-  { { 0x00D7, 0x0031 }, { 0x00D7, 0x0077 } },
-  { { 0x00D7, 0x0031 }, { 0x00D7, 0x0084 } },
-  { { 0x00DC, 0x004B }, { 0x00DC, 0x0084 } },
-  { { 0x00D6, 0x0031 }, { 0x00D6, 0x0077 } },
-  { { 0x00DC, 0x0044 }, { 0x00DC, 0x0078 } },
-  { { 0x00DC, 0x0031 }, { 0x00DC, 0x0078 } },
-};
-
-void PFGFX_Sets_x58_x59_Checks_NumPlayers_CurrPlayer(void) {
-  s16 var_t4;
-
-  switch (g_playercount) {
-  case 1:
-    g_pfGfx_ptr->unkB0.y = 0x90;
-    g_pfGfx_ptr->unkB0.x = 0x14C;
-    return;
-  case 2:
-    switch (g_currentplayer) {
-    case 0:
-      g_pfGfx_ptr->unkB0.y = 0xAC;
-      g_pfGfx_ptr->unkB0.x = 0xE4;
-      return;
-    case 1:
-      g_pfGfx_ptr->unkB0.y = 0xAC;
-      g_pfGfx_ptr->unkB0.x = 0x3DC;
-      return;
-    }
-    break;
-  case 3:
-    switch (g_currentplayer) {
-    case 0:
-      g_pfGfx_ptr->unkB0.y = 0x110;
-      g_pfGfx_ptr->unkB0.x = 0x88;
-      return;
-    case 1:
-      var_t4 = 0x1D8;
-      g_pfGfx_ptr->unkB0.y = 0x110;
-    block_27:
-      g_pfGfx_ptr->unkB0.x = var_t4;
-      return;
-    case 2:
-      g_pfGfx_ptr->unkB0.y = 0x110;
-      g_pfGfx_ptr->unkB0.x = 0x328;
-      return;
-    }
-    break;
-  case 4:
-    switch (g_currentplayer) {
-    case 0:
-      g_pfGfx_ptr->unkB0.y = 0x110;
-      g_pfGfx_ptr->unkB0.x = 0x88;
-      return;
-    case 1:
-      g_pfGfx_ptr->unkB0.y = 0x110;
-      g_pfGfx_ptr->unkB0.x = 0x1D8;
-      return;
-    case 2:
-      g_pfGfx_ptr->unkB0.y = 0x110;
-      g_pfGfx_ptr->unkB0.x = 0x328;
-      return;
-    case 3:
-      var_t4 = 0x478;
-      g_pfGfx_ptr->unkB0.y = 0x110;
-      goto block_27;
-    }
-    break;
-  }
-}
-
-void GameCamera_Render(void) {}
-
-Point *PFGFX_Init(Point *arg0, PfGfx *arg1) {
-  Point p;
-
-  p.x = arg1->unkB0.x >> 2;
-  p.y = arg1->unkB0.y >> 2;
-  *arg0 = p;
-  return arg0;
-}
-
-// arg0 : screen num
-void PFGFX_SetTextDisplayPos_1p(u8 arg0) {
-  UnkStruct_17 sp28;
-  UnkStruct_10 sp1C;
-
-  Minos_80070c40_twoliner_set_OR_1(0xB00);
-  Minos_80070c70_threeliner_set_OR_8(0x500, 0xA00);
-  Minos_80070cb8_threeliner_set_OR_4(g_pfGfx_ptr->unkB0.x, g_pfGfx_ptr->unkB0.y);
-  Minos_80070a34_twentyliner();
-  sp1C.unk0 = D_800D01A0[arg0].unk0;
-  sp1C.unk8 = D_800D01A0[arg0].unk4;
-  sp1C.unk4.x = (sp1C.unk8.x + sp1C.unk0.x) >> 1;
-  sp1C.unk4.y = (sp1C.unk8.y + sp1C.unk0.y) >> 1;
-  Minos_8007104c_fiveliner_nuts(&sp28.unk0[0], sp1C.unk0.x * 4, sp1C.unk0.y * 4);
-  Minos_8007104c_fiveliner_nuts(&sp28.unk0[1], sp1C.unk4.x * 4, sp1C.unk4.y * 4);
-  Minos_8007104c_fiveliner_nuts(&sp28.unk0[2], sp1C.unk8.x * 4, sp1C.unk8.y * 4);
-  Minos_8007104c_fiveliner_nuts(&sp28.unk0[3], sp1C.unk8.x * 4, sp1C.unk8.y * 4);
-  sp28.unk10 = 0xFF;
-  sp28.unk11 = 0xFF;
-  sp28.unk12 = 0xC0;
-  sp28.unk14 = 0xC0;
-  NextPieces_80068b7c_largeliner_sets_lots_of_struct_elems(&sp28);
-  g_gameStats_ptr->linesInfo.x = 0x127;
-  g_gameStats_ptr->linesInfo.y = 0xB7;
-}
-
-void PFGFX_Playfield_Init(u8 arg0) {
-  PFGFX_Sets_x58_x59_Checks_NumPlayers_CurrPlayer();
-  switch (g_playercount) {
-  case 1:
-    PFGFX_SetTextDisplayPos_1p(arg0);
-    break;
-    /*
-  case 2:
-    PFGFX_SetTextDisplayPos_2p(arg0);
-    break;
-  case 3:
-    PFGFX_SetTextDisplayPos_3p(arg0);
-    break;
-  case 4:
-    PFGFX_SetTextDisplayPos_4p(arg0);
-    break;
-    */
-  default:
-    debug_print_reason_routine("Playfield:Init invalid playercount", "pfgfx.c");
-    break;
-  }
-}
+////////////////////////////////////////
 
 
 u32 framecount = 0;
@@ -398,7 +211,7 @@ void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   ALLEGRO_JOYSTICK_STATE jst;
   int i, j;
 
-  if (joy == NULL) {
+  if (!joy) {
     return;
   }
 
@@ -499,25 +312,26 @@ void cursor_draw() {
 
 // HUD stuff
 
-ALLEGRO_FONT* font;
+ALLEGRO_FONT* hud_font;
 
 void hud_init() {
-  font = al_create_builtin_font();
+  hud_font = al_create_builtin_font();
   //al_init_ttf_addon();
   // https://www.dafont.com/rollerball-1975.font
-  //font = al_load_ttf_font("rollerball_1975.ttf", 12, ALLEGRO_TTF_MONOCHROME);
-  must_init(font, "font");
+  //hud_font = al_load_ttf_font("rollerball_1975.ttf", 12, ALLEGRO_TTF_MONOCHROME);
+  must_init(hud_font, "hud_font");
 }
 
 void hud_deinit() {
-  al_destroy_font(font);
+  al_destroy_font(hud_font);
 }
 
 void hud_update() {
 }
 
 void hud_draw() {
-  al_draw_textf(font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "X: %.1f Y: %.1f   FrameCount: %d", x, y, framecount);
+  al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "X: %.1f Y: %.1f   FrameCount: %d", x, y, framecount);
+  //al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "FrameCount: %d", framecount);
 }
 
 
@@ -549,13 +363,62 @@ void player_deinit() {
 
   for (i = 0; i < 4; i++) {
     contQ_ptr = controller_queues[i];
-    n64HeapUnalloc((u8 *)contQ_ptr->unk14);
-    n64HeapUnalloc((u8 *)contQ_ptr->_ControllerQueue);
+    n64HeapUnalloc((void *)contQ_ptr->unk14);
+    n64HeapUnalloc((void *)contQ_ptr->_ControllerQueue);
   }
 }
 
 
+u32 D_801109F4;
+s32 D_800D0550;
+
 // Game stuff
+
+// handicap values
+u8 D_800CFF00[] = {
+  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,
+  0,  5, 10, 15, 20, 25, 30, 35, 40, 45,  0,  0,
+  0, 10, 20, 30, 40, 50, 60, 70, 80, 90,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0, 28,  0,  0,  0, 32,  0,  0,  0, 36,  0,
+  0,  0, 40,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,
+};
+u8 D_800CFF50 = 1;
+Game g_game;
+
+static s32 Game_80051104_sevenliner_num_players(Game *game_ptr) {
+  register u32 i;
+  register s32 var_a2;
+  register u8 playercount = g_playercount;
+
+  var_a2 = 0;
+  for (i = 0; i < playercount; i++) {
+    if (game_ptr->tetris_ptr_arr[i]->unk2) {
+      var_a2++;
+    }
+  }
+  return var_a2;
+}
+
+static void Game_800515f8_twoliner(Game *game_ptr) {
+  if (game_ptr->unk3 != 0) {
+    game_ptr->unk1 = 1;
+  }
+}
+
+static void Game_ControllerRepeat_Update(Game *game_ptr) {
+  register s32 i;
+  register PlayerVars *temp_s1;
+  register UnkStruct_1 *temp_s2;
+
+  temp_s1 = &g_PV_arr[0];
+  temp_s2 = &temp_s1->unk28;
+  temp_s2->unk88 = temp_s1->unk1C->unk0;
+  temp_s2->unk8C = temp_s1->unk24;
+  debug_print2("ControllerRepeat_Update", "GU");
+  FUN_026900_GU_or_ControllerRepeat_Update(temp_s2, temp_s2->unk88, D_801109F4);
+}
 
 void game_init() {
   register Game *game_ptr = &g_game;
@@ -563,9 +426,11 @@ void game_init() {
   register UnkStruct_1 *temp_s5;
 
   game_ptr->gameType = GAMETYPE_SPRINT;
+  //game_ptr->gameType = GAMETYPE_ULTRA;
+  //game_ptr->gameType = GAMETYPE_MARATHON;
   game_ptr->unkE4F8 = 7;  // which screen? (0..7)
 
-  game_ptr->active = TRUE;
+  game_ptr->is_active = TRUE;
   D_800CFF50 = 1;
   game_ptr->numPlayers = 1;
   game_ptr->unkE4E8 = 0;  // gameElapsedTime
@@ -593,7 +458,7 @@ void game_init() {
   game_ptr->unkE4FC.unk4 = (255.0f - game_ptr->unkE4FC.alpha) / 16.0f;
   game_ptr->unkE508 = TRUE;
 
-  gameVars.seed = 7;
+  gameVars.seed = 0;
   gameVars.unk4 = &game_ptr->unkE080;
   gameVars.unk8 = game_ptr->unkE4F8;  // which screen? (0..7)
   gameVars.gameType = game_ptr->gameType;
@@ -603,25 +468,27 @@ void game_init() {
   Game_SetGlobalPointers(0);
   PlayerVars_SetGlobalPointers(0);
 
-  temp_s5 = &g_PV_ptr->unk28;  // UnkStruct_1
+  temp_s5 = &g_PV_ptr->unk28;
   FUN_026900_80060ad4_oneliner_calls_fun(temp_s5);
-  FUN_026900_80060b04_twelveliner_loops_32t(temp_s5, 0xF00, 8, 4);  // JPAD (U, D, R, L) only
+  FUN_026900_80060b04_twelveliner_loops_32t(temp_s5, 0xF00, 8, 4);     // JPAD (U, D, R, L) only
   FUN_026900_80060b04_twelveliner_loops_32t(temp_s5, 0xC000, 16, 16);  // Buttons A and B only
 
   g_PV_ptr->unk20 = g_PV_ptr->unk24 = 0;
   gameVars.handicap = 0;
 
   Tetris_Init(game_ptr->tetris_ptr_arr[0], &gameVars);
+
+
+  FUN_80041260_twoliner();
 }
 
 void game_deinit() {
   register Game *game_ptr = &g_game;
 
-  // TODO: change this to is_active
-  if (!game_ptr->active) {
+  if (!game_ptr->is_active) {
     debug_print_reason_routine("oops", "game_deinit");
   }
-  game_ptr->active = FALSE;
+  game_ptr->is_active = FALSE;
 
   //FUN_027BF0_Deinit(0);
   //aiplayer_80042b3c_calls_heap_unalloc();
@@ -629,7 +496,7 @@ void game_deinit() {
 
   Game_SetGlobalPointers(0);
   Tetris_Deinit(game_ptr->tetris_ptr_arr[0]);
-  n64HeapUnalloc((u8 *)game_ptr->tetris_ptr_arr[0]);
+  n64HeapUnalloc((void *)game_ptr->tetris_ptr_arr[0]);
   game_ptr->tetris_ptr_arr[0] = NULL;
 
   //gamefinish_800534A4_fiveliner();
@@ -659,16 +526,16 @@ void _game_update(Game *game_ptr) {
 void game_update() {
   register Game *game_ptr = &g_game;
 
-  if (!game_ptr->active) {
+  if (!game_ptr->is_active) {
     debug_print_reason_routine("oops", "game_update");
   }
   if (game_ptr->unk0 != 1) {
     game_ptr->unk1 = 0;
     if (game_ptr->unk3 == 0) {
-      /*
       if (Game_80051104_sevenliner_num_players(game_ptr) != 0) {
         game_ptr->unkE4E8 = game_ptr->unkE4E8 + D_801109F4;
       }
+      /*
       func_800763EC(D_801109F4);
       */
 
@@ -681,8 +548,8 @@ void game_update() {
       if (D_800CFEE8 != 0xC) {
         Game_800519b4_thirtyliner(game_ptr);
       }
-      Game_800515f8_twoliner(game_ptr);
       */
+      Game_800515f8_twoliner(game_ptr);
       if (game_ptr->unk1 != 1) {
         if (game_ptr->unk0 == 0) {
           _game_update(game_ptr);
@@ -698,13 +565,13 @@ void game_update() {
 void game_draw() {
   register Game *game_ptr = &g_game;
 
-  if (!game_ptr->active) {
+  if (!game_ptr->is_active) {
     debug_print_reason_routine("oops", "game_draw");
   }
   if (game_ptr->unk0 != 1) {
-    //FUN_027BF0_800636C0_display_game_stats_screen_q();
+    FUN_027BF0_800636C0_display_game_stats_screen_q();
     g_landfill_ptr = &game_ptr->landfill;
-    //func_80072A84();
+    //func_80072A84();  // landfill render
 
     Game_SetGlobalPointers(0);
     PlayerVars_SetGlobalPointers(0);
@@ -778,11 +645,13 @@ int main() {
   must_init(al_install_joystick(), "joystick");
 
   ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
-  //ALLEGRO_TIMER* timer = al_create_timer(1.0 / 10.0);
+  //ALLEGRO_TIMER* timer = al_create_timer(1.0 / 20.0);
   must_init(timer, "timer");
 
   ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
   must_init(queue, "queue");
+
+  font = al_create_builtin_font();
 
   disp_init();
 
@@ -812,6 +681,7 @@ int main() {
   disp_deinit();
   al_destroy_timer(timer);
   al_destroy_event_queue(queue);
+  al_destroy_font(font);
 
   return 0;
 }

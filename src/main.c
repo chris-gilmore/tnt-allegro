@@ -151,7 +151,6 @@ void keyboard_update(ALLEGRO_EVENT* event) {
     for(int i = 0; i < ALLEGRO_KEY_MAX; i++)
       key[i] &= KEY_SEEN;
     break;
-
   case ALLEGRO_EVENT_KEY_DOWN:
     key[event->keyboard.keycode] = KEY_SEEN | KEY_RELEASED;
     break;
@@ -229,8 +228,6 @@ void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   }
   */
 
-  contpad->button = 0x0000;
-
   if (jst.button[ctrlCfg.btn_a]     >= 16384) contpad->button |= 0x8000;    // A_BUTTON     / CONT_A
   if (jst.button[ctrlCfg.btn_b]     >= 16384) contpad->button |= 0x4000;    // B_BUTTON     / CONT_B
   if (jst.button[ctrlCfg.trig_l]    >= 16384) contpad->button |= 0x0020;    // L_TRIG       / CONT_L
@@ -238,22 +235,38 @@ void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   if (jst.button[ctrlCfg.trig_z]    >= 16384) contpad->button |= 0x2000;    // Z_TRIG       / CONT_G
   if (jst.button[ctrlCfg.btn_start] >= 16384) contpad->button |= 0x1000;    // START_BUTTON / CONT_START
 
-  if (jst.stick[ctrlCfg.dpad].axis[0] < 0) contpad->button |= 0x0200;       // L_JPAD / CONT_LEFT
-  else if (jst.stick[ctrlCfg.dpad].axis[0] > 0) contpad->button |= 0x0100;  // R_JPAD / CONT_RIGHT
-  if (jst.stick[ctrlCfg.dpad].axis[1] < 0) contpad->button |= 0x0800;       // U_JPAD / CONT_UP
-  else if (jst.stick[ctrlCfg.dpad].axis[1] > 0) contpad->button |= 0x0400;  // D_JPAD / CONT_DOWN
+  if (jst.stick[ctrlCfg.dpad].axis[0] < 0) contpad->button |= 0x0200;       // L_JPAD       / CONT_LEFT
+  else if (jst.stick[ctrlCfg.dpad].axis[0] > 0) contpad->button |= 0x0100;  // R_JPAD       / CONT_RIGHT
+  if (jst.stick[ctrlCfg.dpad].axis[1] < 0) contpad->button |= 0x0800;       // U_JPAD       / CONT_UP
+  else if (jst.stick[ctrlCfg.dpad].axis[1] > 0) contpad->button |= 0x0400;  // D_JPAD       / CONT_DOWN
 }
 
 void print_contpad(OSContPad *contpad) {
   printf("contpad.button = %016b\n", contpad->button);
 }
 
+
 static ControllerQueue *controller_queues[4];
 
 void contq_enqueue() {
-  snapshot_contpad(al_get_joystick(0), &contpad);
+  contpad.button = 0x0000;
 
+  if (key[ALLEGRO_KEY_D])     contpad.button |= 0x8000;    // A_BUTTON     / CONT_A
+  if (key[ALLEGRO_KEY_S])     contpad.button |= 0x4000;    // B_BUTTON     / CONT_B
+  if (key[ALLEGRO_KEY_Q])     contpad.button |= 0x0020;    // L_TRIG       / CONT_L
+  if (key[ALLEGRO_KEY_E])     contpad.button |= 0x0010;    // R_TRIG       / CONT_R
+  if (key[ALLEGRO_KEY_W])     contpad.button |= 0x2000;    // Z_TRIG       / CONT_G
+  if (key[ALLEGRO_KEY_ENTER]) contpad.button |= 0x1000;    // START_BUTTON / CONT_START
+
+  if (key[ALLEGRO_KEY_J])     contpad.button |= 0x0200;    // L_JPAD       / CONT_LEFT
+  if (key[ALLEGRO_KEY_L])     contpad.button |= 0x0100;    // R_JPAD       / CONT_RIGHT
+  if (key[ALLEGRO_KEY_I])     contpad.button |= 0x0800;    // U_JPAD       / CONT_UP
+  if (key[ALLEGRO_KEY_K])     contpad.button |= 0x0400;    // D_JPAD       / CONT_DOWN
+
+
+  snapshot_contpad(al_get_joystick(0), &contpad);
   //print_contpad(&contpad);
+
 
   FUN_069580_800A3300_nineliner_mod300(controller_queues[0], &contpad);
 }

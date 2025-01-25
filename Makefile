@@ -73,7 +73,7 @@ $(BUILD_DIR)/tnt-splat/%.o: $(TNT_SPLAT_DIR)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(PROGRAM): $(O_FILES)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 
 

@@ -3,12 +3,12 @@
 
 typedef unsigned char       u8;     /* unsigned  8-bit */
 typedef unsigned short      u16;    /* unsigned 16-bit */
-typedef unsigned long       u32;    /* unsigned 32-bit */
+typedef unsigned int        u32;    /* unsigned 32-bit */
 typedef unsigned long long  u64;    /* unsigned 64-bit */
 
 typedef signed char         s8;     /* signed  8-bit */
 typedef short               s16;    /* signed 16-bit */
-typedef long                s32;    /* signed 32-bit */
+typedef int                 s32;    /* signed 32-bit */
 typedef long long           s64;    /* signed 64-bit */
 
 typedef float   f32;    /* single prec floating point */
@@ -23,7 +23,7 @@ typedef double  f64;    /* double prec floating point */
 #endif
 
 #ifndef NULL
-#define NULL    0
+#define NULL    (void *)0
 #endif
 
 typedef union {
@@ -39,8 +39,8 @@ typedef union {
   f32 f;
 } fu;
 
-extern u64   __ull_div(u64, u64);
-extern u64   __ll_mul(u64, u64);
+extern u64 __ull_div(u64, u64);
+extern u64 __ll_mul(u64, u64);
 
 
 typedef struct {
@@ -61,18 +61,20 @@ typedef struct {
 
 typedef void *OSMesg;
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <strings.h>
+#include <math.h>
+
 #include "newtetris/n64heap.h"
 #include "newtetris/sprite.h"
 #include "newtetris/contq.h"
-#include <math.h>
 #include "newtetris/026900.h"
 #include "newtetris/026C80.h"
 #include "newtetris/026F90.h"
 #include "newtetris/cubetiles.h"
 #include "newtetris/color.h"
 #include "newtetris/piecedefs.h"
-#include <strings.h>
-#include <stdio.h>
 #include "newtetris/027BF0.h"
 #include "newtetris/037700.h"
 #include "newtetris/0449D0.h"

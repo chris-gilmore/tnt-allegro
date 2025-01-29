@@ -40,6 +40,9 @@ CC := gcc
 INCLUDE_DIRS := include $(TNT_SPLAT_DIR)/include
 
 CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i))
+CFLAGS += -Wstrict-prototypes -Wsequence-point
+#CFLAGS += -pedantic
+#CFLAGS += -Wall -Wextra
 
 LDFLAGS := -lallegro_primitives -lallegro_font -lallegro -lm
 #LDFLAGS := -lallegro_primitives -lallegro_ttf -lallegro_font -lallegro -lm

@@ -1,3 +1,7 @@
+#include "common.h"
+#include <getopt.h>
+#include <unistd.h>
+
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
@@ -5,8 +9,6 @@
 // $ dnf install allegro5-addon-ttf-devel
 #include <allegro5/allegro_ttf.h>
 */
-
-#include "common.h"
 
 typedef struct {
   u8 btn_a;
@@ -47,7 +49,7 @@ void debug_print2(const u8 *arg0, const u8 *arg1) {
 
 ALLEGRO_FONT* font;
 
-void displayText_XY_RGBA_2(Gfx **arg0, void *arg1, s16 x, s16 y, u8 *text, s32 red, s32 green, s32 blue, s32 alpha) {
+void displayText_XY_RGBA_2(Gfx **arg0, void *arg1, s16 x, s16 y, char *text, s32 red, s32 green, s32 blue, s32 alpha) {
   al_draw_textf(font, al_map_rgba(red, green, blue, alpha), x, y, 0, text);
 }
 
@@ -58,7 +60,13 @@ u16 D_800CFED4 = 1;
 ////////////////////////////////////////
 
 
-u32 framecount = 0;
+static FILE *fp;
+static int record = false;
+static int replay = false;
+static unsigned int framecount = 0;
+static unsigned int seed = 0;
+static unsigned int gametype = GAMETYPE_SPRINT;
+char p1_name[9] = "";
 
 
 static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
@@ -107,7 +115,7 @@ void must_init(bool test, const char *description) {
 ALLEGRO_DISPLAY* disp;
 ALLEGRO_BITMAP* buffer;
 
-void disp_init() {
+void disp_init(void) {
   al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
   al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
 
@@ -118,16 +126,16 @@ void disp_init() {
   must_init(buffer, "bitmap buffer");
 }
 
-void disp_deinit() {
+void disp_deinit(void) {
   al_destroy_bitmap(buffer);
   al_destroy_display(disp);
 }
 
-void disp_pre_draw() {
+void disp_pre_draw(void) {
   al_set_target_bitmap(buffer);
 }
 
-void disp_post_draw() {
+void disp_post_draw(void) {
   al_set_target_backbuffer(disp);
   al_draw_scaled_bitmap(buffer, 0, 0, BUFFER_W, BUFFER_H, 0, 0, DISP_W, DISP_H, 0);
 
@@ -141,7 +149,7 @@ void disp_post_draw() {
 #define KEY_RELEASED 2
 unsigned char key[ALLEGRO_KEY_MAX];
 
-void keyboard_init() {
+void keyboard_init(void) {
   memset(key, 0, sizeof(key));
 }
 
@@ -241,6 +249,7 @@ void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   else if (jst.stick[ctrlCfg.dpad].axis[1] > 0) contpad->button |= 0x0400;  // D_JPAD       / CONT_DOWN
 }
 
+
 void print_contpad(OSContPad *contpad) {
   printf("contpad.button = %016b\n", contpad->button);
 }
@@ -248,7 +257,9 @@ void print_contpad(OSContPad *contpad) {
 
 static ControllerQueue *controller_queues[4];
 
-void contq_enqueue() {
+int contq_enqueue(void) {
+  unsigned int frmcnt;
+
   contpad.button = 0x0000;
 
   if (key[ALLEGRO_KEY_D])     contpad.button |= 0x8000;    // A_BUTTON     / CONT_A
@@ -263,15 +274,23 @@ void contq_enqueue() {
   if (key[ALLEGRO_KEY_I])     contpad.button |= 0x0800;    // U_JPAD       / CONT_UP
   if (key[ALLEGRO_KEY_K])     contpad.button |= 0x0400;    // D_JPAD       / CONT_DOWN
 
-
   snapshot_contpad(al_get_joystick(0), &contpad);
+
   //print_contpad(&contpad);
 
+  if (replay) {
+    fscanf(fp, "%d %016b\n", &frmcnt, &contpad.button);
+    if (frmcnt != framecount) return false;
+  } else if (record) {
+    fprintf(fp, "%d %016b\n", framecount, contpad.button);
+  }
 
   FUN_069580_800A3300_nineliner_mod300(controller_queues[0], &contpad);
+
+  return true;
 }
 
-void contq_dequeue() {
+void contq_dequeue(void) {
   // From 010870.c, FUN_010870_interesting_stuff_large_liner()
   while (func_800A3534(&g_PV_ptr->contQ) != 0) {
     func_800A33E4(&g_PV_ptr->contQ);
@@ -291,12 +310,12 @@ void contq_dequeue() {
 
 float x, y;
 
-void cursor_init() {
+void cursor_init(void) {
   x = 100;
   y = 100;
 }
 
-void cursor_update() {
+void cursor_update(void) {
   if(key[ALLEGRO_KEY_UP])
     y--;
   if(key[ALLEGRO_KEY_DOWN])
@@ -318,7 +337,7 @@ void cursor_update() {
   }
 }
 
-void cursor_draw() {
+void cursor_draw(void) {
   al_draw_filled_rectangle(x, y, x + 10, y + 10, al_map_rgb(255, 0, 0));
 }
 
@@ -327,7 +346,7 @@ void cursor_draw() {
 
 ALLEGRO_FONT* hud_font;
 
-void hud_init() {
+void hud_init(void) {
   hud_font = al_create_builtin_font();
   //al_init_ttf_addon();
   // https://www.dafont.com/rollerball-1975.font
@@ -335,14 +354,14 @@ void hud_init() {
   must_init(hud_font, "hud_font");
 }
 
-void hud_deinit() {
+void hud_deinit(void) {
   al_destroy_font(hud_font);
 }
 
-void hud_update() {
+void hud_update(void) {
 }
 
-void hud_draw() {
+void hud_draw(void) {
   al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "X: %.1f Y: %.1f   FrameCount: %d", x, y, framecount);
   //al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "FrameCount: %d", framecount);
 }
@@ -350,7 +369,7 @@ void hud_draw() {
 
 // Player stuff
 
-void player_init() {
+void player_init(void) {
   s16 i;
 
   FUN_80053538_fiveliner();
@@ -370,7 +389,7 @@ void player_init() {
   //Audio_InitAudio();
 }
 
-void player_deinit() {
+void player_deinit(void) {
   s16 i;
   ControllerQueue *contQ_ptr;
 
@@ -433,14 +452,12 @@ static void Game_ControllerRepeat_Update(Game *game_ptr) {
   FUN_026900_GU_or_ControllerRepeat_Update(temp_s2, temp_s2->unk88, D_801109F4);
 }
 
-void game_init() {
+void game_init(void) {
   register Game *game_ptr = &g_game;
   GameVars gameVars;
   register UnkStruct_1 *temp_s5;
 
-  game_ptr->gameType = GAMETYPE_SPRINT;
-  //game_ptr->gameType = GAMETYPE_ULTRA;
-  //game_ptr->gameType = GAMETYPE_MARATHON;
+  game_ptr->gameType = gametype;
   game_ptr->unkE4F8 = 7;  // which screen? (0..7)
 
   game_ptr->is_active = TRUE;
@@ -471,7 +488,7 @@ void game_init() {
   game_ptr->unkE4FC.unk4 = (255.0f - game_ptr->unkE4FC.alpha) / 16.0f;
   game_ptr->unkE508 = TRUE;
 
-  gameVars.seed = 0;
+  gameVars.seed = seed;
   gameVars.unk4 = &game_ptr->unkE080;
   gameVars.unk8 = game_ptr->unkE4F8;  // which screen? (0..7)
   gameVars.gameType = game_ptr->gameType;
@@ -495,7 +512,7 @@ void game_init() {
   FUN_80041260_twoliner();
 }
 
-void game_deinit() {
+void game_deinit(void) {
   register Game *game_ptr = &g_game;
 
   if (!game_ptr->is_active) {
@@ -536,7 +553,7 @@ void _game_update(Game *game_ptr) {
   Tetris_Update(game_ptr->tetris_ptr_arr[0]);
 }
 
-void game_update() {
+void game_update(void) {
   register Game *game_ptr = &g_game;
 
   if (!game_ptr->is_active) {
@@ -575,7 +592,7 @@ void game_update() {
   }
 }
 
-void game_draw() {
+void game_draw(void) {
   register Game *game_ptr = &g_game;
 
   if (!game_ptr->is_active) {
@@ -610,7 +627,7 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
       //D_801109F4 = func_800A3AF0();
       D_801109F4 = 1;
 
-      contq_enqueue();
+      done = !contq_enqueue();
       contq_dequeue();
       game_update();
       cursor_update();
@@ -652,7 +669,75 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
 // Main
 
-int main() {
+int main(int argc, char **argv) {
+  static const char *gametype_str[] = { "Marathon", "Sprint", "Ultra" };
+
+  int c;
+  char *sopt = NULL;
+  char *nopt = NULL;
+  static struct option long_options[] =
+    {
+      {"marathon", no_argument,       &gametype, GAMETYPE_MARATHON},
+      {"sprint",   no_argument,       &gametype, GAMETYPE_SPRINT},
+      {"ultra",    no_argument,       &gametype, GAMETYPE_ULTRA},
+      {"seed",     required_argument, NULL, 's'},
+      {"name",     required_argument, NULL, 'n'},
+      {NULL, 0, NULL, 0}
+    };
+  int option_index = 0;
+
+  while ((c = getopt_long(argc, argv, "s:n:", long_options, &option_index)) != -1) {
+    switch (c) {
+    case 0:
+      break;
+    case 's':
+      sopt = optarg;
+      break;
+    case 'n':
+      nopt = optarg;
+      break;
+    case '?':
+      break;
+    default:
+      abort();
+    }
+  }
+  if (optind < argc) {
+    if (access(argv[optind], F_OK) == 0) {  // file exists
+      fp = fopen(argv[optind], "r");
+      if (fp == NULL) {
+        printf("Cannot open file: \"%s\"\n", argv[optind]);
+      } else {
+        printf("Replaying moves from file: \"%s\"\n", argv[optind]);
+        replay = true;
+      }
+    } else {  // file does not exist
+      fp = fopen(argv[optind], "w");
+      if (fp == NULL) {
+        printf("Cannot open file: \"%s\"\n", argv[optind]);
+      } else {
+        printf("Recording moves to file: \"%s\"\n", argv[optind]);
+        record = true;
+      }
+    }
+  }
+
+  if (sopt != NULL) {
+    seed = strtoul(sopt, NULL, 0);
+  }
+  printf("Seed is 0x%08x\n", seed);
+
+  printf("Game type is %s\n", gametype_str[gametype]);
+
+  memset(p1_name, 0, sizeof(p1_name));
+  if (nopt != NULL) {
+    int i = 0;
+    char *src = nopt;
+    while (*src && i < 8) p1_name[i++] = *src++;
+  }
+  printf("Player_1 name is \"%s\"\n", p1_name);
+
+
   must_init(al_init(), "allegro");
   must_init(al_install_keyboard(), "keyboard");
   must_init(al_install_joystick(), "joystick");
@@ -687,6 +772,8 @@ int main() {
 
   al_start_timer(timer);
   main_loop(queue);
+
+  if (fp != NULL) fclose(fp);
 
   game_deinit();
   player_deinit();

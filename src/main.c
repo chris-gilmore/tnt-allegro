@@ -2,13 +2,15 @@
 #include <getopt.h>
 #include <unistd.h>
 
-#include <allegro5/allegro5.h>
+// dnf: allegro5-devel
+// apt: liballegro5-dev
+#include<allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
-/*
-// $ dnf install allegro5-addon-ttf-devel
-#include <allegro5/allegro_ttf.h>
-*/
+
+// dnf: allegro5-addon-ttf-devel
+// apt: liballegro-ttf5-dev
+//#include <allegro5/allegro_ttf.h>
 
 typedef struct {
   u8 btn_a;
@@ -41,20 +43,15 @@ void debug_print_reason_routine(u8 *arg0, u8 *arg1) {  // dbgprntrrl
   printf("Reason: %s\n Routine: %s\n", arg0, arg1);
 }
 
-void debug_print2(const u8 *arg0, const u8 *arg1) {
-  /*
-  printf("%25s | %s\n", arg1, arg0);
-  */
-}
-
 ALLEGRO_FONT* font;
 
 void displayText_XY_RGBA_2(Gfx **arg0, void *arg1, s16 x, s16 y, char *text, s32 red, s32 green, s32 blue, s32 alpha) {
   al_draw_textf(font, al_map_rgba(red, green, blue, alpha), x, y, 0, text);
 }
 
-
-u16 D_800CFED4 = 1;
+u8 D_800D3D98[4] = { 0, 0, 0, 0 };  // handicap_arr
+u8 D_800CFD48 = TRUE;
+s8 D_800CF838 = 0;
 
 
 ////////////////////////////////////////
@@ -64,10 +61,9 @@ static FILE *fp;
 static int record = false;
 static int replay = false;
 static unsigned int framecount = 0;
-static unsigned int seed = 0;
+unsigned int seed = 0;
 static unsigned int gametype = GAMETYPE_SPRINT;
 char p1_name[9] = "";
-
 
 static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
   int i, n, a;
@@ -324,17 +320,6 @@ void cursor_update(void) {
     x--;
   if(key[ALLEGRO_KEY_RIGHT])
     x++;
-
-  if (contpad.button & 0x0200) {         // L_JPAD / CONT_LEFT
-    x--;
-  } else if (contpad.button & 0x0100) {  // R_JPAD / CONT_RIGHT
-    x++;
-  }
-  if (contpad.button & 0x0800) {         // U_JPAD / CONT_UP
-    y--;
-  } else if (contpad.button & 0x0400) {  // D_JPAD / CONT_DOWN
-    y++;
-  }
 }
 
 void cursor_draw(void) {
@@ -348,9 +333,11 @@ ALLEGRO_FONT* hud_font;
 
 void hud_init(void) {
   hud_font = al_create_builtin_font();
-  //al_init_ttf_addon();
+  /*
+  al_init_ttf_addon();
   // https://www.dafont.com/rollerball-1975.font
-  //hud_font = al_load_ttf_font("rollerball_1975.ttf", 12, ALLEGRO_TTF_MONOCHROME);
+  hud_font = al_load_ttf_font("rollerball_1975.ttf", 12, ALLEGRO_TTF_MONOCHROME);
+  */
   must_init(hud_font, "hud_font");
 }
 
@@ -358,12 +345,8 @@ void hud_deinit(void) {
   al_destroy_font(hud_font);
 }
 
-void hud_update(void) {
-}
-
 void hud_draw(void) {
   al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "X: %.1f Y: %.1f   FrameCount: %d", x, y, framecount);
-  //al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "FrameCount: %d", framecount);
 }
 
 
@@ -372,6 +355,7 @@ void hud_draw(void) {
 void player_init(void) {
   s16 i;
 
+  // From bootmain.c, main_another_but_diff_400x300()
   FUN_80053538_fiveliner();
   FUN_80053500_fiveliner();
   //inits_bunch_of_stuff_q_allocs_heap();
@@ -401,212 +385,18 @@ void player_deinit(void) {
 }
 
 
-u32 D_801109F4;
-s32 D_800D0550;
-
 // Game stuff
-
-// handicap values
-u8 D_800CFF00[] = {
-  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,
-  0,  5, 10, 15, 20, 25, 30, 35, 40, 45,  0,  0,
-  0, 10, 20, 30, 40, 50, 60, 70, 80, 90,  0,  0,
-  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-  0,  0, 28,  0,  0,  0, 32,  0,  0,  0, 36,  0,
-  0,  0, 40,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-  0,  0,  0,  0,  0,  0,  0,  0,
-};
-u8 D_800CFF50 = 1;
-Game g_game;
-
-static s32 Game_80051104_sevenliner_num_players(Game *game_ptr) {
-  register u32 i;
-  register s32 var_a2;
-  register u8 playercount = g_playercount;
-
-  var_a2 = 0;
-  for (i = 0; i < playercount; i++) {
-    if (game_ptr->tetris_ptr_arr[i]->unk2) {
-      var_a2++;
-    }
-  }
-  return var_a2;
-}
-
-static void Game_800515f8_twoliner(Game *game_ptr) {
-  if (game_ptr->unk3 != 0) {
-    game_ptr->unk1 = 1;
-  }
-}
-
-static void Game_ControllerRepeat_Update(Game *game_ptr) {
-  register s32 i;
-  register PlayerVars *temp_s1;
-  register UnkStruct_1 *temp_s2;
-
-  temp_s1 = &g_PV_arr[0];
-  temp_s2 = &temp_s1->unk28;
-  temp_s2->unk88 = temp_s1->unk1C->unk0;
-  temp_s2->unk8C = temp_s1->unk24;
-  debug_print2("ControllerRepeat_Update", "GU");
-  FUN_026900_GU_or_ControllerRepeat_Update(temp_s2, temp_s2->unk88, D_801109F4);
-}
 
 void game_init(void) {
   register Game *game_ptr = &g_game;
-  GameVars gameVars;
-  register UnkStruct_1 *temp_s5;
 
+  D_800CFED4 = 1;  // num players
   game_ptr->gameType = gametype;
-  game_ptr->unkE4F8 = 7;  // which screen? (0..7)
-
-  game_ptr->is_active = TRUE;
-  D_800CFF50 = 1;
-  game_ptr->numPlayers = 1;
-  game_ptr->unkE4E8 = 0;  // gameElapsedTime
-  game_ptr->topOutCount = 0;
-  game_ptr->unk7 = 120;  // 120 jiffies (2 seconds delay after end of game before you can exit)
-  switch (game_ptr->gameType) {
-  case GAMETYPE_MARATHON:
-    break;
-  case GAMETYPE_SPRINT:
-    game_ptr->unkE4F0 = 10800;  // 3 minutes (in jiffies)
-    break;
-  case GAMETYPE_ULTRA:
-    game_ptr->unkE4F4 = 150;
-    break;
-  default:
-    debug_print_reason_routine("Unknown GAMETYPE", "game_init");
-    break;
-  }
-  game_ptr->unk0 = 0;
-  game_ptr->unk3 = 0;
-  g_playercount = 1;
-
-  game_ptr->unkE4FC.alpha = 0.0f;
-  game_ptr->unkE4FC.unk8 = 255.0f;
-  game_ptr->unkE4FC.unk4 = (255.0f - game_ptr->unkE4FC.alpha) / 16.0f;
-  game_ptr->unkE508 = TRUE;
-
-  gameVars.seed = seed;
-  gameVars.unk4 = &game_ptr->unkE080;
-  gameVars.unk8 = game_ptr->unkE4F8;  // which screen? (0..7)
-  gameVars.gameType = game_ptr->gameType;
-
-
-  game_ptr->tetris_ptr_arr[0] = (Tetris *)n64HeapAlloc(sizeof(Tetris));
-  Game_SetGlobalPointers(0);
-  PlayerVars_SetGlobalPointers(0);
-
-  temp_s5 = &g_PV_ptr->unk28;
-  FUN_026900_80060ad4_oneliner_calls_fun(temp_s5);
-  FUN_026900_80060b04_twelveliner_loops_32t(temp_s5, 0xF00, 8, 4);     // JPAD (U, D, R, L) only
-  FUN_026900_80060b04_twelveliner_loops_32t(temp_s5, 0xC000, 16, 16);  // Buttons A and B only
-
-  g_PV_ptr->unk20 = g_PV_ptr->unk24 = 0;
-  gameVars.handicap = 0;
-
-  Tetris_Init(game_ptr->tetris_ptr_arr[0], &gameVars);
-
-
-  FUN_80041260_twoliner();
+  D_800CFEE8 = 4;  // MVC menu choice
 }
 
 void game_deinit(void) {
-  register Game *game_ptr = &g_game;
-
-  if (!game_ptr->is_active) {
-    debug_print_reason_routine("oops", "game_deinit");
-  }
-  game_ptr->is_active = FALSE;
-
-  //FUN_027BF0_Deinit(0);
-  //aiplayer_80042b3c_calls_heap_unalloc();
-  //FUN_8004129c_fourliner();
-
-  Game_SetGlobalPointers(0);
-  Tetris_Deinit(game_ptr->tetris_ptr_arr[0]);
-  n64HeapUnalloc((void *)game_ptr->tetris_ptr_arr[0]);
-  game_ptr->tetris_ptr_arr[0] = NULL;
-
-  //gamefinish_800534A4_fiveliner();
-  //MultisquareGlow_8006b384_oneliner_calls_fun();
-  //func_800763B4();
-  //FUN_SRAM_n64HeapUnalloc_and_set_to_NULL(&game_ptr->unk8);  // deinit font?
-  //Landfill_Deinit(&game_ptr->landfill);
-  //CubeTiles_Deinit(&game_ptr->cubeTiles);
-  //func_80075F5C(&game_ptr->unkE080);
-
-  g_playercount = 0;
-  game_ptr->unk0 = 3;
-  rmonPrintf("Game_Deinit() : Done\n");
-}
-
-void _game_update(Game *game_ptr) {
-  Game_SetGlobalPointers(0);
-  PlayerVars_SetGlobalPointers(0);
-
-  if ((D_800CFEE8 == 0xC) && (g_PV_arr[0].unk24 != 0)) {
-    D_800D0550 = 4000;
-  }
-
-  Tetris_Update(game_ptr->tetris_ptr_arr[0]);
-}
-
-void game_update(void) {
-  register Game *game_ptr = &g_game;
-
-  if (!game_ptr->is_active) {
-    debug_print_reason_routine("oops", "game_update");
-  }
-  if (game_ptr->unk0 != 1) {
-    game_ptr->unk1 = 0;
-    if (game_ptr->unk3 == 0) {
-      if (Game_80051104_sevenliner_num_players(game_ptr) != 0) {
-        game_ptr->unkE4E8 = game_ptr->unkE4E8 + D_801109F4;
-      }
-      /*
-      func_800763EC(D_801109F4);
-      */
-
-      Game_ControllerRepeat_Update(game_ptr);
-
-      /*
-      if (game_ptr->unk0 == 0) {
-        aiplayer_8004311c_largefunction();
-      }
-      if (D_800CFEE8 != 0xC) {
-        Game_800519b4_thirtyliner(game_ptr);
-      }
-      */
-      Game_800515f8_twoliner(game_ptr);
-      if (game_ptr->unk1 != 1) {
-        if (game_ptr->unk0 == 0) {
-          _game_update(game_ptr);
-        }
-        /*
-        Game_QueryGameOver(game_ptr);
-        */
-      }
-    }
-  }
-}
-
-void game_draw(void) {
-  register Game *game_ptr = &g_game;
-
-  if (!game_ptr->is_active) {
-    debug_print_reason_routine("oops", "game_draw");
-  }
-  if (game_ptr->unk0 != 1) {
-    FUN_027BF0_800636C0_display_game_stats_screen_q();
-    g_landfill_ptr = &game_ptr->landfill;
-    //func_80072A84();  // landfill render
-
-    Game_SetGlobalPointers(0);
-    PlayerVars_SetGlobalPointers(0);
-    Tetris_Render(game_ptr->tetris_ptr_arr[0]);
-  }
+  Game_Deinit();
 }
 
 
@@ -624,14 +414,9 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
     case ALLEGRO_EVENT_TIMER:
       framecount++;
 
-      //D_801109F4 = func_800A3AF0();
-      D_801109F4 = 1;
+      cursor_update();
 
       done = !contq_enqueue();
-      contq_dequeue();
-      game_update();
-      cursor_update();
-      hud_update();
 
       if(key[ALLEGRO_KEY_ESCAPE])
         done = true;
@@ -656,7 +441,11 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
       cursor_draw();
 
-      game_draw();
+      contq_dequeue();
+
+      // From 00E440.c, has_rounds_and_floors_large_liner()
+      func_800A3A8C(framecount);
+      FUN_032F00_MVC_control_menu_choice_process();
 
       hud_draw();
 

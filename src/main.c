@@ -1,6 +1,5 @@
 #include "common.h"
 #include <getopt.h>
-#include <unistd.h>
 
 // dnf: allegro5-devel
 // apt: liballegro5-dev
@@ -23,33 +22,12 @@ typedef struct {
 } CtrlCfg;
 
 
-u8 *n64HeapAlloc(s32 size) {
-  return malloc(size);
-}
-void n64HeapUnalloc(u8 *pBlock) {
-  free(pBlock);
-}
-
-void rmonPrintf(const char* fmt, ...) {
-  int ans;
-  va_list ap;
-
-  va_start(ap, fmt);
-  ans = vprintf(fmt, ap);
-  va_end(ap);
-}
-
-void debug_print_reason_routine(u8 *arg0, u8 *arg1) {  // dbgprntrrl
-  printf("Reason: %s\n Routine: %s\n", arg0, arg1);
-}
-
 ALLEGRO_FONT* font;
 
 void displayText_XY_RGBA_2(Gfx **arg0, void *arg1, s16 x, s16 y, char *text, s32 red, s32 green, s32 blue, s32 alpha) {
   al_draw_textf(font, al_map_rgba(red, green, blue, alpha), x, y, 0, text);
 }
 
-u8 D_800D3D98[4] = { 0, 0, 0, 0 };  // handicap_arr
 u8 D_800CFD48 = TRUE;
 s8 D_800CF838 = 0;
 
@@ -63,7 +41,7 @@ static int replay = false;
 static unsigned int framecount = 0;
 unsigned int seed = 0;
 static unsigned int gametype = GAMETYPE_SPRINT;
-char p1_name[9] = "";
+char p0_name[9] = "";
 
 static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
   int i, n, a;
@@ -518,13 +496,13 @@ int main(int argc, char **argv) {
 
   printf("Game type is %s\n", gametype_str[gametype]);
 
-  memset(p1_name, 0, sizeof(p1_name));
+  memset(p0_name, 0, sizeof(p0_name));
   if (nopt != NULL) {
     int i = 0;
     char *src = nopt;
-    while (*src && i < 8) p1_name[i++] = *src++;
+    while (*src && i < 8) p0_name[i++] = *src++;
   }
-  printf("Player_1 name is \"%s\"\n", p1_name);
+  printf("Player 0 name is \"%s\"\n", p0_name);
 
 
   must_init(al_init(), "allegro");

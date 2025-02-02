@@ -1,8 +1,6 @@
 #include "common.h"
 
-extern u8 D_800D3D98[4];
-
-////////////////////////////////////////
+static u8 D_800D3D98[4] = { 0, 0, 0, 0 };  // handicap_arr
 
 void func_800905E8(u8) {
 }

@@ -109,6 +109,8 @@ typedef struct {
 #include <strings.h>
 #include <math.h>
 
+#include "rmon.h"
+
 #include "newtetris/n64heap.h"
 #include "newtetris/sprite.h"
 #include "newtetris/contq.h"
@@ -180,7 +182,5 @@ typedef struct {
 #include "newtetris/tetris.h"
 #include "newtetris/game.h"
 #include "newtetris/setplayer.h"
-
-extern void rmonPrintf(const char *, ...);
 
 #endif /* !_COMMON_H_ */

@@ -41,8 +41,10 @@ INCLUDE_DIRS := include $(TNT_SPLAT_DIR)/include
 
 CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i))
 CFLAGS += -Wstrict-prototypes -Wsequence-point -Wextra
-#CFLAGS += -pedantic
 #CFLAGS += -Wall
+#CFLAGS += -pedantic
+CFLAGS += -DH2O_DEBUG
+#CFLAGS += -DH2O_ControllerQueueSize=300
 
 LDFLAGS := -lallegro_primitives -lallegro_font -lallegro -lm
 #LDFLAGS := -lallegro_primitives -lallegro_ttf -lallegro_font -lallegro -lm

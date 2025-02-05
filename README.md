@@ -2,9 +2,9 @@
 $ make
 ```
 
-Record player's moves to file `./saved_moves` if it does not exist, else replay moves from that file.
+Record player's moves to file `./saved_moves_0x6dd7e5ea.001` if it does not exist, else replay moves from that file.
 ```
-$ ./build/tnt-allegro --sprint --seed 0x6dd7e5ea --name "GILLY" ./saved_moves
+$ ./build/tnt-allegro --sprint --seed 0x6dd7e5ea --name "GILLY" ./saved_moves_0x6dd7e5ea.001
 ```
 
 Game type is one of `--marathon`, `--sprint` (default), or `--ultra`.

@@ -11,27 +11,16 @@
 // apt: liballegro-ttf5-dev
 //#include <allegro5/allegro_ttf.h>
 
-typedef struct {
-  u8 btn_a;
-  u8 btn_b;
-  u8 trig_l;
-  u8 trig_r;
-  u8 trig_z;
-  u8 btn_start;
-  u8 dpad;
-} CtrlCfg;
 
-
+////////////////////////////////////////
+// TODO: move this out of here
+////////////////////////////////////////
 ALLEGRO_FONT* font;
-
 void displayText_XY_RGBA_2(Gfx **arg0, void *arg1, s16 x, s16 y, char *text, s32 red, s32 green, s32 blue, s32 alpha) {
   al_draw_textf(font, al_map_rgba(red, green, blue, alpha), x, y, 0, text);
 }
-
 u8 D_800CFD48 = TRUE;
 s8 D_800CF838 = 0;
-
-
 ////////////////////////////////////////
 
 
@@ -68,7 +57,6 @@ static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
     }
   }
 }
-
 
 void must_init(bool test, const char *description) {
   if(test) return;
@@ -144,6 +132,16 @@ void keyboard_update(ALLEGRO_EVENT* event) {
 
 
 // Joystick stuff
+
+typedef struct {
+  u8 btn_a;
+  u8 btn_b;
+  u8 trig_l;
+  u8 trig_r;
+  u8 trig_z;
+  u8 btn_start;
+  u8 dpad;
+} CtrlCfg;
 
 CtrlCfg ctrlCfg;
 
@@ -223,17 +221,13 @@ void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   else if (jst.stick[ctrlCfg.dpad].axis[1] > 0) contpad->button |= 0x0400;  // D_JPAD       / CONT_DOWN
 }
 
-
 void print_contpad(OSContPad *contpad) {
   printf("contpad.button = %016b\n", contpad->button);
 }
 
-
 static ControllerQueue *controller_queues[4];
 
 int contq_enqueue(void) {
-  unsigned int frmcnt;
-
   contpad.button = 0x0000;
 
   if (key[ALLEGRO_KEY_D])     contpad.button |= 0x8000;    // A_BUTTON     / CONT_A
@@ -252,16 +246,37 @@ int contq_enqueue(void) {
 
   //print_contpad(&contpad);
 
-  if (replay) {
-    fscanf(fp, "%d %016b\n", &frmcnt, &contpad.button);
-    if (frmcnt != framecount) return false;
-  } else if (record) {
-    fprintf(fp, "%d %016b\n", framecount, contpad.button);
+  if (record) {
+    fprintf(fp, "%u %u\n", framecount, contpad.button);
   }
 
   FUN_069580_800A3300_nineliner_mod300(controller_queues[0], &contpad);
+}
 
-  return true;
+static char line[200];
+static unsigned int frmcnt = 0;
+static unsigned int button = 0;
+
+int replay_contq_enqueue(bool *done_ptr) {
+  contpad.button = button;
+  FUN_069580_800A3300_nineliner_mod300(controller_queues[0], &contpad);
+
+  if (!fgets(line, sizeof(line), fp)) {
+    *done_ptr = true;
+    return false;
+  }
+
+  sscanf(line, "%u %u", &frmcnt, &button);
+  if (frmcnt == 0) {
+    if (fgets(line, sizeof(line), fp)) {
+      sscanf(line, "%u %u", &frmcnt, &button);
+    } else {
+      *done_ptr = true;
+    }
+    return true;
+  } else {
+    return false;
+  }
 }
 
 void contq_dequeue(void) {
@@ -277,31 +292,6 @@ void contq_dequeue(void) {
   //printf("%d\n", g_PV_ptr->contQ.unk14->unk40);
   // check left trigger
   //printf("%d\n", g_PV_ptr->contQ.unk14->unk2C);
-}
-
-
-// Cursor stuff
-
-float x, y;
-
-void cursor_init(void) {
-  x = 100;
-  y = 100;
-}
-
-void cursor_update(void) {
-  if(key[ALLEGRO_KEY_UP])
-    y--;
-  if(key[ALLEGRO_KEY_DOWN])
-    y++;
-  if(key[ALLEGRO_KEY_LEFT])
-    x--;
-  if(key[ALLEGRO_KEY_RIGHT])
-    x++;
-}
-
-void cursor_draw(void) {
-  al_draw_filled_rectangle(x, y, x + 10, y + 10, al_map_rgb(255, 0, 0));
 }
 
 
@@ -324,7 +314,7 @@ void hud_deinit(void) {
 }
 
 void hud_draw(void) {
-  al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "X: %.1f Y: %.1f   FrameCount: %d", x, y, framecount);
+  al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "FrameCount: %u", framecount);
 }
 
 
@@ -339,7 +329,7 @@ void player_init(void) {
   //inits_bunch_of_stuff_q_allocs_heap();
   for (i = 0; i < 4; i++) {
     g_PV_ptr = &g_PV_arr[i];
-    FUN_069580_800A34A8_tenliner_allocs_heap(&g_PV_ptr->contQ);  // init contpad buttons and something else (8 * 300)
+    FUN_069580_800A34A8_tenliner_allocs_heap(&g_PV_ptr->contQ);  // init contpad buttons and controller queue
     PV_set_controller_no(i);
   }
   for (i = 0; i < 4; i++) {
@@ -382,48 +372,65 @@ void game_deinit(void) {
 
 static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
   bool done = false;
-  bool redraw = true;
+  bool redraw = false;
   ALLEGRO_EVENT event;
 
-  while (true) {
+  if (replay) {
+    if (fgets(line, sizeof(line), fp)) {
+      sscanf(line, "%u %u", &frmcnt, &button);
+    } else {
+      done = true;
+    }
+  }
+
+  while (!done) {
     al_wait_for_event(queue, &event);
 
     switch(event.type) {
     case ALLEGRO_EVENT_TIMER:
-      framecount++;
+      //printf("timer.count: %u\n", event.timer.count);
 
-      cursor_update();
+      if (replay) {
+        if (!redraw) {
+          framecount++;
+          // assert framecount == frmcnt
+          redraw = replay_contq_enqueue(&done);
+        }
+      } else {
+        framecount++;
+        contq_enqueue();
+        redraw = true;
+      }
 
-      done = !contq_enqueue();
-
-      if(key[ALLEGRO_KEY_ESCAPE])
+      if(key[ALLEGRO_KEY_ESCAPE]) {
         done = true;
-
-      redraw = true;
+      }
       break;
-
     case ALLEGRO_EVENT_DISPLAY_CLOSE:
       done = true;
       break;
     }
 
-    if(done)
-      break;
-
     keyboard_update(&event);
     joystick_update(&event);
 
-    if(redraw && al_is_event_queue_empty(queue)) {
+    if(redraw && (al_is_event_queue_empty(queue) || done)) {
       disp_pre_draw();
       al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
 
-      cursor_draw();
+      // qlen = func_800A3534(&g_PV_ptr->contQ)
+      // assert qlen > 0
+      {
+        if (record) {
+          fprintf(fp, "%u %u\n", 0, 0);
+        }
 
-      contq_dequeue();
+        contq_dequeue();
 
-      // From 00E440.c, has_rounds_and_floors_large_liner()
-      func_800A3A8C(framecount);
-      FUN_032F00_MVC_control_menu_choice_process();
+        // From 00E440.c, has_rounds_and_floors_large_liner()
+        func_800A3A8C(framecount);
+        FUN_032F00_MVC_control_menu_choice_process();
+      }
 
       hud_draw();
 
@@ -473,17 +480,17 @@ int main(int argc, char **argv) {
     if (access(argv[optind], F_OK) == 0) {  // file exists
       fp = fopen(argv[optind], "r");
       if (fp == NULL) {
-        printf("Cannot open file: \"%s\"\n", argv[optind]);
+        printf("Cannot open file: '%s'\n", argv[optind]);
       } else {
-        printf("Replaying moves from file: \"%s\"\n", argv[optind]);
+        printf("Replaying moves from file: '%s'\n", argv[optind]);
         replay = true;
       }
     } else {  // file does not exist
       fp = fopen(argv[optind], "w");
       if (fp == NULL) {
-        printf("Cannot open file: \"%s\"\n", argv[optind]);
+        printf("Cannot open file: '%s'\n", argv[optind]);
       } else {
-        printf("Recording moves to file: \"%s\"\n", argv[optind]);
+        printf("Recording moves to file: '%s'\n", argv[optind]);
         record = true;
       }
     }
@@ -492,9 +499,9 @@ int main(int argc, char **argv) {
   if (sopt != NULL) {
     seed = strtoul(sopt, NULL, 0);
   }
-  printf("Seed is 0x%08x\n", seed);
+  printf("Seed: '0x%08x'\n", seed);
 
-  printf("Game type is %s\n", gametype_str[gametype]);
+  printf("Game type: '%s'\n", gametype_str[gametype]);
 
   memset(p0_name, 0, sizeof(p0_name));
   if (nopt != NULL) {
@@ -502,7 +509,7 @@ int main(int argc, char **argv) {
     char *src = nopt;
     while (*src && i < 8) p0_name[i++] = *src++;
   }
-  printf("Player 0 name is \"%s\"\n", p0_name);
+  printf("Player 0 name: '%s'\n", p0_name);
 
 
   must_init(al_init(), "allegro");
@@ -510,7 +517,6 @@ int main(int argc, char **argv) {
   must_init(al_install_joystick(), "joystick");
 
   ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
-  //ALLEGRO_TIMER* timer = al_create_timer(1.0 / 20.0);
   must_init(timer, "timer");
 
   ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
@@ -533,7 +539,6 @@ int main(int argc, char **argv) {
   al_register_event_source(queue, al_get_timer_event_source(timer));
 
   keyboard_init();
-  cursor_init();
 
   joystick_init(al_get_joystick(0));
 

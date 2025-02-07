@@ -1,8 +1,8 @@
+#include "common.h"
+
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
-
-#include "common.h"
 
 static u8 D_800D0560 = 0;
 UnkStruct_0 *D_8011FC10;
@@ -153,9 +153,7 @@ void Minos_Mino_Render(Mino *arg0, UnkStruct_8 *arg1) {
   register u8 unused_s2;
   register u8 unused_s3;
   register u8 unused_s4;
-  /*
   register Gfx *gdl;
-  */
 
   temp_s0 = arg0->unk20.c.lo;
   if (arg0->unk1C == 0xFF) {
@@ -189,9 +187,9 @@ void Minos_Mino_Render(Mino *arg0, UnkStruct_8 *arg1) {
       (alpha == 0xFF) ? Minos_8006fc8c_twentyfive_liner(2, FALSE) : Minos_8006fc8c_twentyfive_liner(2, TRUE);
     }
 
-    /*
     gdl = g_gdl;
 
+    /*
     gDPSetPrimColor(gdl++, 0, 0, arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha);
     gDPSetEnvColor(gdl++, arg0->unk4.specular_red >> 4, arg0->unk4.specular_green >> 4, arg0->unk4.specular_blue >> 4, temp_s0);
     gDPPipeSync(gdl++);
@@ -237,27 +235,9 @@ void Minos_Mino_Render(Mino *arg0, UnkStruct_8 *arg1) {
       }
     }
 
-    /*
     g_gdl = gdl;
-    */
   }
 }
-
-void func_800A2F30(s8 *, s8 *) {}
-/*
-void func_800A2F30(s8 *arg0, s8 *arg1) {
-  s16 *var_a0;
-  s16 *var_a1;
-  s16 *temp_t0;
-
-  var_a0 = (s16 *)arg0;
-  var_a1 = (s16 *)arg1;
-  temp_t0 = var_a1 + 0x40;
-  do {
-    *var_a0++ = *var_a1++;
-  } while (var_a1 != temp_t0);
-}
-*/
 
 void Minos_800702e4_nineliner(Mino *arg0) {
   Minos_80070818_oneliner_sets_arg0_0x130_to_arg1(arg0, g_cubeTiles_ptr->unkDC00[0x0]);
@@ -283,8 +263,6 @@ void Minos_80070398_fourteenliner(Mino *arg0, Mino *arg1) {
   arg0->unk10 = arg1->unk10;
   func_800A2F30(&arg0->unk24, &arg1->unk24);
 }
-
-s32 func_800A2F50(s8 *, s8 *) { return TRUE; }
 
 static void Minos_800704e0_threeliner_sets_0x130(Mino *arg0) {
   register s32 var_s0 = func_800A2F50(arg0->unk130, &arg0->unk24);

@@ -2,6 +2,12 @@
 
 extern char p0_name[];
 
+void FUN_027BF0_Init(u8) {
+}
+
+void FUN_027BF0_Deinit(s32) {
+}
+
 void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
   register Game *game_ptr = &g_game;
   char sp84[24];

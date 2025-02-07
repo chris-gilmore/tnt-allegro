@@ -1,12 +1,10 @@
+#include "common.h"
+
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
-#include "common.h"
-
 extern ALLEGRO_FONT* font;
-
-s32 string_do_something_weird(void *, s8 *);
 
 s32 string_do_something_weird(void *arg0, s8 *arg1) {
   return al_get_text_width(font, arg1);

@@ -9,7 +9,7 @@ default: all
 TARGET := tnt-allegro
 TNT_SPLAT_DIR := ../tnt-splat
 
-TNT_SPLAT_C_FILES := 003E40.c 006B30.c 0073F0.c 0074E0.c 026900.c 026C80.c sprite.c color.c contq.c piecedefs.c playervars.c gamevars.c 033310.c mobilepiece.c ghostpiece.c currentpiece.c piecehold.c boardinfo.c frameact.c cube.c ids.c boardpieces.c bag63.c nextpieces.c fallingcubes.c mobilecubes.c board.c multisquare.c linescan.c gamestats.c dbgprntrrl.c tetris.c setplayer.c gamefinish.c pfgfx.c lineeffect.c 032F00.c frametime.c
+TNT_SPLAT_C_FILES := 003E40.c 006B30.c 0073F0.c 0074E0.c 026900.c 026C80.c sprite.c color.c contq.c piecedefs.c playervars.c gamevars.c 033310.c mobilepiece.c ghostpiece.c currentpiece.c piecehold.c boardinfo.c frameact.c cube.c ids.c boardpieces.c bag63.c nextpieces.c fallingcubes.c mobilecubes.c board.c multisquare.c linescan.c gamestats.c dbgprntrrl.c tetris.c setplayer.c gamefinish.c pfgfx.c lineeffect.c 032F00.c frametime.c game.c
 
 
 #==============================================================================#
@@ -43,11 +43,16 @@ CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i))
 CFLAGS += -Wstrict-prototypes -Wsequence-point -Wextra
 #CFLAGS += -Wall
 #CFLAGS += -pedantic
-CFLAGS += -DH2O_DEBUG
+#CFLAGS += -DH2O_DEBUG
 #CFLAGS += -DH2O_ControllerQueueSize=300
 
-LDFLAGS := -lallegro_primitives -lallegro_font -lallegro -lm
-#LDFLAGS := -lallegro_primitives -lallegro_ttf -lallegro_font -lallegro -lm
+LDFLAGS :=
+
+ALLEGRO_LIBRARIES := allegro-5 allegro_font-5 allegro_primitives-5
+#ALLEGRO_LIBRARIES += allegro_ttf-5
+ALLEGRO_LIBS := $(shell pkg-config --libs $(ALLEGRO_LIBRARIES))
+
+LIBS := $(ALLEGRO_LIBS) -lm
 
 
 #==============================================================================#
@@ -78,7 +83,7 @@ $(BUILD_DIR)/tnt-splat/%.o: $(TNT_SPLAT_DIR)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(PROGRAM): $(O_FILES)
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 
 

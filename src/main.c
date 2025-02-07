@@ -1,9 +1,10 @@
 #include "common.h"
 #include <getopt.h>
+#include <time.h>
 
 // dnf: allegro5-devel
 // apt: liballegro5-dev
-#include<allegro5/allegro5.h>
+#include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
@@ -15,12 +16,8 @@
 ////////////////////////////////////////
 // TODO: move this out of here
 ////////////////////////////////////////
-ALLEGRO_FONT* font;
-void displayText_XY_RGBA_2(Gfx **arg0, void *arg1, s16 x, s16 y, char *text, s32 red, s32 green, s32 blue, s32 alpha) {
-  al_draw_textf(font, al_map_rgba(red, green, blue, alpha), x, y, 0, text);
-}
 u8 D_800CFD48 = TRUE;
-s8 D_800CF838 = 0;
+s8 D_800CF838 = 0;  // is this max unlocked screen?
 ////////////////////////////////////////
 
 
@@ -28,7 +25,7 @@ static FILE *fp;
 static int record = false;
 static int replay = false;
 static unsigned int framecount = 0;
-unsigned int seed = 0;
+unsigned int game_id = 0;
 static unsigned int gametype = GAMETYPE_SPRINT;
 char p0_name[9] = "";
 
@@ -339,6 +336,8 @@ void player_init(void) {
   //FUN_001500_motorInit(&superThread);
   //FUN_001050_Create_and_Start_ControllerThread(&superThread, 5, 11);
   //Audio_InitAudio();
+
+  load_from_sram(FALSE);
 }
 
 void player_deinit(void) {
@@ -443,29 +442,31 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
 // Main
 
+ALLEGRO_FONT* font;
+
 int main(int argc, char **argv) {
   static const char *gametype_str[] = { "Marathon", "Sprint", "Ultra" };
 
   int c;
-  char *sopt = NULL;
+  char *gopt = NULL;
   char *nopt = NULL;
   static struct option long_options[] =
     {
       {"marathon", no_argument,       &gametype, GAMETYPE_MARATHON},
       {"sprint",   no_argument,       &gametype, GAMETYPE_SPRINT},
       {"ultra",    no_argument,       &gametype, GAMETYPE_ULTRA},
-      {"seed",     required_argument, NULL, 's'},
+      {"gameid",   required_argument, NULL, 'g'},
       {"name",     required_argument, NULL, 'n'},
       {NULL, 0, NULL, 0}
     };
   int option_index = 0;
 
-  while ((c = getopt_long(argc, argv, "s:n:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "g:n:", long_options, &option_index)) != -1) {
     switch (c) {
     case 0:
       break;
-    case 's':
-      sopt = optarg;
+    case 'g':
+      gopt = optarg;
       break;
     case 'n':
       nopt = optarg;
@@ -496,10 +497,14 @@ int main(int argc, char **argv) {
     }
   }
 
-  if (sopt != NULL) {
-    seed = strtoul(sopt, NULL, 0);
+  srand(time(NULL));
+
+  if (gopt != NULL) {
+    game_id = strtoul(gopt, NULL, 0);
+  } else {
+    game_id = osGetTime();
   }
-  printf("Seed: '0x%08x'\n", seed);
+  printf("Game id: '0x%08x'\n", game_id);
 
   printf("Game type: '%s'\n", gametype_str[gametype]);
 

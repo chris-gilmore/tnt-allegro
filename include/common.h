@@ -104,12 +104,17 @@ typedef struct {
 typedef struct {
 } SuperThread;
 
+typedef s32 OSId;
+typedef s32 OSPri;
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
 #include <math.h>
 
 #include "rmon.h"
+#include "os_time.h"
+#include "os_cache.h"
 
 #include "newtetris/n64heap.h"
 #include "newtetris/sprite.h"
@@ -128,6 +133,7 @@ typedef struct {
 #include "newtetris/playervars.h"
 #include "newtetris/gamevars.h"
 #include "newtetris/033310.h"
+#include "newtetris/0691B0.h"
 #include "newtetris/minos.h"
 #include "newtetris/mobilepiece.h"
 #include "newtetris/ghostpiece.h"
@@ -160,6 +166,7 @@ typedef struct {
 #include "newtetris/linescan.h"
 #include "newtetris/00E440.h"
 #include "newtetris/sram.h"
+#include "newtetris/072080.h"
 #include "newtetris/066700.h"
 #include "newtetris/gamestats.h"
 #include "newtetris/frametime.h"
@@ -172,6 +179,8 @@ typedef struct {
 #include "newtetris/0279C0.h"
 #include "newtetris/01B280.h"
 #include "newtetris/00C680.h"
+#include "newtetris/03C130.h"
+#include "newtetris/03C220.h"
 #include "newtetris/0379B0.h"
 #include "newtetris/032F00.h"
 #include "newtetris/010870.h"

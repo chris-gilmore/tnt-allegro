@@ -27,7 +27,8 @@ static int replay = false;
 static unsigned int framecount = 0;
 unsigned int game_id = 0;
 static unsigned int gametype = GAMETYPE_SPRINT;
-char p0_name[9] = "";
+char p0_name[9] = "Player 0";
+char p1_name[9] = "Player 1";
 
 static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
   int i, n, a;
@@ -173,7 +174,9 @@ void joystick_update(ALLEGRO_EVENT* event) {
   switch(event->type) {
   case ALLEGRO_EVENT_JOYSTICK_CONFIGURATION:
     al_reconfigure_joysticks();
-    joystick_init(al_get_joystick(0));
+    for (int i = 0; i < 4; i++) {
+      joystick_init(al_get_joystick(i));
+    }
     break;
   }
 }
@@ -218,8 +221,8 @@ void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   else if (jst.stick[ctrlCfg.dpad].axis[1] > 0) contpad->button |= 0x0400;  // D_JPAD       / CONT_DOWN
 }
 
-void print_contpad(OSContPad *contpad) {
-  printf("contpad.button = %016b\n", contpad->button);
+void print_contpad(int i, OSContPad *contpad) {
+  printf("[%d] contpad.button = %016b\n", i, contpad->button);
 }
 
 static ControllerQueue *controller_queues[4];
@@ -227,46 +230,60 @@ static ControllerQueue *controller_queues[4];
 int contq_enqueue(void) {
   contpad.button = 0x0000;
 
-  if (key[ALLEGRO_KEY_D])     contpad.button |= 0x8000;    // A_BUTTON     / CONT_A
-  if (key[ALLEGRO_KEY_S])     contpad.button |= 0x4000;    // B_BUTTON     / CONT_B
-  if (key[ALLEGRO_KEY_Q])     contpad.button |= 0x0020;    // L_TRIG       / CONT_L
-  if (key[ALLEGRO_KEY_E])     contpad.button |= 0x0010;    // R_TRIG       / CONT_R
-  if (key[ALLEGRO_KEY_W])     contpad.button |= 0x2000;    // Z_TRIG       / CONT_G
-  if (key[ALLEGRO_KEY_ENTER]) contpad.button |= 0x1000;    // START_BUTTON / CONT_START
+  if (key[ALLEGRO_KEY_D])     contpad.button |= 0x8000;  // A_BUTTON     / CONT_A
+  if (key[ALLEGRO_KEY_S])     contpad.button |= 0x4000;  // B_BUTTON     / CONT_B
+  if (key[ALLEGRO_KEY_Q])     contpad.button |= 0x0020;  // L_TRIG       / CONT_L
+  if (key[ALLEGRO_KEY_E])     contpad.button |= 0x0010;  // R_TRIG       / CONT_R
+  if (key[ALLEGRO_KEY_W])     contpad.button |= 0x2000;  // Z_TRIG       / CONT_G
+  if (key[ALLEGRO_KEY_ENTER]) contpad.button |= 0x1000;  // START_BUTTON / CONT_START
 
-  if (key[ALLEGRO_KEY_J])     contpad.button |= 0x0200;    // L_JPAD       / CONT_LEFT
-  if (key[ALLEGRO_KEY_L])     contpad.button |= 0x0100;    // R_JPAD       / CONT_RIGHT
-  if (key[ALLEGRO_KEY_I])     contpad.button |= 0x0800;    // U_JPAD       / CONT_UP
-  if (key[ALLEGRO_KEY_K])     contpad.button |= 0x0400;    // D_JPAD       / CONT_DOWN
-
-  snapshot_contpad(al_get_joystick(0), &contpad);
-
-  //print_contpad(&contpad);
+  if (key[ALLEGRO_KEY_J])     contpad.button |= 0x0200;  // L_JPAD       / CONT_LEFT
+  if (key[ALLEGRO_KEY_L])     contpad.button |= 0x0100;  // R_JPAD       / CONT_RIGHT
+  if (key[ALLEGRO_KEY_I])     contpad.button |= 0x0800;  // U_JPAD       / CONT_UP
+  if (key[ALLEGRO_KEY_K])     contpad.button |= 0x0400;  // D_JPAD       / CONT_DOWN
 
   if (record) {
-    fprintf(fp, "%u %u\n", framecount, contpad.button);
+    fprintf(fp, "%u", framecount);
   }
+  //for (int i = 0; i < D_800CFED4; i++) {
+  for (int i = 0; i < 4; i++) {
+    snapshot_contpad(al_get_joystick(i), &contpad);
 
-  FUN_069580_800A3300_nineliner_mod300(controller_queues[0], &contpad);
+    //print_contpad(i, &contpad);
+
+    if (record) {
+      fprintf(fp, " %u", contpad.button);
+    }
+
+    FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
+
+    contpad.button = 0x0000;
+  }
+  if (record) {
+    fprintf(fp, "\n");
+  }
 }
 
 static char line[200];
 static unsigned int frmcnt = 0;
-static unsigned int button = 0;
+static unsigned int button[4] = { 0, 0, 0, 0 };
 
 int replay_contq_enqueue(bool *done_ptr) {
-  contpad.button = button;
-  FUN_069580_800A3300_nineliner_mod300(controller_queues[0], &contpad);
+  //for (int i = 0; i < D_800CFED4; i++) {
+  for (int i = 0; i < 4; i++) {
+    contpad.button = button[i];
+    FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
+  }
 
   if (!fgets(line, sizeof(line), fp)) {
     *done_ptr = true;
     return false;
   }
 
-  sscanf(line, "%u %u", &frmcnt, &button);
+  sscanf(line, "%u %u %u %u %u", &frmcnt, &button[0], &button[1], &button[2], &button[3]);
   if (frmcnt == 0) {
     if (fgets(line, sizeof(line), fp)) {
-      sscanf(line, "%u %u", &frmcnt, &button);
+      sscanf(line, "%u %u %u %u %u", &frmcnt, &button[0], &button[1], &button[2], &button[3]);
     } else {
       *done_ptr = true;
     }
@@ -357,7 +374,7 @@ void player_deinit(void) {
 void game_init(void) {
   register Game *game_ptr = &g_game;
 
-  D_800CFED4 = 1;  // num players
+  D_800CFED4 = 2;  // num players
   game_ptr->gameType = gametype;
   D_800CFEE8 = 4;  // MVC menu choice
 }
@@ -376,7 +393,7 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
   if (replay) {
     if (fgets(line, sizeof(line), fp)) {
-      sscanf(line, "%u %u", &frmcnt, &button);
+      sscanf(line, "%u %u %u %u %u", &frmcnt, &button[0], &button[1], &button[2], &button[3]);
     } else {
       done = true;
     }
@@ -417,19 +434,17 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
       disp_pre_draw();
       al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
 
-      // qlen = func_800A3534(&g_PV_ptr->contQ)
-      // assert qlen > 0
-      {
-        if (record) {
-          fprintf(fp, "%u %u\n", 0, 0);
-        }
-
-        contq_dequeue();
-
-        // From 00E440.c, has_rounds_and_floors_large_liner()
-        func_800A3A8C(framecount);
-        FUN_032F00_MVC_control_menu_choice_process();
+      if (record) {
+        fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
       }
+      // From 00E440.c, has_rounds_and_floors_large_liner()
+      func_800A3A8C(framecount);
+      //for (int i = 0; i < D_800CFED4; i++) {
+      for (int i = 0; i < 4; i++) {
+        g_PV_ptr = &g_PV_arr[i];
+        contq_dequeue();
+      }
+      FUN_032F00_MVC_control_menu_choice_process();
 
       hud_draw();
 
@@ -508,13 +523,15 @@ int main(int argc, char **argv) {
 
   printf("Game type: '%s'\n", gametype_str[gametype]);
 
-  memset(p0_name, 0, sizeof(p0_name));
   if (nopt != NULL) {
     int i = 0;
     char *src = nopt;
+
+    memset(p0_name, 0, sizeof(p0_name));
     while (*src && i < 8) p0_name[i++] = *src++;
   }
   printf("Player 0 name: '%s'\n", p0_name);
+  printf("Player 1 name: '%s'\n", p1_name);
 
 
   must_init(al_init(), "allegro");
@@ -545,7 +562,10 @@ int main(int argc, char **argv) {
 
   keyboard_init();
 
-  joystick_init(al_get_joystick(0));
+  printf("al_get_num_joysticks: %d\n", al_get_num_joysticks());
+  for (int i = 0; i < 4; i++) {
+    joystick_init(al_get_joystick(i));
+  }
 
   al_start_timer(timer);
   main_loop(queue);

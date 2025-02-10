@@ -19,7 +19,7 @@ void func_80090E08(void) {
   }
   */
   //var_at->unk64F9 = var_v0;  // screen (unkE4F8)
-  g_game.unkE4F8 = 7;  // screen
+  g_game.unkE4F8 = 0;  // screen
   //FUN_027BF0_check_music_settings_and_play(g_game.unkE4F8);
   //Audio_LoadSFX(&D_800D3A90);
   Game_Init(D_800CFED4, D_800D3D98);

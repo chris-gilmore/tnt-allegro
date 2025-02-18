@@ -8,6 +8,7 @@
 static ENetHost  *create_client(void);
 static ENetPeer  *connect_client(ENetHost *, int);
 static void       disconnect_client(ENetHost *, ENetPeer *);
+static void       send_receive(ENetHost *);
 
 static void   disp_init(void);
 static void   disp_deinit(void);
@@ -17,7 +18,6 @@ static void   disp_post_draw(void);
 static void   keyboard_init(void);
 static void   keyboard_update(ALLEGRO_EVENT *);
 
-static void   send_receive(ENetHost *);
 static void   main_loop(ALLEGRO_EVENT_QUEUE *, ENetHost *, ENetPeer *);
 
 
@@ -88,6 +88,34 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
 
   // failed to disconnect gracefully, force the connection closed
   enet_peer_reset(server);
+}
+
+static void send_receive(ENetHost *client) {
+  ENetEvent event;
+  ServerMessage *msg;
+  bool redraw = false;
+  int i;
+
+  while (enet_host_service(client, &event, 0) > 0) {
+    if (event.type == ENET_EVENT_TYPE_RECEIVE) {
+      msg = (ServerMessage*)event.packet->data;
+
+      for (i = 0; i < MAX_PLAYER_COUNT; i++) {
+        players[i].button = msg->button[i];
+      }
+      redraw = true;
+
+      enet_packet_destroy(event.packet);
+    }
+
+    if (redraw) {
+      for (i = 0; i < MAX_PLAYER_COUNT; i++) {
+        printf("Player %d button: %u\n", i, players[i].button);
+      }
+
+      redraw = false;
+    }
+  }
 }
 
 
@@ -162,33 +190,7 @@ static void keyboard_update(ALLEGRO_EVENT* event) {
 }
 
 
-static void send_receive(ENetHost *client) {
-  ENetEvent event;
-  ServerMessage *msg;
-  bool redraw = false;
-  int i;
-
-  while (enet_host_service(client, &event, 0) > 0) {
-    if (event.type == ENET_EVENT_TYPE_RECEIVE) {
-      msg = (ServerMessage*)event.packet->data;
-
-      for (i = 0; i < MAX_PLAYER_COUNT; i++) {
-        players[i].button = msg->button[i];
-      }
-      redraw = true;
-
-      enet_packet_destroy(event.packet);
-    }
-
-    if (redraw) {
-      for (i = 0; i < MAX_PLAYER_COUNT; i++) {
-        printf("Player %d button: %u\n", i, players[i].button);
-      }
-
-      redraw = false;
-    }
-  }
-}
+// Main loop
 
 static void main_loop(ALLEGRO_EVENT_QUEUE* queue, ENetHost *client, ENetPeer *server) {
   ALLEGRO_EVENT event;
@@ -203,11 +205,12 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue, ENetHost *client, ENetPeer *se
       done = true;
       break;
     case ALLEGRO_EVENT_TIMER:
-      if(key[ALLEGRO_KEY_ESCAPE]) {
+      if (key[ALLEGRO_KEY_ESCAPE]) {
         done = true;
       }
 
-      ClientMessage msg = { tick++ };
+      tick++;
+      ClientMessage msg = { .seq_no = tick, .button = tick };
       ENetPacket *packet = enet_packet_create(&msg, sizeof(msg), ENET_PACKET_FLAG_RELIABLE);
       enet_peer_send(server, 0, packet);
 
@@ -220,6 +223,9 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue, ENetHost *client, ENetPeer *se
 
   }
 }
+
+
+// Main
 
 int main(int argc, char **argv) {
   ENetHost *client;

@@ -44,6 +44,7 @@ static int init_player(void) {
       players[i].active = true;
       players[i].button = 0;
       players[i].set = false;
+      players[i].expected_seq_no = 1;
       return i;
     }
   }
@@ -62,7 +63,9 @@ static void broadcast(ENetHost *server) {
 
   for (int i = 0; i < MAX_PLAYER_COUNT; i++) {
     msg.button[i] = players[i].button;
+
     players[i].set = false;
+    players[i].expected_seq_no++;
   }
 
   packet = enet_packet_create(&msg, sizeof(ServerMessage), ENET_PACKET_FLAG_RELIABLE);
@@ -91,9 +94,11 @@ static void send_receive(ENetHost *server) {
 
       msg_in = (ClientMessage*)event.packet->data;
 
-      players[player_id].button = msg_in->button;
-      players[player_id].set = true;
-      printf("Player %d button: %u\n", player_id, players[player_id].button);
+      if (msg_in->seq_no == players[player_id].expected_seq_no) {
+        players[player_id].button = msg_in->button;
+        players[player_id].set = true;
+        printf("Player %d button: %u\n", player_id, players[player_id].button);
+      }
 
       enet_packet_destroy(event.packet);
       break;

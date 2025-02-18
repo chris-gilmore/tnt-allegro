@@ -12,6 +12,11 @@
 // apt: liballegro-ttf5-dev
 //#include <allegro5/allegro_ttf.h>
 
+// dnf: enet-devel
+// apt: libenet-dev
+#include <enet/enet.h>
+#include "enet_common.h"
+
 
 ////////////////////////////////////////
 // TODO: move this out of here
@@ -29,6 +34,9 @@ unsigned int game_id = 0;
 static unsigned int gametype = GAMETYPE_SPRINT;
 char p0_name[9] = "Player 0";
 char p1_name[9] = "Player 1";
+static ENetHost *client;
+static ENetPeer *server;
+static int net_flag = false;
 
 static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
   int i, n, a;
@@ -57,10 +65,82 @@ static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
 }
 
 void must_init(bool test, const char *description) {
-  if(test) return;
+  if (test) return;
 
   printf("couldn't initialize %s\n", description);
   exit(1);
+}
+
+
+// Enet stuff
+
+static ENetHost *create_client(void) {
+  ENetHost *client;
+
+  client = enet_host_create(NULL /* create a client host */,
+                            1    /* only allow 1 outgoing connection */,
+                            2    /* allow up to 2 channels to be used, 0 and 1 */,
+                            0    /* assume any amount of incoming bandwidth */,
+                            0    /* assume any amount of outgoing bandwidth */);
+  // 57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
+  // 14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
+
+  if (client == NULL) {
+    fprintf(stderr, "An error occurred while trying to create an ENet client host\n");
+    exit(EXIT_FAILURE);
+  }
+
+  return client;
+}
+
+static ENetPeer *connect_client(ENetHost *client, int port) {
+  ENetAddress address;
+  ENetEvent event;
+  ENetPeer *server;
+
+  enet_address_set_host(&address, "localhost");
+  address.port = port;
+
+  /* Initiate the connection, allocating the two channels 0 and 1. */
+  server = enet_host_connect(client, &address, 2, 0);
+  if (server == NULL) {
+    fprintf(stderr, "Client: no available peers for initiating an ENet connection\n");
+    exit(EXIT_FAILURE);
+  }
+
+  /* Wait up to 5 seconds for the connection attempt to succeed. */
+  if (enet_host_service(client, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
+    printf("Client: connected to %x:%u\n", event.peer->address.host, event.peer->address.port);
+  } else {
+    /* Either the 5 seconds are up or a disconnect event was */
+    /* received.  Reset the peer in the event the 5 seconds  */
+    /* had run out without any significant event.            */
+    enet_peer_reset(server);
+    fprintf(stderr, "Client: connection to server failed\n");
+    exit(EXIT_FAILURE);
+  }
+
+  return server;
+}
+
+static void disconnect_client(ENetHost *client, ENetPeer *server) {
+  ENetEvent event;
+
+  enet_peer_disconnect(server, 0);
+
+  while (enet_host_service(client, &event, 3000) > 0) {
+    switch (event.type) {
+    case ENET_EVENT_TYPE_RECEIVE:
+      enet_packet_destroy(event.packet);
+      break;
+    case ENET_EVENT_TYPE_DISCONNECT:
+      printf("Client: disconnection from server succeeded\n");
+      return;
+    }
+  }
+
+  // failed to disconnect gracefully, force the connection closed
+  enet_peer_reset(server);
 }
 
 
@@ -72,10 +152,10 @@ void must_init(bool test, const char *description) {
 #define DISP_W 640
 #define DISP_H 480
 
-ALLEGRO_DISPLAY* disp;
-ALLEGRO_BITMAP* buffer;
+static ALLEGRO_DISPLAY* disp;
+static ALLEGRO_BITMAP* buffer;
 
-void disp_init(void) {
+static void disp_init(void) {
   al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
   al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
 
@@ -86,16 +166,16 @@ void disp_init(void) {
   must_init(buffer, "bitmap buffer");
 }
 
-void disp_deinit(void) {
+static void disp_deinit(void) {
   al_destroy_bitmap(buffer);
   al_destroy_display(disp);
 }
 
-void disp_pre_draw(void) {
+static void disp_pre_draw(void) {
   al_set_target_bitmap(buffer);
 }
 
-void disp_post_draw(void) {
+static void disp_post_draw(void) {
   al_set_target_backbuffer(disp);
   al_draw_scaled_bitmap(buffer, 0, 0, BUFFER_W, BUFFER_H, 0, 0, DISP_W, DISP_H, 0);
 
@@ -107,16 +187,16 @@ void disp_post_draw(void) {
 
 #define KEY_SEEN     1
 #define KEY_RELEASED 2
-unsigned char key[ALLEGRO_KEY_MAX];
+static unsigned char key[ALLEGRO_KEY_MAX];
 
-void keyboard_init(void) {
+static void keyboard_init(void) {
   memset(key, 0, sizeof(key));
 }
 
-void keyboard_update(ALLEGRO_EVENT* event) {
+static void keyboard_update(ALLEGRO_EVENT* event) {
   switch(event->type) {
   case ALLEGRO_EVENT_TIMER:
-    for(int i = 0; i < ALLEGRO_KEY_MAX; i++)
+    for (int i = 0; i < ALLEGRO_KEY_MAX; i++)
       key[i] &= KEY_SEEN;
     break;
   case ALLEGRO_EVENT_KEY_DOWN:
@@ -182,9 +262,30 @@ void joystick_update(ALLEGRO_EVENT* event) {
 }
 
 
-// ContPad stuff
+// HUD stuff
 
-OSContPad contpad;
+ALLEGRO_FONT* hud_font;
+
+void hud_init(void) {
+  hud_font = al_create_builtin_font();
+  /*
+  al_init_ttf_addon();
+  // https://www.dafont.com/rollerball-1975.font
+  hud_font = al_load_ttf_font("rollerball_1975.ttf", 12, ALLEGRO_TTF_MONOCHROME);
+  */
+  must_init(hud_font, "hud_font");
+}
+
+void hud_deinit(void) {
+  al_destroy_font(hud_font);
+}
+
+void hud_draw(void) {
+  al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "FrameCount: %u", framecount);
+}
+
+
+// ContPad stuff
 
 void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   ALLEGRO_JOYSTICK_STATE jst;
@@ -227,7 +328,91 @@ void print_contpad(int i, OSContPad *contpad) {
 
 static ControllerQueue *controller_queues[4];
 
-int contq_enqueue(void) {
+static bool old_send_receive(ENetHost *client) {
+  ENetEvent event;
+  ServerMessage *msg;
+  OSContPad contpad;
+
+  if (enet_host_service(client, &event, 0) > 0) {
+    if (event.type == ENET_EVENT_TYPE_RECEIVE) {
+      msg = (ServerMessage*)event.packet->data;
+
+      for (int i = 0; i < MAX_PLAYER_COUNT; i++) {
+        contpad.button = msg->button[i];
+        printf("Player %d button: %u\n", i, contpad.button);
+        FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
+      }
+
+      enet_packet_destroy(event.packet);
+      return true;
+    }
+  }
+  return false;
+}
+
+void contq_dequeue(void) {
+  // From 010870.c, FUN_010870_interesting_stuff_large_liner()
+  while (func_800A3534(&g_PV_ptr->contQ) != 0) {
+    func_800A33E4(&g_PV_ptr->contQ);
+  }
+  g_PV_ptr->unk1C = g_PV_ptr->contQ.unk14;
+  g_PV_ptr->unk24 = (g_PV_ptr->unk20 ^ -1) & g_PV_ptr->unk1C->unk0;
+  g_PV_ptr->unk20 = g_PV_ptr->unk1C->unk0;
+
+  // check button A
+  //printf("%d\n", g_PV_ptr->contQ.unk14->unk40);
+  // check left trigger
+  //printf("%d\n", g_PV_ptr->contQ.unk14->unk2C);
+}
+
+static void disp_draw(unsigned int frmcnt) {
+  disp_pre_draw();
+  al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
+
+  if (record) {
+    fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
+  }
+  // From 00E440.c, has_rounds_and_floors_large_liner()
+  func_800A3A8C(frmcnt);
+  //for (int i = 0; i < D_800CFED4; i++) {
+  for (int i = 0; i < 4; i++) {
+    g_PV_ptr = &g_PV_arr[i];
+    contq_dequeue();
+  }
+  FUN_032F00_MVC_control_menu_choice_process();
+
+  hud_draw();
+
+  disp_post_draw();
+}
+
+static void send_receive(ENetHost *client) {
+  ENetEvent event;
+  ServerMessage *msg;
+  OSContPad contpad;
+  static unsigned int frmcnt = 0;
+
+  while (enet_host_service(client, &event, 0) > 0) {
+    if (event.type == ENET_EVENT_TYPE_RECEIVE) {
+      msg = (ServerMessage*)event.packet->data;
+
+      for (int i = 0; i < MAX_PLAYER_COUNT; i++) {
+        contpad.button = msg->button[i];
+        printf("Player %d button: %u\n", i, contpad.button);
+        FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
+      }
+
+      enet_packet_destroy(event.packet);
+
+      frmcnt++;
+      disp_draw(frmcnt);
+    }
+  }
+}
+
+void contq_enqueue(void) {
+  OSContPad contpad;
+
   contpad.button = 0x0000;
 
   if (key[ALLEGRO_KEY_D])     contpad.button |= 0x8000;  // A_BUTTON     / CONT_A
@@ -242,25 +427,35 @@ int contq_enqueue(void) {
   if (key[ALLEGRO_KEY_I])     contpad.button |= 0x0800;  // U_JPAD       / CONT_UP
   if (key[ALLEGRO_KEY_K])     contpad.button |= 0x0400;  // D_JPAD       / CONT_DOWN
 
-  if (record) {
-    fprintf(fp, "%u", framecount);
-  }
-  //for (int i = 0; i < D_800CFED4; i++) {
-  for (int i = 0; i < 4; i++) {
-    snapshot_contpad(al_get_joystick(i), &contpad);
+  if (net_flag) {
+    snapshot_contpad(al_get_joystick(0), &contpad);
 
-    //print_contpad(i, &contpad);
+    print_contpad(0, &contpad);
 
+    ClientMessage msg = { .seq_no = framecount, .button = contpad.button };
+    ENetPacket *packet = enet_packet_create(&msg, sizeof(msg), ENET_PACKET_FLAG_RELIABLE);
+    enet_peer_send(server, 0, packet);
+  } else {
     if (record) {
-      fprintf(fp, " %u", contpad.button);
+      fprintf(fp, "%u", framecount);
     }
+    //for (int i = 0; i < D_800CFED4; i++) {
+    for (int i = 0; i < 4; i++) {
+      snapshot_contpad(al_get_joystick(i), &contpad);
 
-    FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
+      //print_contpad(i, &contpad);
 
-    contpad.button = 0x0000;
-  }
-  if (record) {
-    fprintf(fp, "\n");
+      if (record) {
+        fprintf(fp, " %u", contpad.button);
+      }
+
+      FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
+
+      contpad.button = 0x0000;
+    }
+    if (record) {
+      fprintf(fp, "\n");
+    }
   }
 }
 
@@ -269,6 +464,8 @@ static unsigned int frmcnt = 0;
 static unsigned int button[4] = { 0, 0, 0, 0 };
 
 int replay_contq_enqueue(bool *done_ptr) {
+  OSContPad contpad;
+
   //for (int i = 0; i < D_800CFED4; i++) {
   for (int i = 0; i < 4; i++) {
     contpad.button = button[i];
@@ -291,44 +488,6 @@ int replay_contq_enqueue(bool *done_ptr) {
   } else {
     return false;
   }
-}
-
-void contq_dequeue(void) {
-  // From 010870.c, FUN_010870_interesting_stuff_large_liner()
-  while (func_800A3534(&g_PV_ptr->contQ) != 0) {
-    func_800A33E4(&g_PV_ptr->contQ);
-  }
-  g_PV_ptr->unk1C = g_PV_ptr->contQ.unk14;
-  g_PV_ptr->unk24 = (g_PV_ptr->unk20 ^ -1) & g_PV_ptr->unk1C->unk0;
-  g_PV_ptr->unk20 = g_PV_ptr->unk1C->unk0;
-
-  // check button A
-  //printf("%d\n", g_PV_ptr->contQ.unk14->unk40);
-  // check left trigger
-  //printf("%d\n", g_PV_ptr->contQ.unk14->unk2C);
-}
-
-
-// HUD stuff
-
-ALLEGRO_FONT* hud_font;
-
-void hud_init(void) {
-  hud_font = al_create_builtin_font();
-  /*
-  al_init_ttf_addon();
-  // https://www.dafont.com/rollerball-1975.font
-  hud_font = al_load_ttf_font("rollerball_1975.ttf", 12, ALLEGRO_TTF_MONOCHROME);
-  */
-  must_init(hud_font, "hud_font");
-}
-
-void hud_deinit(void) {
-  al_destroy_font(hud_font);
-}
-
-void hud_draw(void) {
-  al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "FrameCount: %u", framecount);
 }
 
 
@@ -402,9 +561,14 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
   while (!done) {
     al_wait_for_event(queue, &event);
 
-    switch(event.type) {
+    switch (event.type) {
+    case ALLEGRO_EVENT_DISPLAY_CLOSE:
+      done = true;
+      break;
     case ALLEGRO_EVENT_TIMER:
-      //printf("timer.count: %u\n", event.timer.count);
+      if (key[ALLEGRO_KEY_ESCAPE]) {
+        done = true;
+      }
 
       if (replay) {
         if (!redraw) {
@@ -413,42 +577,26 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
           redraw = replay_contq_enqueue(&done);
         }
       } else {
-        framecount++;
-        contq_enqueue();
-        redraw = true;
+        if (net_flag) {
+          framecount++;
+          contq_enqueue();
+
+          send_receive(client);
+        } else {
+          framecount++;
+          contq_enqueue();
+          redraw = true;
+        }
       }
 
-      if(key[ALLEGRO_KEY_ESCAPE]) {
-        done = true;
-      }
-      break;
-    case ALLEGRO_EVENT_DISPLAY_CLOSE:
-      done = true;
       break;
     }
 
     keyboard_update(&event);
     joystick_update(&event);
 
-    if(redraw && (al_is_event_queue_empty(queue) || done)) {
-      disp_pre_draw();
-      al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
-
-      if (record) {
-        fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
-      }
-      // From 00E440.c, has_rounds_and_floors_large_liner()
-      func_800A3A8C(framecount);
-      //for (int i = 0; i < D_800CFED4; i++) {
-      for (int i = 0; i < 4; i++) {
-        g_PV_ptr = &g_PV_arr[i];
-        contq_dequeue();
-      }
-      FUN_032F00_MVC_control_menu_choice_process();
-
-      hud_draw();
-
-      disp_post_draw();
+    if (redraw && (al_is_event_queue_empty(queue) || done)) {
+      disp_draw(framecount);
       redraw = false;
     }
   }
@@ -460,11 +608,16 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 ALLEGRO_FONT* font;
 
 int main(int argc, char **argv) {
+  char *host = "localhost";
+  int port = DEFAULT_PORT;
+
   static const char *gametype_str[] = { "Marathon", "Sprint", "Ultra" };
 
   int c;
   char *gopt = NULL;
   char *nopt = NULL;
+  char *hopt = NULL;
+  char *popt = NULL;
   static struct option long_options[] =
     {
       {"marathon", no_argument,       &gametype, GAMETYPE_MARATHON},
@@ -472,11 +625,14 @@ int main(int argc, char **argv) {
       {"ultra",    no_argument,       &gametype, GAMETYPE_ULTRA},
       {"gameid",   required_argument, NULL, 'g'},
       {"name",     required_argument, NULL, 'n'},
+      {"net",      no_argument,       &net_flag, true},
+      {"host",     required_argument, NULL, 'h'},
+      {"port",     required_argument, NULL, 'p'},
       {NULL, 0, NULL, 0}
     };
   int option_index = 0;
 
-  while ((c = getopt_long(argc, argv, "g:n:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "g:n:h:p:", long_options, &option_index)) != -1) {
     switch (c) {
     case 0:
       break;
@@ -485,6 +641,12 @@ int main(int argc, char **argv) {
       break;
     case 'n':
       nopt = optarg;
+      break;
+    case 'h':
+      hopt = optarg;
+      break;
+    case 'p':
+      popt = optarg;
       break;
     case '?':
       break;
@@ -533,15 +695,36 @@ int main(int argc, char **argv) {
   printf("Player 0 name: '%s'\n", p0_name);
   printf("Player 1 name: '%s'\n", p1_name);
 
+  if (hopt != NULL) {
+    host = hopt;
+  }
+  if (popt != NULL) {
+    port = strtoul(popt, NULL, 0);
+  }
+
+  if (net_flag) {
+    printf("host: %s\n", host);
+    printf("port: %d\n", port);
+
+    if (enet_initialize() != 0) {
+      fprintf(stderr, "An error occurred while initializing ENet.\n");
+      return EXIT_FAILURE;
+    }
+    atexit(enet_deinitialize);
+
+    client = create_client();
+    server = connect_client(client, port);
+  }
 
   must_init(al_init(), "allegro");
   must_init(al_install_keyboard(), "keyboard");
   must_init(al_install_joystick(), "joystick");
 
-  ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
+  //ALLEGRO_TIMER *timer = al_create_timer(1.0 / 60.0);
+  ALLEGRO_TIMER *timer = al_create_timer(1.0 / 30.0);
   must_init(timer, "timer");
 
-  ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
+  ALLEGRO_EVENT_QUEUE *queue = al_create_event_queue();
   must_init(queue, "queue");
 
   font = al_create_builtin_font();
@@ -562,7 +745,6 @@ int main(int argc, char **argv) {
 
   keyboard_init();
 
-  printf("al_get_num_joysticks: %d\n", al_get_num_joysticks());
   for (int i = 0; i < 4; i++) {
     joystick_init(al_get_joystick(i));
   }
@@ -576,9 +758,14 @@ int main(int argc, char **argv) {
   player_deinit();
   hud_deinit();
   disp_deinit();
+  al_destroy_font(font);
   al_destroy_timer(timer);
   al_destroy_event_queue(queue);
-  al_destroy_font(font);
 
-  return 0;
+  if (net_flag) {
+    disconnect_client(client, server);
+    enet_host_destroy(client);
+  }
+
+  return EXIT_SUCCESS;
 }

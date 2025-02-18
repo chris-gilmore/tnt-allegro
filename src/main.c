@@ -93,12 +93,12 @@ static ENetHost *create_client(void) {
   return client;
 }
 
-static ENetPeer *connect_client(ENetHost *client, int port) {
+static ENetPeer *connect_client(ENetHost *client, char *host, int port) {
   ENetAddress address;
   ENetEvent event;
   ENetPeer *server;
 
-  enet_address_set_host(&address, "localhost");
+  enet_address_set_host(&address, host);
   address.port = port;
 
   /* Initiate the connection, allocating the two channels 0 and 1. */
@@ -713,7 +713,7 @@ int main(int argc, char **argv) {
     atexit(enet_deinitialize);
 
     client = create_client();
-    server = connect_client(client, port);
+    server = connect_client(client, host, port);
   }
 
   must_init(al_init(), "allegro");

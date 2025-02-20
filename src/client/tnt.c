@@ -131,6 +131,7 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
   while (enet_host_service(client, &event, 3000) > 0) {
     switch (event.type) {
     case ENET_EVENT_TYPE_RECEIVE:
+      // drop any packets received
       enet_packet_destroy(event.packet);
       break;
     case ENET_EVENT_TYPE_DISCONNECT:
@@ -343,38 +344,6 @@ void contq_dequeue(void) {
   //printf("%d\n", g_PV_ptr->contQ.unk14->unk2C);
 }
 
-static void disp_draw(unsigned int frmcnt) {
-  disp_pre_draw();
-  al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
-
-  if (record) {
-    fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
-  }
-  // From 00E440.c, has_rounds_and_floors_large_liner()
-  func_800A3A8C(frmcnt);
-  //for (int i = 0; i < D_800CFED4; i++) {
-  for (int i = 0; i < 4; i++) {
-    g_PV_ptr = &g_PV_arr[i];
-    contq_dequeue();
-  }
-  FUN_032F00_MVC_control_menu_choice_process();
-
-  hud_draw();
-
-  disp_post_draw();
-}
-
-static void disp_draw2(void) {
-  disp_pre_draw();
-  al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
-
-  Game_render_stuff_line_850(&g_game);
-
-  hud_draw();
-
-  disp_post_draw();
-}
-
 static bool send_receive(ENetHost *client) {
   ENetEvent event;
   ServerMessage *msg;
@@ -397,24 +366,20 @@ static bool send_receive(ENetHost *client) {
       enet_packet_destroy(event.packet);
 
       frmcnt++;
-
-      if (in_lobby) {
-        num_ready_players = 0;
-      }
-
       func_800A3A8C(frmcnt);
       for (int i = 0; i < 4; i++) {
         g_PV_ptr = &g_PV_arr[i];
         contq_dequeue();
+      }
 
-        if (in_lobby) {
+      if (in_lobby) {
+        num_ready_players = 0;
+        for (int i = 0; i < 4; i++) {
+          g_PV_ptr = &g_PV_arr[i];
           if (g_PV_ptr->unk1C->unk30 != 0) {  // R_TRIG / CONT_R
             num_ready_players++;
           }
         }
-      }
-
-      if (in_lobby) {
         if (num_ready_players > 1) {
           func_80090E08();
           in_lobby = false;
@@ -609,11 +574,29 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
     joystick_update(&event);
 
     if (redraw) {
-      if (net_flag) {
-        disp_draw2();
-        redraw = false;
-      } else if (al_is_event_queue_empty(queue) || done) {
-        disp_draw(framecount);
+      if (net_flag || al_is_event_queue_empty(queue) || done) {
+        disp_pre_draw();
+        al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
+
+        if (record) {
+          fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
+        }
+
+        if (net_flag) {
+          Game_render_stuff_line_850(&g_game);
+        } else {
+          // From 00E440.c, has_rounds_and_floors_large_liner()
+          func_800A3A8C(framecount);
+          //for (int i = 0; i < D_800CFED4; i++) {
+          for (int i = 0; i < 4; i++) {
+            g_PV_ptr = &g_PV_arr[i];
+            contq_dequeue();
+          }
+          FUN_032F00_MVC_control_menu_choice_process();
+        }
+
+        hud_draw();
+        disp_post_draw();
         redraw = false;
       }
     }

@@ -20,11 +20,11 @@ DAEMON := tntd
 
 # BUILD_DIR is the location where all build artifacts are placed
 BUILD_DIR := build
-PROGRAM := $(BUILD_DIR)/$(TARGET)
-SERVER := $(BUILD_DIR)/$(DAEMON)
+CLIENT_PROGRAM := $(BUILD_DIR)/$(TARGET)
+SERVER_PROGRAM := $(BUILD_DIR)/$(DAEMON)
 
 # Directories containing source files
-SRC_DIRS := src
+SRC_DIRS := src/client
 
 # Source code files
 C_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
@@ -64,7 +64,11 @@ LIBS := $(ENET_LIB) $(ALLEGRO_LIBS) -lm
 # Main Targets                                                                 #
 #==============================================================================#
 
-all: $(PROGRAM) $(SERVER)
+all: $(CLIENT_PROGRAM) $(SERVER_PROGRAM)
+
+client: $(CLIENT_PROGRAM)
+
+server: $(SERVER_PROGRAM)
 
 clean:
 	$(RM) -r $(BUILD_DIR)
@@ -87,10 +91,10 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/tnt-splat/%.o: $(TNT_SPLAT_DIR)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(PROGRAM): $(O_FILES)
+$(CLIENT_PROGRAM): $(O_FILES)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-$(SERVER): server/tntd.c
+$(SERVER_PROGRAM): src/server/tntd.c
 	$(CC) -Iinclude -Wstrict-prototypes -Wsequence-point -Wextra -o $@ $^ $(ENET_LIB)
 
 

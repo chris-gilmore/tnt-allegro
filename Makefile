@@ -6,10 +6,12 @@ default: all
 # Build Options                                                                #
 #==============================================================================#
 
-TARGET := tnt-allegro
+TARGET := tnt
 TNT_SPLAT_DIR := ../tnt-splat
 
 TNT_SPLAT_C_FILES := 003E40.c 006B30.c 0073F0.c 0074E0.c 026900.c 026C80.c sprite.c color.c contq.c piecedefs.c playervars.c gamevars.c 033310.c mobilepiece.c ghostpiece.c currentpiece.c piecehold.c boardinfo.c frameact.c cube.c ids.c boardpieces.c bag63.c nextpieces.c fallingcubes.c mobilecubes.c board.c multisquare.c linescan.c gamestats.c dbgprntrrl.c tetris.c setplayer.c gamefinish.c pfgfx.c lineeffect.c 032F00.c frametime.c game.c
+
+DAEMON := tntd
 
 
 #==============================================================================#
@@ -19,6 +21,7 @@ TNT_SPLAT_C_FILES := 003E40.c 006B30.c 0073F0.c 0074E0.c 026900.c 026C80.c sprit
 # BUILD_DIR is the location where all build artifacts are placed
 BUILD_DIR := build
 PROGRAM := $(BUILD_DIR)/$(TARGET)
+SERVER := $(BUILD_DIR)/$(DAEMON)
 
 # Directories containing source files
 SRC_DIRS := src
@@ -61,7 +64,7 @@ LIBS := $(ENET_LIB) $(ALLEGRO_LIBS) -lm
 # Main Targets                                                                 #
 #==============================================================================#
 
-all: $(PROGRAM)
+all: $(PROGRAM) $(SERVER)
 
 clean:
 	$(RM) -r $(BUILD_DIR)
@@ -86,6 +89,9 @@ $(BUILD_DIR)/tnt-splat/%.o: $(TNT_SPLAT_DIR)/%.c
 
 $(PROGRAM): $(O_FILES)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+$(SERVER): server/tntd.c
+	$(CC) -Iinclude -Wstrict-prototypes -Wsequence-point -Wextra -o $@ $^ $(ENET_LIB)
 
 
 

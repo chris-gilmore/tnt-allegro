@@ -328,28 +328,6 @@ void print_contpad(int i, OSContPad *contpad) {
 
 static ControllerQueue *controller_queues[4];
 
-static bool old_send_receive(ENetHost *client) {
-  ENetEvent event;
-  ServerMessage *msg;
-  OSContPad contpad;
-
-  if (enet_host_service(client, &event, 0) > 0) {
-    if (event.type == ENET_EVENT_TYPE_RECEIVE) {
-      msg = (ServerMessage*)event.packet->data;
-
-      for (int i = 0; i < MAX_PLAYER_COUNT; i++) {
-        contpad.button = msg->button[i];
-        printf("Player %d button: %u\n", i, contpad.button);
-        FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
-      }
-
-      enet_packet_destroy(event.packet);
-      return true;
-    }
-  }
-  return false;
-}
-
 void contq_dequeue(void) {
   // From 010870.c, FUN_010870_interesting_stuff_large_liner()
   while (func_800A3534(&g_PV_ptr->contQ) != 0) {
@@ -386,11 +364,25 @@ static void disp_draw(unsigned int frmcnt) {
   disp_post_draw();
 }
 
-static void send_receive(ENetHost *client) {
+static void disp_draw2(void) {
+  disp_pre_draw();
+  al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
+
+  Game_render_stuff_line_850(&g_game);
+
+  hud_draw();
+
+  disp_post_draw();
+}
+
+static bool send_receive(ENetHost *client) {
   ENetEvent event;
   ServerMessage *msg;
   OSContPad contpad;
   static unsigned int frmcnt = 0;
+  bool draw_flag = false;
+  static bool in_lobby = true;
+  unsigned char num_ready_players;
 
   while (enet_host_service(client, &event, 0) > 0) {
     if (event.type == ENET_EVENT_TYPE_RECEIVE) {
@@ -398,19 +390,46 @@ static void send_receive(ENetHost *client) {
 
       for (int i = 0; i < MAX_PLAYER_COUNT; i++) {
         contpad.button = msg->button[i];
-        printf("Player %d button: %u\n", i, contpad.button);
+        //printf("Player %d button: %u\n", i, contpad.button);
         FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
       }
 
       enet_packet_destroy(event.packet);
 
       frmcnt++;
-      disp_draw(frmcnt);
+
+      if (in_lobby) {
+        num_ready_players = 0;
+      }
+
+      func_800A3A8C(frmcnt);
+      for (int i = 0; i < 4; i++) {
+        g_PV_ptr = &g_PV_arr[i];
+        contq_dequeue();
+
+        if (in_lobby) {
+          if (g_PV_ptr->unk1C->unk30 != 0) {  // R_TRIG / CONT_R
+            num_ready_players++;
+          }
+        }
+      }
+
+      if (in_lobby) {
+        if (num_ready_players > 1) {
+          func_80090E08();
+          in_lobby = false;
+        }
+      } else {
+        D_801109F4 = func_800A3AF0();
+        Game_line_782_game_c(&g_game);
+        draw_flag = true;
+      }
     }
   }
+  return draw_flag;
 }
 
-void contq_enqueue(void) {
+static bool contq_enqueue(void) {
   OSContPad contpad;
 
   contpad.button = 0x0000;
@@ -430,11 +449,12 @@ void contq_enqueue(void) {
   if (net_flag) {
     snapshot_contpad(al_get_joystick(0), &contpad);
 
-    print_contpad(0, &contpad);
+    //print_contpad(0, &contpad);
 
     ClientMessage msg = { .seq_no = framecount, .button = contpad.button };
     ENetPacket *packet = enet_packet_create(&msg, sizeof(msg), ENET_PACKET_FLAG_RELIABLE);
     enet_peer_send(server, 0, packet);
+    return send_receive(client);
   } else {
     if (record) {
       fprintf(fp, "%u", framecount);
@@ -456,6 +476,7 @@ void contq_enqueue(void) {
     if (record) {
       fprintf(fp, "\n");
     }
+    return true;
   }
 }
 
@@ -463,7 +484,7 @@ static char line[200];
 static unsigned int frmcnt = 0;
 static unsigned int button[4] = { 0, 0, 0, 0 };
 
-int replay_contq_enqueue(bool *done_ptr) {
+static bool replay_contq_enqueue(bool *done_ptr) {
   OSContPad contpad;
 
   //for (int i = 0; i < D_800CFED4; i++) {
@@ -577,16 +598,8 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
           redraw = replay_contq_enqueue(&done);
         }
       } else {
-        if (net_flag) {
-          framecount++;
-          contq_enqueue();
-
-          send_receive(client);
-        } else {
-          framecount++;
-          contq_enqueue();
-          redraw = true;
-        }
+        framecount++;
+        redraw = contq_enqueue();
       }
 
       break;
@@ -595,9 +608,14 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
     keyboard_update(&event);
     joystick_update(&event);
 
-    if (redraw && (al_is_event_queue_empty(queue) || done)) {
-      disp_draw(framecount);
-      redraw = false;
+    if (redraw) {
+      if (net_flag) {
+        disp_draw2();
+        redraw = false;
+      } else if (al_is_event_queue_empty(queue) || done) {
+        disp_draw(framecount);
+        redraw = false;
+      }
     }
   }
 }
@@ -720,8 +738,7 @@ int main(int argc, char **argv) {
   must_init(al_install_keyboard(), "keyboard");
   must_init(al_install_joystick(), "joystick");
 
-  //ALLEGRO_TIMER *timer = al_create_timer(1.0 / 60.0);
-  ALLEGRO_TIMER *timer = al_create_timer(1.0 / 30.0);
+  ALLEGRO_TIMER *timer = al_create_timer(1.0 / 60.0);
   must_init(timer, "timer");
 
   ALLEGRO_EVENT_QUEUE *queue = al_create_event_queue();

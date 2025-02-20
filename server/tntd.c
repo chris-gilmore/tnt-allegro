@@ -94,10 +94,10 @@ static void send_receive(ENetHost *server) {
 
       msg_in = (ClientMessage*)event.packet->data;
 
+      players[player_id].button = msg_in->button;
+
       if (msg_in->seq_no == players[player_id].expected_seq_no) {
-        players[player_id].button = msg_in->button;
         players[player_id].set = true;
-        printf("Player %d button: %u\n", player_id, players[player_id].button);
       }
 
       enet_packet_destroy(event.packet);

@@ -239,6 +239,24 @@ void joystick_init(ALLEGRO_JOYSTICK *joy) {
     ctrlCfg.trig_z = 10;
     ctrlCfg.btn_start = 11;
     ctrlCfg.dpad = 4;
+  } else if (strcmp(al_get_joystick_name(joy), "Sony Interactive Entertainment Wireless Controller") == 0) {
+    // PS4 controller over usb
+    ctrlCfg.btn_a = 0;     // square button
+    ctrlCfg.btn_b = 3;     // X button
+    ctrlCfg.trig_l = 4;    // L1 trigger
+    ctrlCfg.trig_r = 5;    // R1 trigger
+    ctrlCfg.trig_z = 12;   // right analog stick button
+    ctrlCfg.btn_start = 9; // options button
+    ctrlCfg.dpad = 3;      // dpad
+  } else if (strcmp(al_get_joystick_name(joy), "Microsoft X-Box 360 pad") == 0) {
+    // Generic brand Nintendo Switch controller over usb (shows up as X-Box 360?)
+    ctrlCfg.btn_a = 0;     // B button
+    ctrlCfg.btn_b = 2;     // Y button
+    ctrlCfg.trig_l = 4;    // L1 trigger
+    ctrlCfg.trig_r = 5;    // R1 trigger
+    ctrlCfg.trig_z = 10;   // right analog stick button
+    ctrlCfg.btn_start = 8; // home button
+    ctrlCfg.dpad = 3;      // dpad
   } else {
     // N64 controller
     ctrlCfg.btn_a = 1;
@@ -516,10 +534,10 @@ void player_deinit(void) {
 
 // Game stuff
 
-void game_init(void) {
+void game_init(unsigned short num_players) {
   register Game *game_ptr = &g_game;
 
-  D_800CFED4 = 2;  // num players
+  D_800CFED4 = num_players;
   game_ptr->gameType = gametype;
   D_800CFEE8 = 4;  // MVC menu choice
 }
@@ -734,7 +752,12 @@ int main(int argc, char **argv) {
   hud_init();
 
   player_init();
-  game_init();
+
+  if (net_flag) {
+    game_init(2);
+  } else {
+    game_init(1);
+  }
 
   must_init(al_init_primitives_addon(), "primitives");
 

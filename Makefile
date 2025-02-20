@@ -64,7 +64,7 @@ LIBS := $(ENET_LIB) $(ALLEGRO_LIBS) -lm
 # Main Targets                                                                 #
 #==============================================================================#
 
-all: $(CLIENT_PROGRAM) $(SERVER_PROGRAM)
+all: client server
 
 client: $(CLIENT_PROGRAM)
 
@@ -99,7 +99,7 @@ $(SERVER_PROGRAM): src/server/tntd.c
 
 
 
-.PHONY: all clean default
+.PHONY: all clean default client server
 # with no prerequisites, .SECONDARY causes no intermediate target to be removed
 .SECONDARY:
 

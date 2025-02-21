@@ -8,6 +8,10 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
+// dnf: allegro5-addon-image-devel
+// apt: liballegro-image5-dev
+#include <allegro5/allegro_image.h>
+
 // dnf: allegro5-addon-ttf-devel
 // apt: liballegro-ttf5-dev
 //#include <allegro5/allegro_ttf.h>
@@ -155,8 +159,9 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
 
 static ALLEGRO_DISPLAY* disp;
 static ALLEGRO_BITMAP* buffer;
+static ALLEGRO_BITMAP* bkgd;
 
-static void disp_init(void) {
+static void disp_init(unsigned short num_players) {
   al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
   al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
 
@@ -165,9 +170,26 @@ static void disp_init(void) {
 
   buffer = al_create_bitmap(BUFFER_W, BUFFER_H);
   must_init(buffer, "bitmap buffer");
+
+  al_init_image_addon();
+  switch (num_players) {
+  case 1:
+    bkgd = al_load_bitmap("background_1p.png");
+    if (!bkgd) {
+      bkgd = al_load_bitmap("default_background_1p.png");
+    }
+    break;
+  case 2:
+    bkgd = al_load_bitmap("background_2p.png");
+    if (!bkgd) {
+      bkgd = al_load_bitmap("default_background_2p.png");
+    }
+    break;
+  }
 }
 
 static void disp_deinit(void) {
+  al_destroy_bitmap(bkgd);
   al_destroy_bitmap(buffer);
   al_destroy_display(disp);
 }
@@ -594,7 +616,13 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
     if (redraw) {
       if (net_flag || al_is_event_queue_empty(queue) || done) {
         disp_pre_draw();
-        al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
+
+        if (bkgd) {
+          al_clear_to_color(al_map_rgb(0, 0, 0));
+          al_draw_bitmap(bkgd, 0, 0, 0);
+        } else {
+          al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
+        }
 
         if (record) {
           fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
@@ -747,7 +775,11 @@ int main(int argc, char **argv) {
 
   font = al_create_builtin_font();
 
-  disp_init();
+  if (net_flag) {
+    disp_init(2);
+  } else {
+    disp_init(1);
+  }
 
   hud_init();
 

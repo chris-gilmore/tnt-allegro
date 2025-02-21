@@ -55,7 +55,7 @@ ENET_LIB := -lenet
 
 ALLEGRO_LIBRARIES := allegro-5 allegro_font-5 allegro_primitives-5 #allegro_ttf-5
 
-client: ALLEGRO_LIBS := $(shell pkg-config --libs $(ALLEGRO_LIBRARIES))
+client: ALLEGRO_LIBS = $(shell pkg-config --libs $(ALLEGRO_LIBRARIES))
 
 LIBS = $(ENET_LIB) $(ALLEGRO_LIBS) -lm
 

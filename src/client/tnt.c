@@ -1,5 +1,6 @@
 #include "common.h"
 #include <getopt.h>
+#include <libconfig.h>
 #include <time.h>
 
 // dnf: allegro5-devel
@@ -235,13 +236,13 @@ static void keyboard_update(ALLEGRO_EVENT* event) {
 // Joystick stuff
 
 typedef struct {
-  u8 btn_a;
-  u8 btn_b;
-  u8 trig_l;
-  u8 trig_r;
-  u8 trig_z;
-  u8 btn_start;
-  u8 dpad;
+  int btn_a;
+  int btn_b;
+  int trig_l;
+  int trig_r;
+  int trig_z;
+  int btn_start;
+  int dpad;
 } CtrlCfg;
 
 CtrlCfg ctrlCfg;
@@ -655,6 +656,39 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 ALLEGRO_FONT* font;
 
 int main(int argc, char **argv) {
+  config_t cfg;
+  config_setting_t *root, *joystick;
+  CtrlCfg joy_cfg;
+
+  config_init(&cfg);
+
+  if(!config_read_file(&cfg, "tnt.cfg")) {
+    fprintf(stderr, "%s:%d - %s\n", config_error_file(&cfg), config_error_line(&cfg), config_error_text(&cfg));
+    config_destroy(&cfg);
+    return EXIT_FAILURE;
+  }
+
+  root = config_root_setting(&cfg);
+
+  joystick = config_setting_get_member(root, "joystick");
+
+  config_setting_lookup_int(joystick, "btn_a", &joy_cfg.btn_a);
+  config_setting_lookup_int(joystick, "btn_b", &joy_cfg.btn_b);
+  config_setting_lookup_int(joystick, "trig_l", &joy_cfg.trig_l);
+  config_setting_lookup_int(joystick, "trig_r", &joy_cfg.trig_r);
+  config_setting_lookup_int(joystick, "trig_z", &joy_cfg.trig_z);
+  config_setting_lookup_int(joystick, "btn_start", &joy_cfg.btn_start);
+  config_setting_lookup_int(joystick, "dpad", &joy_cfg.dpad);
+
+  printf("joystick:\n");
+  printf("  btn_a = %d\n", joy_cfg.btn_a);
+  printf("  btn_b = %d\n", joy_cfg.btn_b);
+  printf("  trig_l = %d\n", joy_cfg.trig_l);
+  printf("  trig_r = %d\n", joy_cfg.trig_r);
+  printf("  trig_z = %d\n", joy_cfg.trig_z);
+  printf("  btn_start = %d\n", joy_cfg.btn_start);
+  printf("  dpad = %d\n", joy_cfg.dpad);
+
   char *host = "localhost";
   int port = DEFAULT_PORT;
 
@@ -822,5 +856,6 @@ int main(int argc, char **argv) {
     enet_host_destroy(client);
   }
 
+  config_destroy(&cfg);
   return EXIT_SUCCESS;
 }

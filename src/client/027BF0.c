@@ -2,6 +2,8 @@
 
 extern char p0_name[];
 extern char p1_name[];
+extern char p2_name[];
+extern char p3_name[];
 
 void FUN_027BF0_Init(u8) {
 }
@@ -55,6 +57,39 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
       sprintf(sp70, "%d", game_ptr->unkE4F4);
       displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0xBE, 0x117, sp70, 0xFF, 0xFF, 0xFF, 0xFF);
       displayTimeFormatted_XY_RGBA(game_ptr->unkE4E8, game_ptr->unk8, 0xAA + /* D_8011FB04 */ + 50, 0xF6 + /* D_8011FB08 */ + 15, 0xFF, 0xFF, 0xFF, 0xFF);
+    }
+  }
+
+  if (D_800CFED4 == 3) {
+    displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0x27, 0xEA, p0_name, 0xFF, 0, 0, 0xFF);
+    displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0x7B, 0xEA, p1_name, 0, 0xFF, 0, 0xFF);
+    displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0xCF, 0xEA, p2_name, 0, 0, 0xFF, 0xFF);
+
+    if (game_ptr->gameType == GAMETYPE_SPRINT) {
+      displayTimeFormatted_XY_RGBA(game_ptr->unkE4F0 - game_ptr->unkE4E8, &game_ptr->unk8, 0xD8, 0x10A, 0xFF, 0xFF, 0xFF, 0xFF);
+    }
+
+    if (game_ptr->gameType == GAMETYPE_ULTRA) {
+      sprintf(sp58, "%d", game_ptr->unkE4F4);
+      displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0xBC, 0x109, sp58, 0xFF, 0xFF, 0xFF, 0xFF);
+      displayTimeFormatted_XY_RGBA(game_ptr->unkE4E8, game_ptr->unk8, 0xD9, 0x116, 0xFF, 0xFF, 0xFF, 0xFF);
+    }
+  }
+
+  if (D_800CFED4 == 4) {
+    displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0x27, 0xEA, p0_name, 0xFF, 0, 0, 0xFF);
+    displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0x7B, 0xEA, p1_name, 0, 0xFF, 0, 0xFF);
+    displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0xCF, 0xEA, p2_name, 0, 0, 0xFF, 0xFF);
+    displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0x124, 0xEA, p3_name, 0xFF, 0xFF, 0, 0xFF);
+
+    if (game_ptr->gameType == GAMETYPE_SPRINT) {
+      displayTimeFormatted_XY_RGBA(game_ptr->unkE4F0 - game_ptr->unkE4E8, &game_ptr->unk8, 0xD8, 0x10A, 0xFF, 0xFF, 0xFF, 0xFF);
+    }
+
+    if (game_ptr->gameType == GAMETYPE_ULTRA) {
+      sprintf(sp40, "%d", game_ptr->unkE4F4);
+      displayText_XY_RGBA_2(&g_gdl, game_ptr->unk8, 0xBC, 0x109, sp40, 0xFF, 0xFF, 0xFF, 0xFF);
+      displayTimeFormatted_XY_RGBA(game_ptr->unkE4E8, game_ptr->unk8, 0xD9, 0x116, 0xFF, 0xFF, 0xFF, 0xFF);
     }
   }
 }

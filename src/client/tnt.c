@@ -38,6 +38,8 @@ unsigned int game_id = 0;
 static unsigned int gametype = GAMETYPE_SPRINT;
 char p0_name[9] = "Player 0";
 char p1_name[9] = "Player 1";
+char p2_name[9] = "Player 2";
+char p3_name[9] = "Player 3";
 static ENetHost *client;
 static ENetPeer *server;
 static int net_flag = false;
@@ -183,6 +185,13 @@ static void disp_init(unsigned short num_players) {
     bkgd = al_load_bitmap("background_2p.png");
     if (!bkgd) {
       bkgd = al_load_bitmap("default_background_2p.png");
+    }
+    break;
+  case 3:
+  case 4:
+    bkgd = al_load_bitmap("background_4p.png");
+    if (!bkgd) {
+      bkgd = al_load_bitmap("default_background_4p.png");
     }
     break;
   }
@@ -389,6 +398,7 @@ static bool send_receive(ENetHost *client) {
   ServerMessage *msg;
   OSContPad contpad;
   static unsigned int frmcnt = 0;
+  static unsigned int record_framecount = 0;
   bool draw_flag = false;
   static bool in_lobby = true;
   unsigned char num_ready_players;
@@ -397,10 +407,24 @@ static bool send_receive(ENetHost *client) {
     if (event.type == ENET_EVENT_TYPE_RECEIVE) {
       msg = (ServerMessage*)event.packet->data;
 
+      if (record && !in_lobby) {
+        record_framecount++;
+        fprintf(fp, "%u", record_framecount);
+      }
       for (int i = 0; i < MAX_PLAYER_COUNT; i++) {
         contpad.button = msg->button[i];
         //printf("Player %d button: %u\n", i, contpad.button);
+
+        if (record && !in_lobby) {
+          fprintf(fp, " %u", contpad.button);
+        }
+
         FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
+      }
+      if (record && !in_lobby) {
+        fprintf(fp, "\n");
+
+        fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
       }
 
       enet_packet_destroy(event.packet);
@@ -624,13 +648,13 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
           al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
         }
 
-        if (record) {
-          fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
-        }
-
         if (net_flag) {
           Game_render_stuff_line_850(&g_game);
         } else {
+          if (record) {
+            fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
+          }
+
           // From 00E440.c, has_rounds_and_floors_large_liner()
           func_800A3A8C(framecount);
           //for (int i = 0; i < D_800CFED4; i++) {
@@ -741,6 +765,8 @@ int main(int argc, char **argv) {
   }
   printf("Player 0 name: '%s'\n", p0_name);
   printf("Player 1 name: '%s'\n", p1_name);
+  printf("Player 2 name: '%s'\n", p2_name);
+  printf("Player 3 name: '%s'\n", p3_name);
 
   if (hopt != NULL) {
     host = hopt;

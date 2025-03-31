@@ -1,6 +1,6 @@
 #include "common.h"
 
-u16 D_800CFED4 = 1;
+s16 D_800CFED4 = 1;
 
 u8 D_800CFEE8 = 15;
 u32 D_800CFEEC = 0;

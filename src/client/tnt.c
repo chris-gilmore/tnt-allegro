@@ -314,7 +314,7 @@ void joystick_update(ALLEGRO_EVENT* event) {
 
 // HUD stuff
 
-ALLEGRO_FONT* hud_font;
+ALLEGRO_FONT *hud_font;
 
 void hud_init(void) {
   hud_font = al_create_builtin_font();
@@ -572,8 +572,8 @@ void player_deinit(void) {
 
   for (i = 0; i < 4; i++) {
     contQ_ptr = controller_queues[i];
-    n64HeapUnalloc((void *)contQ_ptr->unk14);
-    n64HeapUnalloc((void *)contQ_ptr->_ControllerQueue);
+    n64HeapUnalloc(contQ_ptr->unk14);
+    n64HeapUnalloc(contQ_ptr->_ControllerQueue);
   }
 }
 

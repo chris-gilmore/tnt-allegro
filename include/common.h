@@ -164,6 +164,7 @@ typedef s32 OSPri;
 //#include "newtetris/046770.h"
 #include "newtetris/03C130.h"
 #include "newtetris/gamevars.h"
+#include "newtetris/03C220.h"
 #include "newtetris/minos.h"
 #include "newtetris/mobilepiece.h"
 #include "newtetris/ghostpiece.h"

@@ -11,6 +11,6 @@ Game type is one of `--marathon`, `--sprint` (default), or `--ultra`.
 
 Default gameid is random.
 
-Default name is `"Player 0"`.
+Default name is `"PLAYER 0"`.
 
 Arg1 (optional) is file name for recording or replaying moves.

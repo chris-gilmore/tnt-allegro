@@ -1,5 +1,6 @@
 #include "common.h"
 #include <getopt.h>
+#include <libconfig.h>
 #include <time.h>
 
 // dnf: allegro5-devel
@@ -26,7 +27,7 @@
 // TODO: move this out of here
 ////////////////////////////////////////
 u8 D_800CFD48 = TRUE;
-s8 D_800CF838 = 0;  // is this max unlocked screen?
+s8 D_800CF838 = 7;  // max unlocked screen
 ////////////////////////////////////////
 
 
@@ -36,10 +37,10 @@ static int replay = false;
 static unsigned int framecount = 0;
 unsigned int game_id = 0;
 static unsigned int gametype = GAMETYPE_SPRINT;
-char p0_name[9] = "Player 0";
-char p1_name[9] = "Player 1";
-char p2_name[9] = "Player 2";
-char p3_name[9] = "Player 3";
+char p0_name[9] = "PLAYER 0";
+char p1_name[9] = "PLAYER 1";
+char p2_name[9] = "PLAYER 2";
+char p3_name[9] = "PLAYER 3";
 static ENetHost *client;
 static ENetPeer *server;
 static int net_flag = false;
@@ -161,7 +162,6 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
 
 static ALLEGRO_DISPLAY* disp;
 static ALLEGRO_BITMAP* buffer;
-static ALLEGRO_BITMAP* bkgd;
 
 static void disp_init(unsigned short num_players) {
   al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
@@ -174,31 +174,9 @@ static void disp_init(unsigned short num_players) {
   must_init(buffer, "bitmap buffer");
 
   al_init_image_addon();
-  switch (num_players) {
-  case 1:
-    bkgd = al_load_bitmap("background_1p.png");
-    if (!bkgd) {
-      bkgd = al_load_bitmap("default_background_1p.png");
-    }
-    break;
-  case 2:
-    bkgd = al_load_bitmap("background_2p.png");
-    if (!bkgd) {
-      bkgd = al_load_bitmap("default_background_2p.png");
-    }
-    break;
-  case 3:
-  case 4:
-    bkgd = al_load_bitmap("background_4p.png");
-    if (!bkgd) {
-      bkgd = al_load_bitmap("default_background_4p.png");
-    }
-    break;
-  }
 }
 
 static void disp_deinit(void) {
-  al_destroy_bitmap(bkgd);
   al_destroy_bitmap(buffer);
   al_destroy_display(disp);
 }
@@ -586,6 +564,31 @@ void game_init(unsigned short num_players) {
   D_800CFED4 = num_players;
   game_ptr->gameType = gametype;
   D_800CFEE8 = 4;  // MVC menu choice
+
+  {
+    int i;
+    char *src;
+
+    i = 0;
+    src = p0_name;
+    memset(game_ptr->players[0].name, 0, 9);
+    while (*src != 0 && i < 8) game_ptr->players[0].name[i++] = *src++;
+
+    i = 0;
+    src = p1_name;
+    memset(game_ptr->players[1].name, 0, 9);
+    while (*src != 0 && i < 8) game_ptr->players[1].name[i++] = *src++;
+
+    i = 0;
+    src = p2_name;
+    memset(game_ptr->players[2].name, 0, 9);
+    while (*src != 0 && i < 8) game_ptr->players[2].name[i++] = *src++;
+
+    i = 0;
+    src = p3_name;
+    memset(game_ptr->players[3].name, 0, 9);
+    while (*src != 0 && i < 8) game_ptr->players[3].name[i++] = *src++;
+  }
 }
 
 void game_deinit(void) {
@@ -641,12 +644,7 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
       if (net_flag || al_is_event_queue_empty(queue) || done) {
         disp_pre_draw();
 
-        if (bkgd) {
-          al_clear_to_color(al_map_rgb(0, 0, 0));
-          al_draw_bitmap(bkgd, 0, 0, 0);
-        } else {
-          al_clear_to_color(al_map_rgb(0x20, 0x20, 0x20));
-        }
+        al_clear_to_color(al_map_rgb(0, 0, 0));
 
         if (net_flag) {
           Game_render_stuff_line_850(&g_game);
@@ -676,9 +674,26 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
 // Main
 
-ALLEGRO_FONT* font;
+config_t g_images_cfg;
+config_t g_anims_cfg;
 
 int main(int argc, char **argv) {
+  config_init(&g_images_cfg);
+
+  if(!config_read_file(&g_images_cfg, "images.cfg")) {
+    fprintf(stderr, "%s:%d - %s\n", config_error_file(&g_images_cfg), config_error_line(&g_images_cfg), config_error_text(&g_images_cfg));
+    config_destroy(&g_images_cfg);
+    return EXIT_FAILURE;
+  }
+
+  config_init(&g_anims_cfg);
+
+  if(!config_read_file(&g_anims_cfg, "anims.cfg")) {
+    fprintf(stderr, "%s:%d - %s\n", config_error_file(&g_anims_cfg), config_error_line(&g_anims_cfg), config_error_text(&g_anims_cfg));
+    config_destroy(&g_anims_cfg);
+    return EXIT_FAILURE;
+  }
+
   char *host = "localhost";
   int port = DEFAULT_PORT;
 
@@ -761,7 +776,7 @@ int main(int argc, char **argv) {
     char *src = nopt;
 
     memset(p0_name, 0, sizeof(p0_name));
-    while (*src && i < 8) p0_name[i++] = *src++;
+    while (*src != 0  && i < 8) p0_name[i++] = *src++;
   }
   printf("Player 0 name: '%s'\n", p0_name);
   printf("Player 1 name: '%s'\n", p1_name);
@@ -798,8 +813,6 @@ int main(int argc, char **argv) {
 
   ALLEGRO_EVENT_QUEUE *queue = al_create_event_queue();
   must_init(queue, "queue");
-
-  font = al_create_builtin_font();
 
   if (net_flag) {
     disp_init(2);
@@ -839,7 +852,6 @@ int main(int argc, char **argv) {
   player_deinit();
   hud_deinit();
   disp_deinit();
-  al_destroy_font(font);
   al_destroy_timer(timer);
   al_destroy_event_queue(queue);
 
@@ -848,5 +860,7 @@ int main(int argc, char **argv) {
     enet_host_destroy(client);
   }
 
+  config_destroy(&g_images_cfg);
+  config_destroy(&g_anims_cfg);
   return EXIT_SUCCESS;
 }

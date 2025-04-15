@@ -93,7 +93,7 @@ static void func_8006F39C(UnkStruct_8 *arg0) {
 }
 
 extern signed short sins(unsigned short angle);
-extern signed short coss (unsigned short angle);
+extern signed short coss(unsigned short angle);
 
 static void Minos_8006f4b4_thirtyliner_interesting(UnkStruct_8 *arg0) {
   register UnkStruct_14 *var_s0 = D_8011FC18.unk0;
@@ -200,7 +200,7 @@ void Minos_Mino_Render(Mino *arg0, UnkStruct_8 *arg1) {
         gSPTextureRectangle(gdl++, var_s6->unk0[0].p.x, var_s6->unk0[0].p.y, var_s6->unk0[3].p.x, var_s6->unk0[3].p.y, D_8011FC54, 0, 0, var_s6->unk2E, var_s6->unk30);
         */
 
-        al_draw_filled_rectangle(var_s6->unk0[0].p.x / 4.0, var_s6->unk0[0].p.y / 4.0, var_s6->unk0[3].p.x / 4.0, var_s6->unk0[3].p.y / 4.0, al_map_rgba(arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha));
+        al_draw_filled_rectangle(var_s6->unk0[0].p.x / 4.0, var_s6->unk0[0].p.y / 4.0, var_s6->unk0[3].p.x / 4.0, var_s6->unk0[3].p.y / 4.0, al_premul_rgba(arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha));
 
         break;
       case 2:
@@ -213,8 +213,8 @@ void Minos_Mino_Render(Mino *arg0, UnkStruct_8 *arg1) {
         gSP2Triangles(gdl++, 0, 1, 2, 0, 1, 3, 2, 0);
         */
 
-        al_draw_filled_triangle(var_s6->unk0[0].p.x / 4.0, var_s6->unk0[0].p.y / 4.0, var_s6->unk0[1].p.x / 4.0, var_s6->unk0[1].p.y / 4.0, var_s6->unk0[2].p.x / 4.0, var_s6->unk0[2].p.y / 4.0, al_map_rgba(arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha));
-        al_draw_filled_triangle(var_s6->unk0[1].p.x / 4.0, var_s6->unk0[1].p.y / 4.0, var_s6->unk0[3].p.x / 4.0, var_s6->unk0[3].p.y / 4.0, var_s6->unk0[2].p.x / 4.0, var_s6->unk0[2].p.y / 4.0, al_map_rgba(arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha));
+        al_draw_filled_triangle(var_s6->unk0[0].p.x / 4.0, var_s6->unk0[0].p.y / 4.0, var_s6->unk0[1].p.x / 4.0, var_s6->unk0[1].p.y / 4.0, var_s6->unk0[2].p.x / 4.0, var_s6->unk0[2].p.y / 4.0, al_premul_rgba(arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha));
+        al_draw_filled_triangle(var_s6->unk0[1].p.x / 4.0, var_s6->unk0[1].p.y / 4.0, var_s6->unk0[3].p.x / 4.0, var_s6->unk0[3].p.y / 4.0, var_s6->unk0[2].p.x / 4.0, var_s6->unk0[2].p.y / 4.0, al_premul_rgba(arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha));
 
         break;
       }

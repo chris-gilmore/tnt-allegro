@@ -9,7 +9,7 @@ default: all
 TARGET := tnt
 TNT_SPLAT_DIR := ../tnt-splat
 
-TNT_SPLAT_C_FILES := 003E40.c 006B30.c 0073F0.c 0074E0.c 026900.c 026C80.c sprite.c color.c contq.c piecedefs.c playervars.c gamevars.c 033310.c mobilepiece.c ghostpiece.c currentpiece.c piecehold.c boardinfo.c frameact.c cube.c ids.c boardpieces.c bag63.c nextpieces.c fallingcubes.c mobilecubes.c board.c multisquare.c linescan.c gamestats.c dbgprntrrl.c tetris.c setplayer.c gamefinish.c pfgfx.c lineeffect.c 032F00.c frametime.c game.c formattime.c
+TNT_SPLAT_C_FILES := 003E40.c 006B30.c 0073F0.c 0074E0.c 026900.c 026C80.c sprite.c color.c contq.c piecedefs.c playervars.c gamevars.c 033310.c mobilepiece.c ghostpiece.c currentpiece.c piecehold.c boardinfo.c frameact.c cube.c ids.c boardpieces.c bag63.c nextpieces.c fallingcubes.c mobilecubes.c board.c multisquare.c linescan.c gamestats.c dbgprntrrl.c tetris.c setplayer.c pfgfx.c lineeffect.c 032F00.c frametime.c game.c formattime.c
 
 DAEMON := tntd
 
@@ -51,13 +51,15 @@ CFLAGS += -Wstrict-prototypes -Wsequence-point -Wextra
 
 LDFLAGS :=
 
+CONFIG_LIB := -lconfig
+
 ENET_LIB := -lenet
 
 ALLEGRO_LIBRARIES := allegro-5 allegro_font-5 allegro_primitives-5 allegro_image-5 #allegro_ttf-5
 
 client: ALLEGRO_LIBS = $(shell pkg-config --libs $(ALLEGRO_LIBRARIES))
 
-LIBS = $(ENET_LIB) $(ALLEGRO_LIBS) -lm
+LIBS = $(CONFIG_LIB) $(ENET_LIB) $(ALLEGRO_LIBS) -lm
 
 
 #==============================================================================#

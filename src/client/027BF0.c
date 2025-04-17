@@ -595,9 +595,6 @@ void FUN_027BF0_Deinit(s32 arg0) {
   }
 }
 
-extern signed short sins(unsigned short angle);
-extern signed short coss(unsigned short angle);
-
 void FUN_027BF0_8006332c_thirtyfiveliner(void) {
   s32 i;
   s32 j;

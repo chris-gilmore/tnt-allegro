@@ -92,9 +92,6 @@ static void func_8006F39C(UnkStruct_8 *arg0) {
   var_a1[3].p.y = temp_t5 + temp_t3;
 }
 
-extern signed short sins(unsigned short angle);
-extern signed short coss(unsigned short angle);
-
 static void Minos_8006f4b4_thirtyliner_interesting(UnkStruct_8 *arg0) {
   register UnkStruct_14 *var_s0 = D_8011FC18.unk0;
   register s32 temp_s1;

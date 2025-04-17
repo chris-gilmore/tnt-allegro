@@ -39,9 +39,6 @@ typedef union {
   f32 f;
 } fu;
 
-extern u64 __ull_div(u64, u64);
-extern u64 __ll_mul(u64, u64);
-
 
 typedef struct {
   u16   button;
@@ -115,6 +112,7 @@ typedef s32 OSPri;
 #include "rmon.h"
 #include "os_time.h"
 #include "os_cache.h"
+#include "gu.h"
 
 #include "newtetris/img_defs.h"
 #include "newtetris/anim_defs.h"

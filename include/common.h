@@ -106,7 +106,7 @@ typedef s32 OSPri;
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
 #include <math.h>
 
 #include "rmon.h"
@@ -143,7 +143,7 @@ typedef s32 OSPri;
 #include "newtetris/01D6E0.h"
 #include "newtetris/gamefinish.h"
 #include "newtetris/aiplayer.h"
-#include "newtetris/0697D0.h"
+#include "newtetris/rand.h"
 #include "newtetris/00E440.h"
 #include "newtetris/sram.h"
 #include "newtetris/072080.h"

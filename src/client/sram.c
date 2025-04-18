@@ -13,6 +13,8 @@ void load_from_sram(u8 arg0) {
     g_sram_ptr = (Sram *) n64HeapAlloc(0x1900);
     sram_ptr = g_sram_ptr;
     func_800AC1A8(sram_ptr, (void *)0x08000000, 0x1900);
+
+    sram_ptr->music_mode = 1;
   }
   sram_ptr = g_sram_ptr;
 

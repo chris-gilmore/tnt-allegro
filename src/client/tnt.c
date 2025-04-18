@@ -34,6 +34,8 @@ s8 D_800CF838 = 7;  // max unlocked screen
 static FILE *fp;
 static int record = false;
 static int replay = false;
+static int save_frames = false;
+static char *frames_dir = NULL;
 static unsigned int framecount = 0;
 unsigned int game_id = 0;
 static unsigned int gametype = GAMETYPE_SPRINT;
@@ -164,6 +166,8 @@ static ALLEGRO_DISPLAY* disp;
 static ALLEGRO_BITMAP* buffer;
 
 static void disp_init(unsigned short num_players) {
+  al_add_new_bitmap_flag(ALLEGRO_NO_PRESERVE_TEXTURE);
+
   al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
   al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
 
@@ -186,8 +190,19 @@ static void disp_pre_draw(void) {
 }
 
 static void disp_post_draw(void) {
+  static char filename[256];
+  static unsigned int last_framecount = 0;
+
   al_set_target_backbuffer(disp);
   al_draw_scaled_bitmap(buffer, 0, 0, BUFFER_W, BUFFER_H, 0, 0, DISP_W, DISP_H, 0);
+
+  if (save_frames) {
+    while (last_framecount < framecount) {
+      last_framecount++;
+      sprintf(filename, "%s/image-%08d.png", frames_dir, last_framecount);
+      al_save_bitmap(filename, al_get_backbuffer(disp));
+    }
+  }
 
   al_flip_display();
 }
@@ -309,7 +324,7 @@ void hud_deinit(void) {
 }
 
 void hud_draw(void) {
-  al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 1, 1, 0, "FrameCount: %u", framecount);
+  al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 3, 3, 0, "FrameCount: %u", framecount);
 }
 
 
@@ -539,8 +554,9 @@ void player_init(void) {
   //createSuperThread(&superThread, &scheduler, controller_queues, 4);
   //FUN_001500_motorInit(&superThread);
   //FUN_001050_Create_and_Start_ControllerThread(&superThread, 5, 11);
-  //Audio_InitAudio();
+  Audio_InitAudio();
 
+  // From bootmain.c, main_infinite_loop_at_end_3()
   load_from_sram(FALSE);
 }
 
@@ -564,6 +580,8 @@ void game_init(unsigned short num_players) {
   D_800CFED4 = num_players;
   game_ptr->gameType = gametype;
   D_800CFEE8 = 4;  // MVC menu choice
+
+  func_800905E8(0);
 
   {
     int i;
@@ -748,6 +766,11 @@ int main(int argc, char **argv) {
       } else {
         printf("Replaying moves from file: '%s'\n", argv[optind]);
         replay = true;
+        if (optind + 1 < argc) {
+          printf("Saving frames to dir: '%s'\n", argv[optind + 1]);
+          save_frames = true;
+          frames_dir = strdup(argv[optind + 1]);
+        }
       }
     } else {  // file does not exist
       fp = fopen(argv[optind], "w");
@@ -847,6 +870,7 @@ int main(int argc, char **argv) {
   main_loop(queue);
 
   if (fp != NULL) fclose(fp);
+  if (frames_dir != NULL) free(frames_dir);
 
   game_deinit();
   player_deinit();

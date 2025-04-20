@@ -81,6 +81,8 @@ typedef struct {
 #define R_CBUTTONS      CONT_F
 #define D_CBUTTONS      CONT_D
 
+#define gDPPipeSync(pkt)
+
 typedef struct {
 } OSViMode;
 
@@ -186,7 +188,7 @@ typedef s32 OSPri;
 #include "newtetris/lineeffect.h"
 #include "newtetris/linescan.h"
 #include "newtetris/keyspin.h"
-#include "newtetris/0379B0.h"
+#include "newtetris/pausemenu.h"
 #include "newtetris/032F00.h"
 #include "newtetris/010870.h"
 #include "newtetris/audio.h"

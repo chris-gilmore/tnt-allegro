@@ -1,5 +1,6 @@
 #include "common.h"
 
+s32 D_800D3988;  // TODO: change s32 to some new struct
 s32 D_800D3A90;  // TODO: change s32 to some new struct
 
 void Audio2_GFXDone_SendPlayMessage(void *arg0) {

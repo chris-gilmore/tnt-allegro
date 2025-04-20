@@ -177,7 +177,7 @@ void Font_Init46Char(Font *p_font, u32 img_id) {
     for (i = 0; i < 46; i++) {
       ptr = (uint8_t *)locked->data + (i * locked->pitch * p_font->height);
 
-      for (p_font->char_widths[i] = p_font->width - 1; (((uint16_t *)ptr)[p_font->char_widths[i]] & 0xF0) == 0xF0; p_font->char_widths[i]--);
+      for (p_font->char_widths[i] = p_font->width - 1; (((uint16_t *) ptr)[p_font->char_widths[i]] & 0xFFF0) == 0xFFF0; p_font->char_widths[i]--);
       p_font->char_widths[i]++;
       if (p_font->char_widths[i] < 2) {
         p_font->char_widths[i] = p_font->width - 1;
@@ -218,7 +218,7 @@ void Font_Init51Char(Font *p_font, u32 img_id) {
     for (i = 0; i < 51; i++) {
       ptr = (uint8_t *)locked->data + (i * locked->pitch * p_font->height);
 
-      for (p_font->char_widths[i] = p_font->width - 1; (((uint16_t *)ptr)[p_font->char_widths[i]] & 0xF0) == 0xF0; p_font->char_widths[i]--);
+      for (p_font->char_widths[i] = p_font->width - 1; (((uint16_t *) ptr)[p_font->char_widths[i]] & 0xFFF0) == 0xFFF0; p_font->char_widths[i]--);
       p_font->char_widths[i]++;
       if (p_font->char_widths[i] < 2) {
         p_font->char_widths[i] = p_font->width - 1;

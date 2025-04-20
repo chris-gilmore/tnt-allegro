@@ -694,6 +694,8 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
       // mayan background
       weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_8011FB20.data, D_8011FB3C.data, D_8011FB24, D_8011FB28, D_8011FB2C, D_8011FB30, D_8011FB34, D_8011FB38);
 
+      gDPPipeSync(g_gdl++);
+
       // p0 name
       displayText_XY_RGBA_2(&g_gdl, &game_ptr->font, 290, 202, game_ptr->players[0].name, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -955,6 +957,8 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
       displayTimeFormatted_XY_RGBA(game_ptr->unkE4E8, &game_ptr->font, D_8011FB04 + 50, D_8011FB08 + 15, 0xFF, 0xFF, 0xFF, 0xFF);
     }
     func_8005BE40(&g_gdl);
+
+    gDPPipeSync(g_gdl++);
   }
 
   if (D_800CFED4 == 3) {
@@ -985,6 +989,8 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
       displayTimeFormatted_XY_RGBA(game_ptr->unkE4E8, &game_ptr->font, 217, 278, 0xFF, 0xFF, 0xFF, 0xFF);
     }
     func_8005BE40(&g_gdl);
+
+    gDPPipeSync(g_gdl++);
   }
 
   if (D_800CFED4 == 4) {
@@ -1018,6 +1024,8 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
       displayTimeFormatted_XY_RGBA(game_ptr->unkE4E8, &game_ptr->font, 217, 278, 0xFF, 0xFF, 0xFF, 0xFF);
     }
     func_8005BE40(&g_gdl);
+
+    gDPPipeSync(g_gdl++);
   }
 
   if (D_800CFEE8 == 12) {

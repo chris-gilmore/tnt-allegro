@@ -10,5 +10,8 @@ void Audio_InitAudio(void) {
 void Audio_80084e20_twentyliner(s32 arg0, void *arg1, u8 arg2) {
 }
 
+void Audio_UnloadSFX(void) {
+}
+
 void Audio_LoadSFX(void *) {
 }

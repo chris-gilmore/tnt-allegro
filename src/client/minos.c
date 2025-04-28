@@ -37,8 +37,6 @@ static void Minos_8006f260_eightliner_calls_8007641c_4_times(Mino *arg0) {
 }
 
 static void Minos_8006f300_eightliner_calls_80076458_4_times(Mino *arg0) {
-  printf("Minos_8006f300_eightliner_calls_80076458_4_times\n");
-  /*
   register UnkStruct_22 *var_s0 = &D_8011FC18;
   register UnkStruct_24 *var_s1 = &D_8011FC18.unk28->unk14;
 
@@ -50,6 +48,7 @@ static void Minos_8006f300_eightliner_calls_80076458_4_times(Mino *arg0) {
   func_80076458(&var_s0->unk0[2], &var_s1->unk24[2]);
   func_80076458(&var_s0->unk0[3], &var_s1->unk24[3]);
 
+  /*
   var_s0->unk28->unk58(var_s0->unk28);
   */
 }
@@ -256,7 +255,8 @@ static void Minos_800704e0_threeliner_sets_0x130(Mino *arg0) {
 
 void Minos_80070528_Morph(Mino *arg0) {
   if (arg0->unk130 != NULL) {
-    if ((arg0->unk130 > (s8 *)0x80000000) && (arg0->unk130 < (s8 *)0x80400000)) {
+    //if (((void *)arg0->unk130 > (void *)0x80000000) && ((void *)arg0->unk130 < (void *)0x80400000)) {
+    if (TRUE) {
       Minos_800704e0_threeliner_sets_0x130(arg0);
       arg0->unk1 |= 1;
     } else {
@@ -312,7 +312,7 @@ void Minos_80070528_Morph(Mino *arg0) {
   }
 }
 
-void Minos_80070818_oneliner_sets_arg0_0x130_to_arg1(Mino *arg0, s8 *arg1) {
+void Minos_80070818_oneliner_sets_arg0_0x130_to_arg1(Mino *arg0, CubeTile *arg1) {
   arg0->unk130 = arg1;
 }
 

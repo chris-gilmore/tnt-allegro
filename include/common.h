@@ -135,7 +135,6 @@ typedef s32 OSPri;
 #include "newtetris/0497E0.h"
 #include "newtetris/playervars.h"
 #include "newtetris/033310.h"
-#include "newtetris/0691B0.h"
 #include "newtetris/006B30.h"
 #include "newtetris/0073F0.h"
 #include "newtetris/003E40.h"
@@ -201,5 +200,6 @@ typedef s32 OSPri;
 #include "newtetris/tetris.h"
 #include "newtetris/game.h"
 #include "newtetris/setplayer.h"
+#include "newtetris/0691B0.h"
 
 #endif /* !_COMMON_H_ */

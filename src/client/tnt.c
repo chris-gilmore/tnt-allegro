@@ -28,6 +28,7 @@
 ////////////////////////////////////////
 u8 D_800CFD48 = TRUE;
 s8 D_800CF838 = 7;  // max unlocked screen
+u16 draw_buffer;
 ////////////////////////////////////////
 
 
@@ -621,6 +622,8 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
   bool redraw = false;
   ALLEGRO_EVENT event;
 
+  draw_buffer = 0;
+
   if (replay) {
     if (fgets(line, sizeof(line), fp)) {
       sscanf(line, "%u %u %u %u %u", &frmcnt, &button[0], &button[1], &button[2], &button[3]);
@@ -684,6 +687,8 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
         hud_draw();
         disp_post_draw();
         redraw = false;
+
+        draw_buffer ^= 1;
       }
     }
   }

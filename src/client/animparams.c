@@ -22,11 +22,11 @@ AnimParams D_800D1030 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   5,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   297, 89,                // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -38,11 +38,11 @@ AnimParams D_800D10CC = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   5,                      // num_images
-  2,                      // unk79
+  2,                      // image_cnt
   301, 115,               // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -54,11 +54,11 @@ AnimParams D_800D1168 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   5,                      // num_images
-  1,                      // unk79
+  1,                      // image_cnt
   306, 141,               // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -70,11 +70,11 @@ AnimParams D_800D1204 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   5,                      // num_images
-  4,                      // unk79
+  4,                      // image_cnt
   328, 89,                // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -86,11 +86,11 @@ AnimParams D_800D12A0 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   5,                      // num_images
-  3,                      // unk79
+  3,                      // image_cnt
   333, 115,               // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -102,11 +102,11 @@ AnimParams D_800D133C = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   5,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   338, 141,               // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -118,11 +118,11 @@ AnimParams D_800D13D8 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   5,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   278, 74,                // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -134,11 +134,11 @@ AnimParams D_800D1474 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   5,                      // num_images
-  2,                      // unk79
+  2,                      // image_cnt
   331, 74,                // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -174,11 +174,11 @@ AnimParams D_800D1510 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   12,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   17, 252,                // x, y
   NULL, NULL,             // **images, **palettes
-  0, 0, 60, 0, 1,         // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  0, 0, 60, 0, 1,         // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -190,11 +190,11 @@ AnimParams D_800D15AC = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   12,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   105, 258,               // x, y
   NULL, NULL,             // **images, **palettes
-  0, 0, 80, 0, 1,         // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  0, 0, 80, 0, 1,         // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -206,11 +206,11 @@ AnimParams D_800D1648 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   12,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   220, 210,               // x, y
   NULL, NULL,             // **images, **palettes
-  0, 0, 100, 0, 1,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  0, 0, 100, 0, 1,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -222,11 +222,11 @@ AnimParams D_800D16E4 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   12,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   237, 246,               // x, y
   NULL, NULL,             // **images, **palettes
-  0, 0, 115, 0, 1,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  0, 0, 115, 0, 1,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -238,11 +238,11 @@ AnimParams D_800D1780 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   12,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   301, 257,               // x, y
   NULL, NULL,             // **images, **palettes
-  0, 0, 70, 0, 1,         // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  0, 0, 70, 0, 1,         // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -278,11 +278,11 @@ AnimParams D_800D181C = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   12,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   4, 256,                 // x, y
   NULL, NULL,             // **images, **palettes
-  5, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  5, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -296,11 +296,11 @@ AnimParams D_800D18B8 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   262, 67,                // x, y
   NULL, NULL,             // **images, **palettes
-  11, 0, 30, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  11, 0, 30, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -312,11 +312,11 @@ AnimParams D_800D1954 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   262, 67,                // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 53, 0, 0,         // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 53, 0, 0,         // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -328,11 +328,11 @@ AnimParams D_800D19F0 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   262, 67,                // x, y
   NULL, NULL,             // **images, **palettes
-  1, 0, 42, 0, 0,         // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  1, 0, 42, 0, 0,         // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -346,11 +346,11 @@ AnimParams D_800D1A8C = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   12, 31,                 // x, y
   NULL, NULL,             // **images, **palettes
-  20, 0, 20, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  20, 0, 20, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -362,11 +362,11 @@ AnimParams D_800D1B28 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   12, 51,                 // x, y
   NULL, NULL,             // **images, **palettes
-  15, 0, 12, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  15, 0, 12, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -378,11 +378,11 @@ AnimParams D_800D1BC4 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   12, 91,                 // x, y
   NULL, NULL,             // **images, **palettes
-  15, 0, 15, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  15, 0, 15, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -394,11 +394,11 @@ AnimParams D_800D1C60 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   12, 111,                // x, y
   NULL, NULL,             // **images, **palettes
-  10, 0, 23, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  10, 0, 23, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -410,11 +410,11 @@ AnimParams D_800D1CFC = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   12, 150,                // x, y
   NULL, NULL,             // **images, **palettes
-  10, 0, 17, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  10, 0, 17, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -426,11 +426,11 @@ AnimParams D_800D1D98 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   12, 170,                // x, y
   NULL, NULL,             // **images, **palettes
-  15, 0, 13, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  15, 0, 13, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -442,11 +442,11 @@ AnimParams D_800D1E34 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   12, 210,                // x, y
   NULL, NULL,             // **images, **palettes
-  15, 0, 27, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  15, 0, 27, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -458,11 +458,11 @@ AnimParams D_800D1ED0 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   1,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   12, 230,                // x, y
   NULL, NULL,             // **images, **palettes
-  10, 0, 16, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  10, 0, 16, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -488,11 +488,11 @@ AnimParams D_800D1F6C = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   7,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   38, 101,                // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -512,11 +512,11 @@ AnimParams D_800D2008 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   4,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   212, 176,               // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 1,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 1,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -544,11 +544,11 @@ AnimParams D_800D20A4 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   23, 259,                // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -560,11 +560,11 @@ AnimParams D_800D2140 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  2,                      // unk79
+  2,                      // image_cnt
   53, 258,                // x, y
   NULL, NULL,             // **images, **palettes
-  1, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  1, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -576,11 +576,11 @@ AnimParams D_800D21DC = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  6,                      // unk79
+  6,                      // image_cnt
   40, 266,                // x, y
   NULL, NULL,             // **images, **palettes
-  3, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  3, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -592,11 +592,11 @@ AnimParams D_800D2278 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  1,                      // unk79
+  1,                      // image_cnt
   75, 257,                // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -608,11 +608,11 @@ AnimParams D_800D2314 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  3,                      // unk79
+  3,                      // image_cnt
   196, 266,               // x, y
   NULL, NULL,             // **images, **palettes
-  1, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  1, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -624,11 +624,11 @@ AnimParams D_800D23B0 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  5,                      // unk79
+  5,                      // image_cnt
   203, 258,               // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -640,11 +640,11 @@ AnimParams D_800D244C = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  2,                      // unk79
+  2,                      // image_cnt
   231, 267,               // x, y
   NULL, NULL,             // **images, **palettes
-  3, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  3, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -656,11 +656,11 @@ AnimParams D_800D24E8 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   250, 259,               // x, y
   NULL, NULL,             // **images, **palettes
-  1, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  1, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -672,11 +672,11 @@ AnimParams D_800D2584 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  7,                      // unk79
+  7,                      // image_cnt
   271, 265,               // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -688,11 +688,11 @@ AnimParams D_800D2620 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  3,                      // unk79
+  3,                      // image_cnt
   332, 259,               // x, y
   NULL, NULL,             // **images, **palettes
-  3, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  3, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -704,11 +704,11 @@ AnimParams D_800D26BC = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  4,                      // unk79
+  4,                      // image_cnt
   337, 264,               // x, y
   NULL, NULL,             // **images, **palettes
-  1, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  1, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -720,11 +720,11 @@ AnimParams D_800D2758 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  3,                      // unk79
+  3,                      // image_cnt
   65, 228,                // x, y
   NULL, NULL,             // **images, **palettes
-  3, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  3, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -736,11 +736,11 @@ AnimParams D_800D27F4 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   8,                      // num_images
-  4,                      // unk79
+  4,                      // image_cnt
   211, 229,               // x, y
   NULL, NULL,             // **images, **palettes
-  1, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  1, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -780,11 +780,11 @@ AnimParams D_800D2890 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   14,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   271, 15,                // x, y
   NULL, NULL,             // **images, **palettes
-  1, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  1, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0x7F  // red, green, blue, alpha
 };
 
@@ -820,11 +820,11 @@ AnimParams D_800D292C = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   12,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   225, 230,               // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -844,11 +844,11 @@ AnimParams D_800D29C8 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   4,                      // num_images
-  2,                      // unk79
+  2,                      // image_cnt
   51, 252,                // x, y
   NULL, NULL,             // **images, **palettes
-  3, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  3, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -868,11 +868,11 @@ AnimParams D_800D2A64 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   4,                      // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   215, 256,               // x, y
   NULL, NULL,             // **images, **palettes
-  3, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  3, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -942,11 +942,11 @@ AnimParams D_800D2B00 = {
     380
   },
   21,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   21, 1,                  // x, y
   NULL, NULL,             // **images, **palettes
-  2, 0, 3, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  2, 0, 3, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -1016,11 +1016,11 @@ AnimParams D_800D2B9C = {
     420
   },
   29,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   248, 6,                 // x, y
   NULL, NULL,             // **images, **palettes
-  1, 0, 200, 0, 0,        // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  1, 0, 200, 0, 0,        // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -1052,11 +1052,11 @@ AnimParams D_800D2C38 = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   },
   10,                     // num_images
-  0,                      // unk79
+  0,                      // image_cnt
   256, 13,                // x, y
   NULL, NULL,             // **images, **palettes
-  3, 0, 0, 0, 0,          // unk88, unk89, unk8A, unk8B, unk8C
-  0.0, 0.0,               // unk90, unk94
+  3, 0, 0, 0, 0,          // num_intra_frames, intra_frame_cnt, num_inter_frames, inter_frame_cnt, fade_alpha
+  0.0, 0.0,               // fade_rate, alpha_val
   0xFF, 0xFF, 0xFF, 0xFF  // red, green, blue, alpha
 };
 
@@ -1080,9 +1080,9 @@ void func_800764B8(AnimParams *animParams) {
   for (i = 0; i < animParams->num_images; i++) {
     animParams->images[i] = al_load_bitmap(config_setting_get_string_elem(anims, animParams->img_ids[i]));
   }
-  if (animParams->unk8C) {
-    animParams->unk90 = 1.0 / (f32) (animParams->num_images / 2);
-    animParams->unk94 = 0.0;
+  if (animParams->fade_alpha) {
+    animParams->fade_rate = 1.0 / (f32) (animParams->num_images / 2);
+    animParams->alpha_val = 0.0;
   }
 }
 
@@ -1103,72 +1103,72 @@ void func_800766C8(AnimParams *animParams) {
 }
 
 void func_800767C0(AnimParams *animParams) {
-  if (animParams->unk8A != 0) {
-    if (animParams->unk8A < animParams->unk8B) {
-      if (animParams->unk8B > (animParams->unk8A + animParams->num_images)) {
-        animParams->unk8B = 0;
+  if (animParams->num_inter_frames != 0) {
+    if (animParams->num_inter_frames < animParams->inter_frame_cnt) {
+      if (animParams->inter_frame_cnt > (animParams->num_inter_frames + animParams->num_images)) {
+        animParams->inter_frame_cnt = 0;
         return;
       }
 
-      if (animParams->unk88 != 0) {
-        if (animParams->unk89 == 0) {
-          animParams->unk89 = animParams->unk88;
-          animParams->unk79 = (animParams->unk79 + 1) % animParams->num_images;
-          animParams->unk8B++;
-          if (animParams->unk8C) {
-            animParams->unk94 += animParams->unk90;
-            if (animParams->unk94 >= 1.0) {
-              animParams->unk94 = 1.0;
-              animParams->unk90 = (1.0 / (f32) (animParams->num_images / 2)) * -1;
+      if (animParams->num_intra_frames != 0) {
+        if (animParams->intra_frame_cnt == 0) {
+          animParams->intra_frame_cnt = animParams->num_intra_frames;
+          animParams->image_cnt = (animParams->image_cnt + 1) % animParams->num_images;
+          animParams->inter_frame_cnt++;
+          if (animParams->fade_alpha) {
+            animParams->alpha_val += animParams->fade_rate;
+            if (animParams->alpha_val >= 1.0) {
+              animParams->alpha_val = 1.0;
+              animParams->fade_rate = (1.0 / (f32) (animParams->num_images / 2)) * -1;
             }
-            if (animParams->unk94 <= 0.0) {
-              animParams->unk94 = 0.0;
-              animParams->unk90 = 1.0 / (f32) (animParams->num_images / 2);
+            if (animParams->alpha_val <= 0.0) {
+              animParams->alpha_val = 0.0;
+              animParams->fade_rate = 1.0 / (f32) (animParams->num_images / 2);
             }
-            animParams->alpha = animParams->unk94 * 255;
+            animParams->alpha = animParams->alpha_val * 255;
           }
         } else {
-          animParams->unk89--;
+          animParams->intra_frame_cnt--;
         }
       } else {
-        if (animParams->unk8C) {
-          animParams->unk94 += animParams->unk90;
-          if (animParams->unk94 >= 1.0) {
-            animParams->unk94 = 1.0;
-            animParams->unk90 = (1.0 / (f32) (animParams->num_images / 2)) * -1;
+        if (animParams->fade_alpha) {
+          animParams->alpha_val += animParams->fade_rate;
+          if (animParams->alpha_val >= 1.0) {
+            animParams->alpha_val = 1.0;
+            animParams->fade_rate = (1.0 / (f32) (animParams->num_images / 2)) * -1;
           }
-          if (animParams->unk94 <= 0.0) {
-            animParams->unk94 = 0.0;
-            animParams->unk90 = 1.0 / (f32) (animParams->num_images / 2);
+          if (animParams->alpha_val <= 0.0) {
+            animParams->alpha_val = 0.0;
+            animParams->fade_rate = 1.0 / (f32) (animParams->num_images / 2);
           }
-          animParams->alpha = animParams->unk94 * 255;
+          animParams->alpha = animParams->alpha_val * 255;
         }
-        animParams->unk79 = (animParams->unk79 + 1) % animParams->num_images;
-        animParams->unk8B++;
+        animParams->image_cnt = (animParams->image_cnt + 1) % animParams->num_images;
+        animParams->inter_frame_cnt++;
       }
 
       func_8005BBFC(&g_gdl);
-      weird_lots_of_magic_number_setting_66xrefs(&g_gdl, animParams->images[animParams->unk79], animParams->palettes[animParams->unk79], animParams->x, animParams->y, animParams->red, animParams->green, animParams->blue, animParams->alpha);
+      weird_lots_of_magic_number_setting_66xrefs(&g_gdl, animParams->images[animParams->image_cnt], animParams->palettes[animParams->image_cnt], animParams->x, animParams->y, animParams->red, animParams->green, animParams->blue, animParams->alpha);
       func_8005BE40(&g_gdl);
 
     } else {
-      animParams->unk8B++;
+      animParams->inter_frame_cnt++;
     }
 
   } else {
-    if (animParams->unk88 != 0) {
-      if (animParams->unk89 == 0) {
-        animParams->unk89 = animParams->unk88;
-        animParams->unk79 = (animParams->unk79 + 1) % animParams->num_images;
+    if (animParams->num_intra_frames != 0) {
+      if (animParams->intra_frame_cnt == 0) {
+        animParams->intra_frame_cnt = animParams->num_intra_frames;
+        animParams->image_cnt = (animParams->image_cnt + 1) % animParams->num_images;
       } else {
-        animParams->unk89--;
+        animParams->intra_frame_cnt--;
       }
     } else {
-      animParams->unk79 = (animParams->unk79 + 1) % animParams->num_images;
+      animParams->image_cnt = (animParams->image_cnt + 1) % animParams->num_images;
     }
 
     func_8005BBFC(&g_gdl);
-    weird_lots_of_magic_number_setting_66xrefs(&g_gdl, animParams->images[animParams->unk79], animParams->palettes[animParams->unk79], animParams->x, animParams->y, animParams->red, animParams->green, animParams->blue, animParams->alpha);
+    weird_lots_of_magic_number_setting_66xrefs(&g_gdl, animParams->images[animParams->image_cnt], animParams->palettes[animParams->image_cnt], animParams->x, animParams->y, animParams->red, animParams->green, animParams->blue, animParams->alpha);
     func_8005BE40(&g_gdl);
   }
 }

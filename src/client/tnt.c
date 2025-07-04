@@ -160,8 +160,8 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
 #define BUFFER_W 400
 #define BUFFER_H 300
 
-#define DISP_W 640
-#define DISP_H 480
+#define DISP_W 800
+#define DISP_H 600
 
 static ALLEGRO_DISPLAY* disp;
 static ALLEGRO_BITMAP* buffer;
@@ -541,6 +541,7 @@ void player_init(void) {
   s16 i;
 
   // From bootmain.c, main_another_but_diff_400x300()
+  func_800A9E44(NULL, NULL);  // init fx
   FUN_80053538_fiveliner();
   FUN_80053500_fiveliner();
   //inits_bunch_of_stuff_q_allocs_heap();
@@ -570,6 +571,8 @@ void player_deinit(void) {
     n64HeapUnalloc(contQ_ptr->unk14);
     n64HeapUnalloc(contQ_ptr->_ControllerQueue);
   }
+
+  func_800AA514();  // deinit fx
 }
 
 
@@ -699,6 +702,9 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
 config_t g_images_cfg;
 config_t g_anims_cfg;
+config_t g_effects_cfg;
+
+int g_screen = -1;
 
 int main(int argc, char **argv) {
   config_init(&g_images_cfg);
@@ -717,6 +723,14 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
+  config_init(&g_effects_cfg);
+
+  if(!config_read_file(&g_effects_cfg, "effects.cfg")) {
+    fprintf(stderr, "%s:%d - %s\n", config_error_file(&g_effects_cfg), config_error_line(&g_effects_cfg), config_error_text(&g_effects_cfg));
+    config_destroy(&g_effects_cfg);
+    return EXIT_FAILURE;
+  }
+
   char *host = "localhost";
   int port = DEFAULT_PORT;
 
@@ -727,6 +741,7 @@ int main(int argc, char **argv) {
   char *nopt = NULL;
   char *hopt = NULL;
   char *popt = NULL;
+  char *sopt = NULL;
   static struct option long_options[] =
     {
       {"marathon", no_argument,       &gametype, GAMETYPE_MARATHON},
@@ -737,11 +752,12 @@ int main(int argc, char **argv) {
       {"net",      no_argument,       &net_flag, true},
       {"host",     required_argument, NULL, 'h'},
       {"port",     required_argument, NULL, 'p'},
+      {"screen",   required_argument, NULL, 's'},
       {NULL, 0, NULL, 0}
     };
   int option_index = 0;
 
-  while ((c = getopt_long(argc, argv, "g:n:h:p:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "g:n:h:p:s:", long_options, &option_index)) != -1) {
     switch (c) {
     case 0:
       break;
@@ -753,6 +769,9 @@ int main(int argc, char **argv) {
       break;
     case 'h':
       hopt = optarg;
+      break;
+    case 's':
+      sopt = optarg;
       break;
     case 'p':
       popt = optarg;
@@ -832,6 +851,10 @@ int main(int argc, char **argv) {
     server = connect_client(client, host, port);
   }
 
+  if (sopt != NULL) {
+    g_screen = strtoul(sopt, NULL, 0) % 8;
+  }
+
   must_init(al_init(), "allegro");
   must_init(al_install_keyboard(), "keyboard");
   must_init(al_install_joystick(), "joystick");
@@ -891,5 +914,6 @@ int main(int argc, char **argv) {
 
   config_destroy(&g_images_cfg);
   config_destroy(&g_anims_cfg);
+  config_destroy(&g_effects_cfg);
   return EXIT_SUCCESS;
 }

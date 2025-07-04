@@ -22,51 +22,61 @@ static u8 D_800D02B4 = 0;
 
 // mayan skybox
 static UnkStruct_11 D_800D02B8 = {
+  // ['0F7290', 5, 1, 164, 264]
   NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x10, 0, 201, 0
 };
 
 // japanese skybox
 static UnkStruct_11 D_800D02E8 = {
+  // ['1BC108', 5, 1, 202, 332]
   NULL, NULL, 0.2, -0.2, -0.7, 0.0, 0.0, 0.0, 0x1B, 0, 770, 0
 };
 
 // celtic skybox
 static UnkStruct_11 D_800D0318 = {
+  // ['1632E8', 6, 1, 1608, 3532]
   NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x00, 0, 0, 488
 };
 
 // russian skybox
 static UnkStruct_11 D_800D0348 = {
+  // ['1EE8D0', 6, 1, 80, 100]
   NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x00, 0, 0, 902
 };
 
 // african skybox
 static UnkStruct_11 D_800D0378 = {
+  // ['184A50', 6, 1, 76, 100]
   NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x00, 0, 0, 568
 };
 
 // greek skybox
 static UnkStruct_11 D_800D03A8 = {
+  // ['26B890', 5, 1, 178, 264]
   NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x00, 0, 1399, 0
 };
 
 // japanese flying butterflies
 static UnkStruct_11 D_800D03D8 = {
+  // ['257A30', 6, 1, 56608, 71960]
   NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x00, 0, 0, 1361
 };
 
 // celtic flying leaves
 static UnkStruct_11 D_800D0408 = {
+  // ['2503F8', 6, 1, 26714, 36160]
   NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x00, 0, 0, 1336
 };
 
 // russian snow
 static UnkStruct_11 D_800D0438 = {
+  // ['265F28', 6, 1, 924, 1312]
   NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x00, 0, 0, 1371
 };
 
 // greek rain
 static UnkStruct_11 D_800D0468 = {
+  // ['24F460', 6, 1, 1572, 3024]
   NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x00, 0, 0, 1319
 };
 
@@ -418,7 +428,9 @@ void FUN_027BF0_Init(s32 screen) {
       func_800764A0(&D_800D133C, &D_800D1030);
       func_800764A0(&D_800D13D8, &D_800D1030);
       func_800764A0(&D_800D1474, &D_800D1030);
+      /*
       func_80076EC0(&D_800D02B8, 1);
+      */
       bzero(&sp20, sizeof(UnkStruct_31));
       sp20.unk0.width = 17, sp20.unk0.height = 64;
       sp20.unk2.x = 74, sp20.unk2.y = 208;
@@ -427,8 +439,12 @@ void FUN_027BF0_Init(s32 screen) {
       break;
     case 1:
       func_800764B8(&D_800D2890);
+      /*
       func_80076EC0(&D_800D03A8, 1);
+      */
+      /*
       func_80076EC0(&D_800D0468, 1);
+      */
       break;
     case 2:
       func_800764B8(&D_800D292C);
@@ -437,12 +453,18 @@ void FUN_027BF0_Init(s32 screen) {
       break;
     case 3:
       func_800764B8(&D_800D2008);
+      /*
       func_80076EC0(&D_800D0318, 1);
+      */
+      /*
       func_80076EC0(&D_800D0408, 1);
+      */
       break;
     case 4:
       func_800764B8(&D_800D2C38);
+      /*
       func_80076EC0(&D_800D0378, 1);
+      */
       break;
     case 5:
       func_800764B8(&D_800D1510);
@@ -451,8 +473,12 @@ void FUN_027BF0_Init(s32 screen) {
       func_800764A0(&D_800D16E4, &D_800D1510);
       func_800764A0(&D_800D1780, &D_800D1510);
       func_800764B8(&D_800D181C);
+      /*
       func_80076EC0(&D_800D02E8, 1);
+      */
+      /*
       func_80076EC0(&D_800D03D8, 1);
+      */
       break;
     case 6:
       func_800764B8(&D_800D20A4);
@@ -468,8 +494,12 @@ void FUN_027BF0_Init(s32 screen) {
       func_800764A0(&D_800D26BC, &D_800D20A4);
       func_800764A0(&D_800D2758, &D_800D20A4);
       func_800764A0(&D_800D27F4, &D_800D20A4);
+      /*
       func_80076EC0(&D_800D0348, 1);
+      */
+      /*
       func_80076EC0(&D_800D0438, 1);
+      */
       break;
     case 7:
       func_800764B8(&D_800D18B8);
@@ -540,13 +570,19 @@ void FUN_027BF0_Deinit(s32 arg0) {
   if (D_800CFED4 == 1) {
     switch (saved_screen) {
     case 0:
+      /*
       func_80077028(&D_800D02B8);
+      */
       func_800766C8(&D_800D1030);
       func_80075400(&D_8011FB40);
       break;
     case 1:
+      /*
       func_80077028(&D_800D0468);
+      */
+      /*
       func_80077028(&D_800D03A8);
+      */
       func_800766C8(&D_800D2890);
       break;
     case 2:
@@ -555,23 +591,37 @@ void FUN_027BF0_Deinit(s32 arg0) {
       func_800766C8(&D_800D292C);
       break;
     case 3:
+      /*
       func_80077028(&D_800D0408);
+      */
+      /*
       func_80077028(&D_800D0318);
+      */
       func_800766C8(&D_800D2008);
       break;
     case 4:
+      /*
       func_80077028(&D_800D0378);
+      */
       func_800766C8(&D_800D2C38);
       break;
     case 5:
+      /*
       func_80077028(&D_800D03D8);
+      */
+      /*
       func_80077028(&D_800D02E8);
+      */
       func_800766C8(&D_800D181C);
       func_800766C8(&D_800D1510);
       break;
     case 6:
+      /*
       func_80077028(&D_800D0438);
+      */
+      /*
       func_80077028(&D_800D0348);
+      */
       func_800766C8(&D_800D20A4);
       break;
     case 7:
@@ -673,7 +723,10 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
   if (D_800CFED4 == 1) {
     switch (game_ptr->unkE4F8) {
     case 0:
+      // mayan skybox
+      /*
       D_800D02B8.unk14 += D_800D04B4;
+      */
 
       func_8005BBFC(&g_gdl);
 
@@ -683,7 +736,9 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
       func_8005BE40(&g_gdl);
 
       // mayan skybox
+      /*
       func_80077098(&D_800D02B8);
+      */
 
 
       func_8005BBFC(&g_gdl);
@@ -722,10 +777,15 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
       func_800751C0();
       break;
     case 1:
+      // greek skybox
+      /*
       D_800D03A8.unk14 += D_800D04B4;
+      */
 
       // greek skybox
+      /*
       func_80077098(&D_800D03A8);
+      */
 
 
       func_8005BBFC(&g_gdl);
@@ -743,7 +803,9 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
 
 
       // greek rain
+      /*
       func_80077098(&D_800D0468);
+      */
       break;
     case 2:
       func_8005BBFC(&g_gdl);
@@ -767,7 +829,9 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
       break;
     case 3:
       // celtic skybox
+      /*
       func_80077098(&D_800D0318);
+      */
 
 
       func_8005BBFC(&g_gdl);
@@ -785,11 +849,15 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
 
 
       // celtic flying leaves
+      /*
       func_80077098(&D_800D0408);
+      */
       break;
     case 4:
       // african skybox
+      /*
       func_80077098(&D_800D0378);
+      */
 
 
       func_8005BBFC(&g_gdl);
@@ -806,10 +874,15 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
       func_8005BE40(&g_gdl);
       break;
     case 5:
+      // japanese skybox
+      /*
       D_800D02E8.unk14 -= D_800D04B4;
+      */
 
       // japanese skybox
+      /*
       func_80077098(&D_800D02E8);
+      */
 
 
       func_8005BBFC(&g_gdl);
@@ -834,11 +907,15 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
 
 
       // japanese flying butterflies
+      /*
       func_80077098(&D_800D03D8);
+      */
       break;
     case 6:
       // russian skybox
+      /*
       func_80077098(&D_800D0348);
+      */
 
 
       func_8005BBFC(&g_gdl);
@@ -868,7 +945,9 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
 
 
       // russian snow
+      /*
       func_80077098(&D_800D0438);
+      */
       break;
     case 7:
       func_8005BBFC(&g_gdl);

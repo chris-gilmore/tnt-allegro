@@ -103,8 +103,13 @@ void func_80074EC4(UnkStruct_30 *arg0) {
 }
 
 /*
-  G_CC_BLENDPE - This mode is intended to be used with an intensity (I) texture.  It uses the intensity to interpolate between the environment color and primitive color.
-  G_CC_BLENDPEDECALA - This mode is like G_CC_BLENDPE, except it uses the texture only as the alpha source.
+  gsDPSetCombineMode(_G_CC_BLENDPEDECALA, _G_CC_BLENDPEDECALA)
+
+  #define	_G_CC_BLENDPE		ENVIRONMENT, PRIMITIVE, TEXEL0, PRIMITIVE, TEXEL0, 0, SHADE, 0
+  #define	_G_CC_BLENDPEDECALA	ENVIRONMENT, PRIMITIVE, TEXEL0, PRIMITIVE, 0, 0, 0, TEXEL0
+
+  _G_CC_BLENDPE - This mode is intended to be used with an intensity (I) texture.  It uses the intensity to interpolate between the primitive color and environment color.
+  _G_CC_BLENDPEDECALA - This mode is like _G_CC_BLENDPE, except it uses the texture only as the alpha source.
 
   |   primitive color | 0xFF, 0x00, 0x00, 0xFF | red
   | environment color | 0xFF, 0xFF, 0x00, 0xFF | yellow
@@ -122,9 +127,13 @@ void func_80074F3C(UnkStruct_30 *arg0) {
 
     for (int i = 0; i < arg0->unk14.width; i++, p_val++, cptr++) {
       /*
-        interpolate between the environment color and primitive color,
+        interpolate between the primitive color and environment color,
         and premultiply alpha
         a = val
+
+        (a - b) * c + d
+        (e - p) * i + p  ~~>  (i * e) + ((1 - i) * p)
+
         rgb = (((val * env) + ((0xFF - val) * prim)) / 0xFF) * val / 0xFF
       */
       *cptr = *p_val << 24 | (*p_val * *p_val / 0xFF) << 16 | *p_val;

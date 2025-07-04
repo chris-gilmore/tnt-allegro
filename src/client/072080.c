@@ -2,6 +2,10 @@
 
 extern unsigned int game_id;
 
+void func_800ABFF0(void *devAddr, void *dramAddr, u32 len) {
+  printf("-- func_800ABFF0\n");
+}
+
 u32 func_800AC1A8(void *dramAddr, void *devAddr, u32 len) {
   Sram *sram = dramAddr;
 

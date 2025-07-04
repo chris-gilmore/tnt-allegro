@@ -81,40 +81,39 @@ typedef struct {
 #define R_CBUTTONS      CONT_F
 #define D_CBUTTONS      CONT_D
 
-#define gDPPipeSync(pkt)
-
 typedef struct {
 } OSViMode;
 
 typedef struct {
-} Vtx;
-
-typedef struct {
-} Gfx;
-
-typedef void *OSMesg;
-
-typedef struct {
-} OSMesgQueue;
-
-typedef struct {
-} OSSched;
-
-typedef struct {
 } SuperThread;
-
-typedef s32 OSId;
-typedef s32 OSPri;
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdint.h>
 
 #include "rmon.h"
 #include "os_time.h"
 #include "os_cache.h"
+#include "os_message.h"
+#include "os_thread.h"
+#include "sched.h"
 #include "gu.h"
+#include "gbi.h"
+
+typedef struct {
+  f32 x, y, z;
+} Vec3;
+
+typedef struct {
+  f32 mf[4][4];
+} MtxF;
+
+#include "newtetris/074B00.h"
+#include "newtetris/06FFD0.h"
+#include "newtetris/borganim.h"
+#include "newtetris/069D80.h"
 
 #include "newtetris/img_defs.h"
 #include "newtetris/anim_defs.h"

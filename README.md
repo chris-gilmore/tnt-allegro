@@ -9,6 +9,8 @@ $ ./build/tnt --sprint --screen 7 --gameid 0x05261ec7 --name "GILLY" ./saved_mov
 
 Game type is one of `--marathon`, `--sprint` (default), or `--ultra`.
 
+Default screen is random.
+
 Default gameid is random.
 
 Default name is `"PLAYER 0"`.

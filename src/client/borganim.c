@@ -1178,9 +1178,3 @@ static Gfx *func_800A7EFC(Gfx *gdl, UnkStruct_32 *arg1) {
 
   return gdl;
 }
-
-#pragma GLOBAL_ASM("asm/nonmatchings/newtetris/borganim/func_800A8FA0.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/newtetris/borganim/func_800A8FC8.s")
-
-#pragma GLOBAL_ASM("asm/nonmatchings/newtetris/borganim/func_800A8FE8.s")

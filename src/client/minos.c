@@ -387,8 +387,16 @@ void Minos_Mino_Render(Mino *arg0, UnkStruct_8 *arg1) {
 
       switch (var_s6->unk2C) {
       case 1:
+        /*
+          al_draw_filled_rectangle(var_s6->unk0[0].p.x / 4.0, var_s6->unk0[0].p.y / 4.0, var_s6->unk0[3].p.x / 4.0, var_s6->unk0[3].p.y / 4.0, al_premul_rgba(arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha));
+          break;
+        */
       case 2:
         al_draw_scaled_rotated_bitmap(img, 0, 0, var_s6->unk0[0].p.x / 4.0, var_s6->unk0[0].p.y / 4.0, (sz / 256.0) / 8.0, (sz / 256.0) / 8.0, arg1->unkC.angle * DEG2RAD * 360 / 0x10000, 0);
+        /*
+          al_draw_filled_triangle(var_s6->unk0[0].p.x / 4.0, var_s6->unk0[0].p.y / 4.0, var_s6->unk0[1].p.x / 4.0, var_s6->unk0[1].p.y / 4.0, var_s6->unk0[2].p.x / 4.0, var_s6->unk0[2].p.y / 4.0, al_premul_rgba(arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha));
+        al_draw_filled_triangle(var_s6->unk0[1].p.x / 4.0, var_s6->unk0[1].p.y / 4.0, var_s6->unk0[3].p.x / 4.0, var_s6->unk0[3].p.y / 4.0, var_s6->unk0[2].p.x / 4.0, var_s6->unk0[2].p.y / 4.0, al_premul_rgba(arg0->unk4.diffuse_red >> 4, arg0->unk4.diffuse_green >> 4, arg0->unk4.diffuse_blue >> 4, alpha));
+        */
         break;
       }
     }

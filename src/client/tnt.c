@@ -1,7 +1,10 @@
 #include "common.h"
 #include <getopt.h>
-#include <libconfig.h>
 #include <time.h>
+
+// dnf: libconfig-devel
+// apt: libconfig-dev
+#include <libconfig.h>
 
 // dnf: allegro5-devel
 // apt: liballegro5-dev
@@ -160,11 +163,13 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
 #define BUFFER_W 400
 #define BUFFER_H 300
 
+s32 screen_1_width = BUFFER_W;
+
 #define DISP_W 800
 #define DISP_H 600
 
 static ALLEGRO_DISPLAY* disp;
-static ALLEGRO_BITMAP* buffer;
+static ALLEGRO_BITMAP* cfbuffer;
 
 static void disp_init(unsigned short num_players) {
   al_add_new_bitmap_flag(ALLEGRO_NO_PRESERVE_TEXTURE);
@@ -175,19 +180,19 @@ static void disp_init(unsigned short num_players) {
   disp = al_create_display(DISP_W, DISP_H);
   must_init(disp, "display");
 
-  buffer = al_create_bitmap(BUFFER_W, BUFFER_H);
-  must_init(buffer, "bitmap buffer");
+  cfbuffer = al_create_bitmap(BUFFER_W, BUFFER_H);
+  must_init(cfbuffer, "bitmap buffer");
 
   al_init_image_addon();
 }
 
 static void disp_deinit(void) {
-  al_destroy_bitmap(buffer);
+  al_destroy_bitmap(cfbuffer);
   al_destroy_display(disp);
 }
 
 static void disp_pre_draw(void) {
-  al_set_target_bitmap(buffer);
+  al_set_target_bitmap(cfbuffer);
 }
 
 static void disp_post_draw(void) {
@@ -195,7 +200,7 @@ static void disp_post_draw(void) {
   static unsigned int last_framecount = 0;
 
   al_set_target_backbuffer(disp);
-  al_draw_scaled_bitmap(buffer, 0, 0, BUFFER_W, BUFFER_H, 0, 0, DISP_W, DISP_H, 0);
+  al_draw_scaled_bitmap(cfbuffer, 0, 0, BUFFER_W, BUFFER_H, 0, 0, DISP_W, DISP_H, 0);
 
   if (save_frames) {
     while (last_framecount < framecount) {
@@ -581,11 +586,14 @@ void player_deinit(void) {
 void game_init(unsigned short num_players) {
   register Game *game_ptr = &g_game;
 
+  D_800CFEE8 = 4;  // MainMenu choice
+  func_800905E8(0);
+
   D_800CFED4 = num_players;
   game_ptr->gameType = gametype;
-  D_800CFEE8 = 4;  // MVC menu choice
 
-  func_800905E8(0);
+  // comment this out to try out the gui system / menus
+  D_800D3CF0 = 1;  // game mode
 
   {
     int i;
@@ -593,28 +601,30 @@ void game_init(unsigned short num_players) {
 
     i = 0;
     src = p0_name;
-    memset(game_ptr->players[0].name, 0, 9);
-    while (*src != 0 && i < 8) game_ptr->players[0].name[i++] = *src++;
+    memset(game_ptr->players[0].node.name, 0, 9);
+    while (*src != 0 && i < 8) game_ptr->players[0].node.name[i++] = *src++;
 
     i = 0;
     src = p1_name;
-    memset(game_ptr->players[1].name, 0, 9);
-    while (*src != 0 && i < 8) game_ptr->players[1].name[i++] = *src++;
+    memset(game_ptr->players[1].node.name, 0, 9);
+    while (*src != 0 && i < 8) game_ptr->players[1].node.name[i++] = *src++;
 
     i = 0;
     src = p2_name;
-    memset(game_ptr->players[2].name, 0, 9);
-    while (*src != 0 && i < 8) game_ptr->players[2].name[i++] = *src++;
+    memset(game_ptr->players[2].node.name, 0, 9);
+    while (*src != 0 && i < 8) game_ptr->players[2].node.name[i++] = *src++;
 
     i = 0;
     src = p3_name;
-    memset(game_ptr->players[3].name, 0, 9);
-    while (*src != 0 && i < 8) game_ptr->players[3].name[i++] = *src++;
+    memset(game_ptr->players[3].node.name, 0, 9);
+    while (*src != 0 && i < 8) game_ptr->players[3].node.name[i++] = *src++;
   }
 }
 
 void game_deinit(void) {
-  Game_Deinit();
+  if (g_game.is_active) {
+    Game_Deinit();
+  }
 }
 
 
@@ -879,6 +889,7 @@ int main(int argc, char **argv) {
     game_init(2);
   } else {
     game_init(1);
+    //game_init(2);
   }
 
   must_init(al_init_primitives_addon(), "primitives");

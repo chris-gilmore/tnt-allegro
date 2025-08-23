@@ -1,4 +1,6 @@
 #include "common.h"
+#include <allegro5/allegro5.h>
+#include <allegro5/allegro_primitives.h>
 
 extern u16 draw_buffer;
 
@@ -8,6 +10,7 @@ s32 D_80129030;
 s32 D_80129034;
 s32 D_80129038;
 s32 D_8012903C;
+f32 D_8012903C_f;
 static Mtx D_80129040[2];
 static u16 D_801290C0;
 
@@ -49,27 +52,6 @@ static Vp D_800D3F10 = {
   }
 };
 
-/*
-static Gfx D_800D3F20[] = {
-  gsDPSetCycleType(G_CYC_1CYCLE),
-  gsDPPipelineMode(G_PM_1PRIMITIVE),
-  gsDPSetScissor(G_SC_NON_INTERLACE, 0, 0, 400, 300),
-  gsDPSetTextureLOD(G_TL_TILE),
-  gsDPSetTextureLUT(G_TT_NONE),
-  gsDPSetTextureDetail(G_TD_CLAMP),
-  gsDPSetTexturePersp(G_TP_PERSP),
-  gsDPSetTextureFilter(G_TF_BILERP),
-  gsDPSetTextureConvert(G_TC_FILT),
-  gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-  gsDPSetCombineKey(G_CK_NONE),
-  gsDPSetAlphaCompare(G_AC_NONE),
-  gsDPSetRenderMode(G_RM_OPA_SURF, G_RM_OPA_SURF2),
-  gsDPSetColorDither(G_CD_DISABLE),
-  gsDPPipeSync(),
-  gsSPEndDisplayList(),
-};
-*/
-
 static f32 D_800D3FA0 = -100;
 static f32 D_800D3FA4 = 900;
 static f32 D_800D3FA8 = 110;
@@ -80,7 +62,7 @@ static void   func_8009D948(UnkStruct_78 *, u8);
 static void   func_8009DBEC(u8 *, UnkStruct_78 *);
 static void   func_8009DE40(UnkStruct_78 *, u8);
 static void   func_8009DFF8(UnkStruct_78 *);
-static void   func_8009E44C(UnkStruct_78 *, u8, u8);
+static void   func_8009E44C(UnkStruct_78 *, s32, u8);
 static void   func_8009EED4(UnkStruct_78 *, u8);
 static void   func_8009F3A8(UnkStruct_78 *, u8, s32, f32, f32, f32, f32, f32, f32, u8);
 static void   func_8009FF08(UnkStruct_78 *, u8);
@@ -211,28 +193,100 @@ static void func_8009DFF8(UnkStruct_78 *arg0) {
 
     temp_a1[i * 8].v.flag = 0;
     temp_a1[i * 8].v.tc[0] = (s16) (D_80129038 * sp10) << 6;
-    temp_a1[i * 8].v.tc[1] = (s16) (D_8012903C * spC) << 6;
+    temp_a1[i * 8].v.tc[1] = (s16) (D_8012903C_f * spC) << 6;
 
     temp_a1[i * 8 + 1].v.flag = 0;
     temp_a1[i * 8 + 1].v.tc[0] = (s16) ((sp10 + 1) * D_80129038) << 6;
-    temp_a1[i * 8 + 1].v.tc[1] = (s16) (D_8012903C * spC) << 6;
+    temp_a1[i * 8 + 1].v.tc[1] = (s16) (D_8012903C_f * spC) << 6;
 
     temp_a1[i * 8 + 2].v.flag = 0;
     temp_a1[i * 8 + 2].v.tc[0] = (s16) ((sp10 + 1) * D_80129038) << 6;
-    temp_a1[i * 8 + 2].v.tc[1] = (s16) ((spC + 1) * D_8012903C) << 6;
+    temp_a1[i * 8 + 2].v.tc[1] = (s16) ((spC + 1) * D_8012903C_f) << 6;
 
     temp_a1[i * 8 + 3].v.flag = 0;
     temp_a1[i * 8 + 3].v.tc[0] = (s16) (D_80129038 * sp10) << 6;
-    temp_a1[i * 8 + 3].v.tc[1] = (s16) ((spC + 1) * D_8012903C) << 6;
+    temp_a1[i * 8 + 3].v.tc[1] = (s16) ((spC + 1) * D_8012903C_f) << 6;
   }
 }
 
-static void func_8009E44C(UnkStruct_78 *arg0, u8 arg1, u8 arg2) {
-  printf("-- func_8009E44C\n");
+static void func_8009E44C(UnkStruct_78 *arg0, s32 arg1, u8 arg2) {
+  register Vtx *temp_t3 = arg0->unk12C;
+
+  ALLEGRO_COLOR white = al_map_rgb_f(1, 1, 1);
+  ALLEGRO_VERTEX vtx[4] = {
+    // x   y   z   u   v   color
+    {  0,  0,  0,  0,  0,  white},
+    {  0,  0,  0,  0,  0,  white},
+    {  0,  0,  0,  0,  0,  white},
+    {  0,  0,  0,  0,  0,  white}
+  };
+  static int indices[6] = {
+    0, 1, 2,
+    0, 2, 3
+  };
+
+  for (int i = 0; i < 4; i++) {
+    vtx[i].x = temp_t3[arg1 * 8 + i].v.ob[0];
+    vtx[i].y = temp_t3[arg1 * 8 + i].v.ob[1];
+    vtx[i].u = temp_t3[arg1 * 8 + i].v.tc[0] >> 6;
+    vtx[i].v = temp_t3[arg1 * 8 + i].v.tc[1] >> 6;
+  }
+
+  al_draw_indexed_prim(vtx, NULL, arg0->img, indices, 6, ALLEGRO_PRIM_TRIANGLE_LIST);
 }
 
 static void func_8009EED4(UnkStruct_78 *arg0, u8 arg1) {
-  //printf("-- func_8009EED4 : %d\n", arg1);
+  register UnkStruct_81 *temp_s0 = arg0->unk130 + arg1;
+
+  /*
+  guTranslate(&temp_s0->unk28[draw_buffer], temp_s0->unk4, temp_s0->unk8, temp_s0->unkC);
+  guRotateRPY(&temp_s0->unkA8[draw_buffer], temp_s0->unk1C, temp_s0->unk20, temp_s0->unk24);
+  if (temp_s0->unk1C8 == 2) {
+    guTranslate(&temp_s0->unk128[draw_buffer], temp_s0->unk4 * -1, (temp_s0->unk8 * -1) + temp_s0->unk1B8, temp_s0->unkC);
+  } else if (temp_s0->unk1C8 == 1) {
+    guTranslate(&temp_s0->unk128[draw_buffer], (temp_s0->unk4 * -1) + temp_s0->unk1B8, temp_s0->unk8 * -1, temp_s0->unkC);
+  } else if (temp_s0->unk1C8 == 3) {
+    guTranslate(&temp_s0->unk128[draw_buffer], temp_s0->unk4 * -1, temp_s0->unk8 * -1, temp_s0->unkC + temp_s0->unk1B8);
+  } else {
+    guTranslate(&temp_s0->unk128[draw_buffer], temp_s0->unk4 * -1, temp_s0->unk8 * -1, temp_s0->unkC);
+  }
+  guTranslate(&arg0->unk0[draw_buffer], 8, -5, 0);
+  guRotateRPY(&arg0->unk80[draw_buffer], 0, 0, 0);
+
+  gSPMatrix(g_gdl++,  &temp_s0->unk28[draw_buffer], G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+  gSPMatrix(g_gdl++,  &temp_s0->unkA8[draw_buffer], G_MTX_NOPUSH | G_MTX_MUL  | G_MTX_MODELVIEW);
+  gSPMatrix(g_gdl++, &temp_s0->unk128[draw_buffer], G_MTX_NOPUSH | G_MTX_MUL  | G_MTX_MODELVIEW);
+  gSPMatrix(g_gdl++,      &arg0->unk0[draw_buffer], G_MTX_NOPUSH | G_MTX_MUL  | G_MTX_MODELVIEW);
+  gSPMatrix(g_gdl++,     &arg0->unk80[draw_buffer], G_MTX_NOPUSH | G_MTX_MUL  | G_MTX_MODELVIEW);
+  */
+  ALLEGRO_TRANSFORM t;
+  al_identity_transform(&t);
+  al_translate_transform_3d(&t, temp_s0->unk4, temp_s0->unk8, temp_s0->unkC);
+  //guRotateRPY(&temp_s0->unkA8[draw_buffer], temp_s0->unk1C, temp_s0->unk20, temp_s0->unk24);
+  if (temp_s0->unk1C8 == 2) {
+    al_translate_transform_3d(&t, temp_s0->unk4 * -1, (temp_s0->unk8 * -1) + temp_s0->unk1B8, temp_s0->unkC);
+  } else if (temp_s0->unk1C8 == 1) {
+    al_translate_transform_3d(&t, (temp_s0->unk4 * -1) + temp_s0->unk1B8, temp_s0->unk8 * -1, temp_s0->unkC);
+  } else if (temp_s0->unk1C8 == 3) {
+    al_translate_transform_3d(&t, temp_s0->unk4 * -1, temp_s0->unk8 * -1, temp_s0->unkC + temp_s0->unk1B8);
+  } else {
+    al_translate_transform_3d(&t, temp_s0->unk4 * -1, temp_s0->unk8 * -1, temp_s0->unkC);
+  }
+  //al_translate_transform_3d(&t, 8, -5, 0);
+  //guRotateRPY(&arg0->unk80[draw_buffer], 0, 0, 0);
+  al_use_transform(&t);
+
+  if (temp_s0->unk1C4 != 0) {
+    func_8009E44C(arg0, temp_s0->unk0[0], FALSE);
+    func_8009E44C(arg0, temp_s0->unk0[1], FALSE);
+    func_8009E44C(arg0, temp_s0->unk0[2], FALSE);
+    func_8009E44C(arg0, temp_s0->unk0[3], FALSE);
+  } else {
+    func_8009E44C(arg0, temp_s0->unk0[0], FALSE);
+    func_8009E44C(arg0, temp_s0->unk0[1], FALSE);
+    func_8009E44C(arg0, temp_s0->unk0[2], FALSE);
+    func_8009E44C(arg0, temp_s0->unk0[3], FALSE);
+  }
 }
 
 void func_8009F2DC(UnkStruct_78 *arg0) {
@@ -371,7 +425,10 @@ static void func_8009FF08(UnkStruct_78 *arg0, u8 arg1) {
 
 void func_800A0228(UnkStruct_78 *arg0) {
   register s32 i;
-  Mtx sp48;
+  //Mtx sp48;
+
+  ALLEGRO_TRANSFORM p = *al_get_current_projection_transform();
+  ALLEGRO_TRANSFORM t = *al_get_current_transform();
 
   /*
   guLookAt(&sp48, 0, 0, D_800D3FAC, 0, 0, 0, 0, -1, 0);
@@ -381,6 +438,12 @@ void func_800A0228(UnkStruct_78 *arg0) {
   gSPViewport(g_gdl++, &D_800D3F10);
   gSPMatrix(g_gdl++, &D_80129040[draw_buffer], G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
   */
+  ALLEGRO_TRANSFORM projection;
+  //al_build_camera_transform(&projection, 0, 0, -D_800D3FAC, 0, 0, 0, 0, 1, 0);
+  //al_perspective_transform(&projection, -400, -800, -D_800D3FAC - 400, 400, 400, 1500);
+  al_build_camera_transform(&projection, 0, 0, -D_800D3FAC, 0, 0, 0, 0, 1, 0);
+  al_perspective_transform(&projection, -400, -400, -D_800D3FAC, 400, 400, 1500);
+  al_use_projection_transform(&projection);
 
   if (TRUE) {
     s32 sp38 = 0;
@@ -400,4 +463,8 @@ void func_800A0228(UnkStruct_78 *arg0) {
       }
     }
   }
+
+  // restore transforms
+  al_use_transform(&t);
+  al_use_projection_transform(&p);
 }

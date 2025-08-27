@@ -9,7 +9,7 @@ default: all
 TARGET := tnt
 TNT_SPLAT_DIR := ../tnt-splat
 
-TNT_SPLAT_C_FILES := 003E40.c 006B30.c 0073F0.c 0074E0.c 026900.c 026C80.c sprite.c color.c contq.c piecedefs.c playervars.c gamevars.c 033310.c mobilepiece.c ghostpiece.c currentpiece.c piecehold.c boardinfo.c frameact.c cube.c ids.c boardpieces.c bag63.c nextpieces.c fallingcubes.c mobilecubes.c board.c multisquare.c linescan.c gamestats.c dbgprntrrl.c tetris.c setplayer.c pfgfx.c lineeffect.c 032F00.c frametime.c game.c formattime.c rand.c pausemenu.c keyspin.c cubetiles.c 03C220.c 069D80.c 074B00.c 03B700.c creditstext.c
+TNT_SPLAT_C_FILES := 003E40.c 006B30.c 0073F0.c 0074E0.c 026900.c 026C80.c sprite.c color.c contq.c piecedefs.c playervars.c gamevars.c 033310.c mobilepiece.c ghostpiece.c currentpiece.c piecehold.c boardinfo.c frameact.c cube.c ids.c boardpieces.c bag63.c nextpieces.c fallingcubes.c mobilecubes.c board.c multisquare.c linescan.c gamestats.c dbgprntrrl.c tetris.c setplayer.c pfgfx.c lineeffect.c 032F00.c frametime.c game.c formattime.c rand.c pausemenu.c keyspin.c cubetiles.c 03C220.c 069D80.c 074B00.c 03B700.c creditstext.c strutil.c endscroller.c
 
 ULTRALIB_C_FILES := gu/coss.c gu/sins.c gu/mtxutil.c gu/normalize.c
 

@@ -639,13 +639,11 @@ void func_80090E08(void) {
   } else if (D_800D3CF0 == 4) {  // haluci mode
     printf("-- haluci mode\n");
 
-    /*
     main_8004A34C_threeliner();
     func_80090A44();
     D_800CFEE8 = 13;
     func_8007CF40(1);  // haluci_init(1);
     D_800D3CF0 = 0;
-    */
 
   } else if (D_800D3CF0 == 5) {  // scroll credits
     main_8004A34C_threeliner();

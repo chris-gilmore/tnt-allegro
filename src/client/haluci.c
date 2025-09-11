@@ -9,10 +9,8 @@ extern u16 draw_buffer;
 static u8 D_8011FD10[256];
 static UnkStruct_83 D_8011FE10[5];
 static UnkStruct_32 *D_8011FE9C;
-static s32 D_8011FEA0;  // unused
-static s32 D_8011FEA4;  // unused
 static UnkStruct_86 *D_8011FEA8;
-static void *D_8011FEAC;
+static UnkStruct_88 *D_8011FEAC;
 static Mtx D_8011FEB0[8];
 static UnkStruct_84 D_801200B0;
 
@@ -21,7 +19,6 @@ static UnkStruct_44 D_800D3044 = {
   { -1, 0 },
   { 4, 16, 16, 10, 0, NULL, NULL }
 };
-static s32 D_800D305C = 0;  // unused
 
 static Gfx D_800D3060[] = {};
 /*
@@ -33,13 +30,6 @@ static Gfx D_800D3060[] = {
 */
 
 static f32 D_800D30A8 = 0;
-static f32 D_800D30AC = 0;           // unused
-static f32 D_800D30B0 = 0;           // unused
-static f32 D_800D30B4 = -16;         // unused
-static f32 D_800D30B8 = 0;           // unused
-static f32 D_800D30BC = 0;           // unused
-static f32 D_800D30C0 = 0.09142857;  // unused
-static f32 D_800D30C4 = 0;           // unused
 static Vtx D_800D30C8[] = {
   {{{     0,   256,   256 }, 0, {     0,     0 }, { 255, 255, 255,   0 }}},
   {{{     0,   256,  -256 }, 0, {     0,  8192 }, { 255, 255, 255,   0 }}},
@@ -59,15 +49,11 @@ static Gfx D_800D3108[] = {};
 
 static s32 D_800D3128 = 0;
 static s32 D_800D312C = 0;
-static UnkStruct_85 D_800D3130 = {
+static UnkStruct_84 D_800D3130 = {
   0,
   0.25,
   1,
   0,
-  800, 600,
-  511, 0,
-  800, 600,
-  511, 0,
 };
 static Vec3 D_800D3150 = { 1.1, 1.1, 1.0 };
 static f32 D_800D315C = 0;
@@ -123,7 +109,6 @@ static void func_8007C650(void) {
 }
 
 static void func_8007C8B0(void) {
-  f32 sp2C;  // unused
   f32 sp28 = 0;
   s32 sp24;
 
@@ -208,6 +193,8 @@ static void func_8007CC14(void) {
 // haluci_init
 void func_8007CF40(u8 arg0) {
   Gfx *sp34;
+
+  printf("-- haluci_init\n");
 
   D_800D3040 = arg0;
   D_8011FE9C = func_800AC9C0();
@@ -393,6 +380,8 @@ Gfx *func_8007DA00(Gfx *gdl) {
   Vec3 sp44;
   Vec3 sp38;
 
+  printf("-- haluci_update\n");
+
   if (D_800D3040 != 0) {
     sp38 = D_800D3150;
     func_800AE6E4(D_8011FEAC, &sp38);
@@ -402,7 +391,7 @@ Gfx *func_8007DA00(Gfx *gdl) {
     */
   }
 
-  if ((D_800CFEE8 == 13) && (g_PV_arr->unk1C->unk0 & 0x1000) && !(g_PV_arr->unk1C->unk4 & 0x1000)) {
+  if ((D_800CFEE8 == 13) && (g_PV_arr->unk1C->unk0 & 0x1000) && !(g_PV_arr->unk1C->unk4 & 0x1000)) {  // START_BUTTON / CONT_START
     D_800D3040 ^= 1;
   }
 

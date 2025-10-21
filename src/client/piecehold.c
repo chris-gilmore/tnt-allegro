@@ -28,6 +28,7 @@ static void   PieceHoldPiece_MakeShadowActive(PieceHoldPieceShadow *, u8, Point,
 static void   PieceHoldPiece_RenderShadow(PieceHoldPieceShadow *);
 static void   PieceHold_8006593c_nineliner_sets_struct_stuff(PieceHoldPieceShadow *, s32);
 static void   PieceHoldPiece_FinishSwap(PieceHoldPiece *, s32);
+static void   PieceHoldPiece_FinishCrossSwap(PieceHoldPiece *, s32);
 static void   PieceHold_80065a0c_tenliner_adds_sets_struct(PieceHoldPiece *, u32);
 static void   PieceHoldPiece_Update(PieceHoldPiece *, s32);
 static void   PieceHoldPiece_Render(PieceHoldPiece *);
@@ -101,6 +102,13 @@ static void PieceHoldPiece_FinishSwap(PieceHoldPiece *pieceHoldPiece_ptr, s32 ar
   }
 }
 
+static void PieceHoldPiece_FinishCrossSwap(PieceHoldPiece *pieceHoldPiece_ptr, s32 arg1) {
+  if (pieceHoldPiece_ptr->unk1A == 0) {
+
+    pieceHoldPiece_ptr->state = 0;
+  }
+}
+
 void PieceHold_80065a0c_tenliner_adds_sets_struct(PieceHoldPiece *pieceHoldPiece_ptr, u32 arg1) {
   if (pieceHoldPiece_ptr->unk1A != 0) {
     if (pieceHoldPiece_ptr->unk1A < arg1) {
@@ -131,6 +139,12 @@ static void PieceHoldPiece_Update(PieceHoldPiece *pieceHoldPiece_ptr, s32 arg1) 
     MobilePiece_80064f54_fourliner_loops_4_times(&pieceHoldPiece_ptr->piece, arg1);
     PieceHold_80065a0c_tenliner_adds_sets_struct(pieceHoldPiece_ptr, arg1);
     PieceHoldPiece_FinishSwap(pieceHoldPiece_ptr, arg1);
+    break;
+  case 3:
+    MobilePiece_800655c4_oneliner_if_calls_fun(&pieceHoldPiece_ptr->flasher, arg1);
+    MobilePiece_80064f54_fourliner_loops_4_times(&pieceHoldPiece_ptr->piece, arg1);
+    PieceHold_80065a0c_tenliner_adds_sets_struct(pieceHoldPiece_ptr, arg1);
+    PieceHoldPiece_FinishCrossSwap(pieceHoldPiece_ptr, arg1);
     break;
   default:
     debug_print_reason_routine("PieceHoldPiece_Update", "piecehold.c");
@@ -235,6 +249,63 @@ void PieceHold_Render(PieceHold *pieceHold_ptr) {
   PieceHoldPiece_Render(&pieceHold_ptr->buf[1]);
 }
 
+void PieceHold_Cross_Swap(PieceHold *pieceHold_ptr, CurrentPiece *currentPiece_ptr, PieceHold *otherPieceHold_ptr) {
+  register PieceHoldPiece *pieceHoldPiece_ptr;
+  register PieceHoldPiece *otherPieceHoldPiece_ptr;
+  register PieceDefinition *pieceDef_ptr;
+  register Piece *piece_ptr;
+
+  if (!pieceHold_ptr->can_swap) {
+    return;
+  }
+
+  // otherHold -> hold
+  otherPieceHoldPiece_ptr = &otherPieceHold_ptr->buf[otherPieceHold_ptr->buf_idx];
+  pieceDef_ptr = g_pieceDef_ptr_arr[otherPieceHoldPiece_ptr->piece_type];
+  PieceHold_80065e20_lots_of_ifs_and_traps(otherPieceHoldPiece_ptr, pieceHold_ptr->unk1490, pieceDef_ptr->center, pieceDef_ptr->starting_rot_state << 14, 0xC0, otherPieceHold_ptr->num_anim_frames);
+  otherPieceHoldPiece_ptr->state = 3;
+  PieceHold_80065720_fiveliner_two_traps(&otherPieceHoldPiece_ptr->shadow, otherPieceHold_ptr->num_anim_frames);
+
+  // otherHold <- hold
+  otherPieceHoldPiece_ptr = &otherPieceHold_ptr->buf[1 - otherPieceHold_ptr->buf_idx];
+  pieceHoldPiece_ptr = &pieceHold_ptr->buf[pieceHold_ptr->buf_idx];
+  piece_ptr = &pieceHoldPiece_ptr->piece;
+  pieceDef_ptr = g_pieceDef_ptr_arr[pieceHoldPiece_ptr->piece_type];
+  PieceHoldPiece_MakeActive(otherPieceHoldPiece_ptr, pieceHoldPiece_ptr->piece_type, piece_ptr->physicalPos, piece_ptr->physicalRotOrigin, piece_ptr->physicalCkwRotValue, 0x100);
+  PieceHold_80065e20_lots_of_ifs_and_traps(otherPieceHoldPiece_ptr, otherPieceHold_ptr->unk1490, pieceDef_ptr->center, pieceDef_ptr->starting_rot_state << 14, 0xC0, otherPieceHold_ptr->num_anim_frames);
+  otherPieceHoldPiece_ptr->state = 1;
+  PieceHoldPiece_MakeShadowActive(&otherPieceHoldPiece_ptr->shadow, pieceHoldPiece_ptr->piece_type, otherPieceHold_ptr->unk1490, pieceDef_ptr->center, pieceDef_ptr->starting_rot_state << 14, 0xC0, otherPieceHold_ptr->num_anim_frames);
+
+  //////////////////////////////////////////////////////////////////////////
+
+  // hold -> otherHold
+  pieceHoldPiece_ptr = &pieceHold_ptr->buf[pieceHold_ptr->buf_idx];
+  pieceDef_ptr = g_pieceDef_ptr_arr[pieceHoldPiece_ptr->piece_type];
+  PieceHold_80065e20_lots_of_ifs_and_traps(pieceHoldPiece_ptr, otherPieceHold_ptr->unk1490, pieceDef_ptr->center, pieceDef_ptr->starting_rot_state << 14, 0xC0, pieceHold_ptr->num_anim_frames);
+  pieceHoldPiece_ptr->state = 3;
+  PieceHold_80065720_fiveliner_two_traps(&pieceHoldPiece_ptr->shadow, pieceHold_ptr->num_anim_frames);
+
+  // hold <- otherHold
+  pieceHoldPiece_ptr = &pieceHold_ptr->buf[1 - pieceHold_ptr->buf_idx];
+  otherPieceHoldPiece_ptr = &otherPieceHold_ptr->buf[otherPieceHold_ptr->buf_idx];
+  piece_ptr = &otherPieceHoldPiece_ptr->piece;
+  pieceDef_ptr = g_pieceDef_ptr_arr[otherPieceHoldPiece_ptr->piece_type];
+  PieceHoldPiece_MakeActive(pieceHoldPiece_ptr, otherPieceHoldPiece_ptr->piece_type, piece_ptr->physicalPos, piece_ptr->physicalRotOrigin, piece_ptr->physicalCkwRotValue, 0x100);
+  PieceHold_80065e20_lots_of_ifs_and_traps(pieceHoldPiece_ptr, pieceHold_ptr->unk1490, pieceDef_ptr->center, pieceDef_ptr->starting_rot_state << 14, 0xC0, pieceHold_ptr->num_anim_frames);
+  pieceHoldPiece_ptr->state = 1;
+  PieceHoldPiece_MakeShadowActive(&pieceHoldPiece_ptr->shadow, otherPieceHoldPiece_ptr->piece_type, pieceHold_ptr->unk1490, pieceDef_ptr->center, pieceDef_ptr->starting_rot_state << 14, 0xC0, pieceHold_ptr->num_anim_frames);
+
+  //////////////////////////////////////////////////////////////////////////
+
+  // flip buffer
+  otherPieceHold_ptr->buf_idx = 1 - otherPieceHold_ptr->buf_idx;
+  PieceHold_Disable(otherPieceHold_ptr);
+
+  // flip buffer
+  pieceHold_ptr->buf_idx = 1 - pieceHold_ptr->buf_idx;
+  PieceHold_Disable(pieceHold_ptr);
+}
+
 void PieceHold_Swap(PieceHold *pieceHold_ptr, CurrentPiece *currentPiece_ptr) {
   register PieceHoldPiece *pieceHoldPiece_ptr;
   register PieceDefinition *pieceDef_ptr;
@@ -264,6 +335,7 @@ void PieceHold_Swap(PieceHold *pieceHold_ptr, CurrentPiece *currentPiece_ptr) {
   pieceHoldPiece_ptr->state = 1;
   currentPiece_ptr->state = 0;
   PieceHoldPiece_MakeShadowActive(&pieceHoldPiece_ptr->shadow, currentPiece_ptr->pieceType, pieceHold_ptr->unk1490, pieceDef_ptr->center, pieceDef_ptr->starting_rot_state << 14, 0xC0, pieceHold_ptr->num_anim_frames);
+
   pieceHold_ptr->buf_idx = 1 - pieceHold_ptr->buf_idx;
   PieceHold_Disable(pieceHold_ptr);
 }

@@ -1,5 +1,14 @@
 #include "common.h"
 
+#define XSWAP_SELF 0
+#define XSWAP_PAIR 1
+#define XSWAP_STRIPE 2
+#define XSWAP_RING 3
+
+extern void PieceHold_Cross_Swap(PieceHold *, CurrentPiece *, PieceHold *);
+
+////////////////////////////////////////
+
 Tetris *g_tetris_ptr;
 
 static void Tetris_CheckButtons(void);
@@ -23,6 +32,10 @@ static void Tetris_CheckButtons(void) {
     if (currentPiece_ptr->state == 1) {
       if (temp_s1->unk8C & 0x20) {           // L_TRIG / CONT_L
         PieceHold_Swap(&tetris_ptr->pieceHold, currentPiece_ptr);
+        Audio2_Play_SFX(&D_801235B0, &D_800D3A90, 1);
+      }
+      if (temp_s1->unk8C & 0x10) {           // R_TRIG / CONT_R
+        PieceHold_Cross_Swap(&tetris_ptr->pieceHold, currentPiece_ptr, &g_game.tetris_ptr_arr[g_currentplayer ^ XSWAP_PAIR]->pieceHold);
         Audio2_Play_SFX(&D_801235B0, &D_800D3A90, 1);
       }
       if (temp_s1->unk84 & 0x200) {          // L_JPAD / CONT_LEFT

@@ -602,8 +602,8 @@ void game_init(unsigned short num_players) {
   game_ptr->gameType = gametype;
 
   // comment this out to try out the gui system / menus
-  //D_800D3CF0 = 1;  // game mode
-  D_800D3CF0 = 4;  // haluci mode
+  D_800D3CF0 = 1;  // game mode
+  //D_800D3CF0 = 4;  // haluci mode
 
   {
     int i;
@@ -895,7 +895,7 @@ int main(int argc, char **argv) {
     game_init(2);
   } else {
     //game_init(1);
-    game_init(4);
+    game_init(2);
   }
 
   must_init(al_init_primitives_addon(), "primitives");

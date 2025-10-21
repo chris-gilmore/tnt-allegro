@@ -637,8 +637,6 @@ void func_80090E08(void) {
     */
 
   } else if (D_800D3CF0 == 4) {  // haluci mode
-    printf("-- haluci mode\n");
-
     main_8004A34C_threeliner();
     func_80090A44();
     D_800CFEE8 = 13;

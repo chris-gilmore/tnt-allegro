@@ -38,9 +38,10 @@ u16 draw_buffer;
 static FILE *fp;
 static int record = false;
 static int replay = false;
-static int save_frames = false;
+static bool save_frames = false;
 static char *frames_dir = NULL;
 static unsigned int framecount = 0;
+int ringcount = 0;
 unsigned int game_id = 0;
 static unsigned int gametype = GAMETYPE_SPRINT;
 char p0_name[9] = "PLAYER 0";
@@ -81,7 +82,7 @@ void must_init(bool test, const char *description) {
   if (test) return;
 
   printf("couldn't initialize %s\n", description);
-  exit(1);
+  exit(EXIT_FAILURE);
 }
 
 
@@ -167,11 +168,13 @@ s32 screen_1_width = BUFFER_W;
 
 #define DISP_W 800
 #define DISP_H 600
+//#define DISP_W 960
+//#define DISP_H 720
 
 static ALLEGRO_DISPLAY* disp;
 static ALLEGRO_BITMAP* cfbuffer;
 
-static void disp_init(unsigned short num_players) {
+static void disp_init(void) {
   al_add_new_bitmap_flag(ALLEGRO_NO_PRESERVE_TEXTURE);
 
   al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
@@ -330,7 +333,11 @@ void hud_deinit(void) {
 }
 
 void hud_draw(void) {
-  al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 3, 3, 0, "FrameCount: %u", framecount);
+  if (D_800CFEE8 == 13) {
+    al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 3, 3, 0, "FrameCount: %u, RingCount: %d", framecount, ringcount);
+  } else {
+    al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 3, 3, 0, "FrameCount: %u", framecount);
+  }
 }
 
 
@@ -489,7 +496,9 @@ static bool contq_enqueue(void) {
     }
     //for (int i = 0; i < D_800CFED4; i++) {
     for (int i = 0; i < 4; i++) {
+      //if (i == 1 || i == 2) {  // 4TEST
       snapshot_contpad(al_get_joystick(i), &contpad);
+      //}
 
       //print_contpad(i, &contpad);
 
@@ -593,8 +602,8 @@ void game_init(unsigned short num_players) {
   game_ptr->gameType = gametype;
 
   // comment this out to try out the gui system / menus
-  D_800D3CF0 = 1;  // game mode
-  //D_800D3CF0 = 4;  // haluci mode
+  //D_800D3CF0 = 1;  // game mode
+  D_800D3CF0 = 4;  // haluci mode
 
   {
     int i;
@@ -876,11 +885,7 @@ int main(int argc, char **argv) {
   ALLEGRO_EVENT_QUEUE *queue = al_create_event_queue();
   must_init(queue, "queue");
 
-  if (net_flag) {
-    disp_init(2);
-  } else {
-    disp_init(1);
-  }
+  disp_init();
 
   hud_init();
 
@@ -889,8 +894,8 @@ int main(int argc, char **argv) {
   if (net_flag) {
     game_init(2);
   } else {
-    game_init(1);
-    //game_init(2);
+    //game_init(1);
+    game_init(4);
   }
 
   must_init(al_init_primitives_addon(), "primitives");

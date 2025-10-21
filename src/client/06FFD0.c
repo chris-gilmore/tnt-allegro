@@ -447,10 +447,10 @@ static void func_800AA678(void *addr) {
       list2 = config_setting_get_elem(list1, i);
 
       p_unkStruct_62->unk0 = config_setting_get_int_elem(list2, 0);
-      p_unkStruct_62->unk4 = config_setting_get_int_elem(list2, 1);
-      p_unkStruct_62->unk8 = config_setting_get_int_elem(list2, 2);
-      p_unkStruct_62->unkC = config_setting_get_int_elem(list2, 3);
-      p_unkStruct_62->unk10 = config_setting_get_int_elem(list2, 4);
+      p_unkStruct_62->unk4 = config_setting_get_float_elem(list2, 1);
+      p_unkStruct_62->unk8 = config_setting_get_float_elem(list2, 2);
+      p_unkStruct_62->unkC = config_setting_get_float_elem(list2, 3);
+      p_unkStruct_62->unk10 = config_setting_get_float_elem(list2, 4);
     }
   }
 

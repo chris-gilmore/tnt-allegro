@@ -427,8 +427,10 @@ void func_800A0228(UnkStruct_78 *arg0) {
   register s32 i;
   //Mtx sp48;
 
-  ALLEGRO_TRANSFORM p = *al_get_current_projection_transform();
-  ALLEGRO_TRANSFORM t = *al_get_current_transform();
+  ALLEGRO_TRANSFORM p;
+  ALLEGRO_TRANSFORM t;
+  al_copy_transform(&p, al_get_current_projection_transform());
+  al_copy_transform(&t, al_get_current_transform());
 
   /*
   guLookAt(&sp48, 0, 0, D_800D3FAC, 0, 0, 0, 0, -1, 0);

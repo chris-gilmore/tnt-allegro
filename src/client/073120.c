@@ -1,4 +1,8 @@
 #include "common.h"
+#include <allegro5/allegro5.h>
+#include <allegro5/allegro_primitives.h>
+
+static ALLEGRO_BITMAP *img;
 
 static Gfx  *func_800AD2FC(Gfx *, UnkStruct_86 *, UnkStruct_32 *);
 
@@ -16,6 +20,11 @@ UnkStruct_86 *func_800ACEA0(u32 arg0, UnkStruct_44 *arg1) {
   if (ptr == NULL) {
     return NULL;
   }
+
+  int saved_flags = al_get_new_bitmap_flags();
+  al_add_new_bitmap_flag(ALLEGRO_MAG_LINEAR);
+  img = al_create_bitmap(16, 16);
+  al_set_new_bitmap_flags(saved_flags);
 
   sp2C = (UnkStruct_86 *) ptr;
   sp2C->unkC0 = arg0;
@@ -98,6 +107,9 @@ UnkStruct_86 *func_800ACEA0(u32 arg0, UnkStruct_44 *arg1) {
 
 void func_800AD120(UnkStruct_86 *arg0) {
   n64HeapUnalloc(arg0);
+
+  al_destroy_bitmap(img);
+  img = NULL;
 }
 
 static Gfx *func_800AD2FC(Gfx *gdl, UnkStruct_86 *arg1, UnkStruct_32 *arg2) {
@@ -176,6 +188,56 @@ static Gfx *func_800AD2FC(Gfx *gdl, UnkStruct_86 *arg1, UnkStruct_32 *arg2) {
       g = spE8.unk4 * 255.0;
       b = spE8.unk8 * 255.0;
       a = tmp * 255.0;
+
+
+      ALLEGRO_TRANSFORM trans, backup;
+      al_copy_transform(&backup, al_get_current_transform());
+
+      memcpy(&trans, &spA8, sizeof(MtxF));
+      al_use_transform(&trans);
+
+      ALLEGRO_COLOR white = al_map_rgb_f(1, 1, 1);
+      ALLEGRO_VERTEX vtx[4] = {
+        // x   y   z   u   v   color
+        {  0,  0,  0,  0,  0,  white},
+        {  0,  0,  0,  0,  0,  white},
+        {  0,  0,  0,  0,  0,  white},
+        {  0,  0,  0,  0,  0,  white}
+      };
+      static int indices[6] = {
+        0, 1, 2,
+        2, 3, 0
+      };
+
+      for (int i = 0; i < 4; i++) {
+        vtx[i].x = arg1->unk80[i].v.ob[0];
+        vtx[i].y = arg1->unk80[i].v.ob[1];
+        vtx[i].u = arg1->unk80[i].v.tc[0] >> 6;
+        vtx[i].v = arg1->unk80[i].v.tc[1] >> 6;
+      }
+
+      ALLEGRO_LOCKED_REGION *locked;
+      u8 *ptr;
+      u32 *cptr;
+      u8 *p_val = (u8 *) arg1->unkD0->unk8.unkC;
+      u8 alpha;
+
+      locked = al_lock_bitmap(img, ALLEGRO_PIXEL_FORMAT_RGBA_8888, ALLEGRO_LOCK_WRITEONLY);
+      for (int j = 0; j < 16; j++) {
+        ptr = (u8 *)locked->data + (j * locked->pitch);
+        cptr = (u32 *)ptr;
+
+        for (int i = 0; i < 16; i++, p_val++, cptr++) {
+          alpha = (*p_val * a / 0xFF);
+          *cptr = ((*p_val * r * alpha) / (0xFF * 0xFF)) << 24 | ((*p_val * g * alpha) / (0xFF * 0xFF)) << 16 | ((*p_val * b * alpha) / (0xFF * 0xFF)) << 8 | alpha;
+        }
+      }
+      al_unlock_bitmap(img);
+
+      al_draw_indexed_prim(vtx, NULL, img, indices, 6, ALLEGRO_PRIM_TRIANGLE_LIST);
+
+      // restore transform
+      al_use_transform(&backup);
 
       /*
       gSPMatrix(gdl++, var_s2->unk20[sp11C], G_MTX_PUSH | G_MTX_MUL | G_MTX_MODELVIEW);

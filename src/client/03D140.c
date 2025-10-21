@@ -1,4 +1,5 @@
 #include "common.h"
+#include <allegro5/allegro5.h>
 
 static void   func_80076F20(UnkStruct_11 *);
 
@@ -49,6 +50,9 @@ void func_80077098(UnkStruct_11 *arg0) {
     return;
   }
 
+  ALLEGRO_TRANSFORM p;
+  al_copy_transform(&p, al_get_current_projection_transform());
+
   if (arg0->unk2C != 0) {
     if (arg0->unk20 & 2) {
       /*
@@ -91,6 +95,9 @@ void func_80077098(UnkStruct_11 *arg0) {
       arg0->unk20 &= ~4;
     }
   }
+
+  // restore transforms
+  al_use_projection_transform(&p);
 }
 
 void func_800773A4(UnkStruct_11 *arg0) {

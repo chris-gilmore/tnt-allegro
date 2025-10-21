@@ -1,4 +1,5 @@
 #include "common.h"
+#include <allegro5/allegro5.h>
 
 #define G_CC_H2O_A  TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0
 #define G_CC_H2O_A2 COMBINED, 0, SHADE, 0, COMBINED, 0, PRIMITIVE, 0
@@ -401,16 +402,33 @@ static void func_800A59C0(UnkStruct_32 *arg0, MtxF *arg1) {
         var_fv1 = 32000;
       }
 
+      ALLEGRO_TRANSFORM projection;
+      float height = 1;
+      float aspect = temp_s0->unk10.unk14;  // 1.18
+      float near = height / (sinf((temp_s0->unk10.unk4 / 2) * DEG2RAD) / cosf((temp_s0->unk10.unk4 / 2) * DEG2RAD));
+      //float near = var_fv0;  // 2
+      al_build_camera_transform(&projection, 0, 0, near, 0, 0, 0, 0, 1, 0);
+      al_perspective_transform(&projection, -height * aspect, height, near, height * aspect, -height, var_fv1);
       /*
       guPerspectiveF((f32 (*)[4]) &spA0, &temp_s0->unk8[arg0->unk4], temp_s0->unk10.unk4, temp_s0->unk10.unk14, var_fv0, var_fv1, 2.0);
+      */
+
+      memcpy(&spA0, &projection, sizeof(ALLEGRO_TRANSFORM));
+
       arg0->unk10C = spA0;
       mtx4_mult(&sp120, &spA0, &arg0->unkCC);
       if (arg0->unk0 & 0x4000) {
+        al_use_projection_transform(&projection);
+        /*
         guMtxF2L((f32 (*)[4]) &spA0, &temp_s0->unk10.unk1C->unk0[arg0->unk4]);
+        */
       } else {
+        memcpy(&projection, &sp120, sizeof(MtxF));
+        al_use_projection_transform(&projection);
+        /*
         guMtxF2L((f32 (*)[4]) &sp120, &temp_s0->unk10.unk1C->unk0[arg0->unk4]);
+        */
       }
-      */
     }
     var_s1++;
     var_s3--;
@@ -564,6 +582,7 @@ UnkStruct_32 *func_800A6990(s32 arg0) {
 
   func_800A9D50();
   temp_v0->unk8 = func_800AA14C(arg0);
+
   func_800A9D60();
   if (temp_v0->unk8 == NULL) {
     n64HeapUnalloc(temp_v0);
@@ -1324,6 +1343,8 @@ static Gfx *func_800A7EFC(Gfx *gdl, UnkStruct_32 *arg1) {
       } else {
         D_801293F0.unk10 = D_801293F0.unk4->unk30[var_s0];
 
+        // .id = 1
+        // displaylist (UnkStruct_71.unk8)
         gdl = func_800A4B98(gdl, D_801293F0.unk10);
       }
       break;
@@ -1409,6 +1430,8 @@ static Gfx *func_800A7EFC(Gfx *gdl, UnkStruct_32 *arg1) {
     case 4:
       D_801293F0.unkC = D_801293F0.unk4->unk2C[var_s0];
 
+      // .id = 2
+      // vertex list (UnkStruct_72.unk10)
       /*
       gSPSegment(gdl++, 0x0A, osVirtualToPhysical(D_801293F0.unkC->unk10.unk10));
       */

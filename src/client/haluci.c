@@ -1,4 +1,9 @@
 #include "common.h"
+#include <allegro5/allegro5.h>
+
+extern int ringcount;
+
+////////////////////////////////////////
 
 extern u16 draw_buffer;
 
@@ -78,6 +83,7 @@ static void   func_8007D510(UnkStruct_86 *, f32, f32, f32, f32, f32);
 static Gfx   *func_8007D6A8(Gfx *);
 
 // unused
+// pulsating rings
 static void func_8007C650(void) {
   s32 sp34;
   s32 sp30;
@@ -192,16 +198,23 @@ static void func_8007CC14(void) {
 
 // haluci_init
 void func_8007CF40(u8 arg0) {
-  Gfx *sp34;
+  UnkStruct_1 *btn;
+  btn = &g_PV_arr[0].unk28;
+  FUN_026900_80060ad4_oneliner_calls_fun(btn);
+  FUN_026900_80060b04_twelveliner_loops_32t(btn, 0xC000, 16, 1);  // Buttons A and B only
+  g_PV_arr[0].unk20 = g_PV_arr[0].unk24 = 0;
 
-  printf("-- haluci_init\n");
+  Gfx *sp34;
 
   D_800D3040 = arg0;
   D_8011FE9C = func_800AC9C0();
 
   func_800A4364(D_8011FE9C, 110);       // set viewport's fovy
   func_800A43B0(D_8011FE9C, 0.01, 64);  // set viewport's near and far
-  D_8011FEA8 = func_800ACEA0(350, &D_800D3044);
+  //D_8011FEA8 = func_800ACEA0(350, &D_800D3044);
+  D_8011FEA8 = func_800ACEA0(2 * 350, &D_800D3044);  // allocate twice as many rings
+  D_8011FEA8->unkC0 = 350;
+  ringcount = D_8011FEA8->unkC0;
 
   D_8011FEA8->unk10C = 2;
   D_8011FEA8->unk110 = 0.25;
@@ -380,24 +393,50 @@ Gfx *func_8007DA00(Gfx *gdl) {
   Vec3 sp44;
   Vec3 sp38;
 
-  printf("-- haluci_update\n");
+  ALLEGRO_TRANSFORM p;
+  al_copy_transform(&p, al_get_current_projection_transform());
 
   if (D_800D3040 != 0) {
     sp38 = D_800D3150;
     func_800AE6E4(D_8011FEAC, &sp38);
     func_800AE700(D_8011FEAC, D_800D3180);
+
+    // TODO: needs porting
     /*
     gdl = func_800AE220(D_8011FEAC, gdl, cfb[draw_buffer ^ 1], 0xFA, 0xFA, 0xFA, 0xC0);
     */
   }
 
-  if ((D_800CFEE8 == 13) && (g_PV_arr->unk1C->unk0 & 0x1000) && !(g_PV_arr->unk1C->unk4 & 0x1000)) {  // START_BUTTON / CONT_START
+  if ((D_800CFEE8 == 13) && (g_PV_arr[0].unk1C->unk0 & 0x1000) && !(g_PV_arr[0].unk1C->unk4 & 0x1000)) {  // START_BUTTON / CONT_START
     D_800D3040 ^= 1;
+  }
+
+  UnkStruct_1 *btn;
+  btn = &g_PV_arr[0].unk28;
+  btn->unk88 = g_PV_arr[0].unk1C->unk0;
+  btn->unk8C = g_PV_arr[0].unk24;
+  FUN_026900_GU_or_ControllerRepeat_Update(btn, btn->unk88, func_800A3AF0());
+
+  if ((D_800CFEE8 == 13) && (btn->unk84 & 0x8000)) {  // A_BUTTON / CONT_A
+    if (D_8011FEA8->unkC0 < (2 * 350)) {
+      D_8011FEA8->unkC0++;
+      D_8011FEA8->unkD4++;
+      ringcount = D_8011FEA8->unkC0;
+    }
+  }
+
+  if ((D_800CFEE8 == 13) && (btn->unk84 & 0x4000)) {  // B_BUTTON / CONT_B
+    if (D_8011FEA8->unkC0 > 0) {
+      D_8011FEA8->unkC0--;
+      D_8011FEA8->unkD4--;
+      ringcount = D_8011FEA8->unkC0;
+    }
   }
 
   func_800A4304(D_8011FE9C, 0, 0, -5, 0, 0, 0);
   gdl = func_800A724C(gdl, D_8011FE9C);
   func_8007D510(D_8011FEA8, (D_800D315C * 20.0) + 50, 7, (sinf(D_800D316C) * 2.05) + 1.001, D_800D315C * 120.0, 2);
+  //func_8007D25C(D_8011FEA8, (D_800D315C * 20.0) + 50, 7, (sinf(D_800D316C) * 2.05) + 1.001, D_800D315C * 120.0);  // alternative function 2
 
   // Is this unused code?
   ///////////////////////
@@ -444,6 +483,10 @@ Gfx *func_8007DA00(Gfx *gdl) {
   }
 
   func_8007CC14();
+  //func_8007C650();  // alternative function 1
+
+  // restore transforms
+  al_use_projection_transform(&p);
 
   return gdl;
 }

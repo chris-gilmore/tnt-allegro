@@ -299,11 +299,11 @@ void PieceHold_Cross_Swap(PieceHold *pieceHold_ptr, CurrentPiece *currentPiece_p
 
   // flip buffer
   otherPieceHold_ptr->buf_idx = 1 - otherPieceHold_ptr->buf_idx;
-  PieceHold_Disable(otherPieceHold_ptr);
+  //PieceHold_Disable(otherPieceHold_ptr);
 
   // flip buffer
   pieceHold_ptr->buf_idx = 1 - pieceHold_ptr->buf_idx;
-  PieceHold_Disable(pieceHold_ptr);
+  //PieceHold_Disable(pieceHold_ptr);
 }
 
 void PieceHold_Swap(PieceHold *pieceHold_ptr, CurrentPiece *currentPiece_ptr) {
@@ -337,7 +337,7 @@ void PieceHold_Swap(PieceHold *pieceHold_ptr, CurrentPiece *currentPiece_ptr) {
   PieceHoldPiece_MakeShadowActive(&pieceHoldPiece_ptr->shadow, currentPiece_ptr->pieceType, pieceHold_ptr->unk1490, pieceDef_ptr->center, pieceDef_ptr->starting_rot_state << 14, 0xC0, pieceHold_ptr->num_anim_frames);
 
   pieceHold_ptr->buf_idx = 1 - pieceHold_ptr->buf_idx;
-  PieceHold_Disable(pieceHold_ptr);
+  //PieceHold_Disable(pieceHold_ptr);
 }
 
 void PieceHold_Enable(PieceHold *pieceHold_ptr) {

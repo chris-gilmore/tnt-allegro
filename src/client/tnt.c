@@ -894,8 +894,8 @@ int main(int argc, char **argv) {
   if (net_flag) {
     game_init(2);
   } else {
-    //game_init(1);
-    game_init(2);
+    game_init(1);
+    //game_init(4);
   }
 
   must_init(al_init_primitives_addon(), "primitives");

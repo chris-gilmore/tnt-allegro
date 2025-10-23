@@ -35,7 +35,11 @@ static void Tetris_CheckButtons(void) {
         Audio2_Play_SFX(&D_801235B0, &D_800D3A90, 1);
       }
       if (temp_s1->unk8C & 0x10) {           // R_TRIG / CONT_R
-        PieceHold_Cross_Swap(&tetris_ptr->pieceHold, currentPiece_ptr, &g_game.tetris_ptr_arr[g_currentplayer ^ XSWAP_PAIR]->pieceHold);
+        if ((g_currentplayer ^ XSWAP_PAIR) < g_playercount) {
+          PieceHold_Cross_Swap(&tetris_ptr->pieceHold, currentPiece_ptr, &g_game.tetris_ptr_arr[g_currentplayer ^ XSWAP_PAIR]->pieceHold);
+        } else {
+          PieceHold_Cross_Swap(&tetris_ptr->pieceHold, currentPiece_ptr, &g_game.tetris_ptr_arr[g_currentplayer ^ XSWAP_SELF]->pieceHold);
+        }
         Audio2_Play_SFX(&D_801235B0, &D_800D3A90, 1);
       }
       if (temp_s1->unk84 & 0x200) {          // L_JPAD / CONT_LEFT

@@ -20,13 +20,9 @@ Arg1 (optional) is file name for recording or replaying moves.
 Arg2 (optional) is dir name for saving frames as png files.
 
 ```
-$ mkdir images
+# Link
+$ ln -s images.default images
 
-$ ln -s ../font_c-C059-17.png images/font_c-0x2AC39C.png
-
-$ ln -s ../default_background_1p.png images/egyptian_background-0x2CE21A.png
-$ ln -s ../default_background_2p.png images/egyptian_2p_background-0x358376.png
-$ ln -s ../default_background_4p.png images/egyptian_4p_background-0x407AE2.png
-
-$ ./build/tnt --screen 2
+# or Rename
+$ mv images.default images
 ```

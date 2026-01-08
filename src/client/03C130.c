@@ -12,12 +12,12 @@ void FUN_03C130_80075EB0_nineliner_allocs_heap(UnkStruct_21 *arg0) {
   func_80075700(&arg0->unk0.unk14, 8, 8, 1);
   main_8004A34C_threeliner();
 
-  // light source (128x128)
+  // spotlight (128x128)
   arg0->unk64 = n64HeapAlloc(128 * 128);
 
   bzero(arg0->unk64, 128 * 128);
 
-  ALLEGRO_BITMAP *img = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_UNKNOWN_0X2A774C), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+  ALLEGRO_BITMAP *img = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_SPOTLIGHT), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
   if (img != NULL) {
     ALLEGRO_LOCKED_REGION *locked = al_lock_bitmap(img, ALLEGRO_PIXEL_FORMAT_SINGLE_CHANNEL_8, ALLEGRO_LOCK_READONLY);
     s32 width = al_get_bitmap_width(img);

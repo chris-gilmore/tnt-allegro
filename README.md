@@ -20,9 +20,6 @@ Arg1 (optional) is file name for recording or replaying moves.
 Arg2 (optional) is dir name for saving frames as png files.
 
 ```
-# Link
-$ ln -s images.default images
-
-# or Rename
-$ mv images.default images
+# Use a default set of images
+$ ln -snf images.default images
 ```

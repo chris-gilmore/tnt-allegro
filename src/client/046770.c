@@ -27,7 +27,7 @@ void FUN_046770_800804f0_many_heapallocs_for_arg0_elems(UnkStruct_12 *arg0) {
   u8 *wptr;
   RGB *rgbptr;
 
-  u8 *sp4C;  // greyscale image used as height field
+  u8 *sp4C;  // grayscale image used as height field
   register s32 i;
   register s32 j;
   register Gradient2D *var_s2;
@@ -35,22 +35,22 @@ void FUN_046770_800804f0_many_heapallocs_for_arg0_elems(UnkStruct_12 *arg0) {
   PaletteInfo palInfo_1;
   PaletteInfo palInfo_2;
 
-  // (200 x 150)  I - IMG_UNKNOWN_0X49B274
+  // (200 x 150)  I - IMG_CREDITS_BACKGROUND_CENTER_GRAYSCALE
   sp4C = (u8 *) n64HeapAlloc(200 * 150 * sizeof(u8));
 
   // gradients for above height field
   arg0->unk8 = (Gradient2D *) n64HeapAlloc(200 * 150 * sizeof(Gradient2D));
 
-  // (200 x 150) CI - IMG_UNKNOWN_0X4946FE
+  // (200 x 150) CI - IMG_CREDITS_BACKGROUND_CENTER
   arg0->unk0 = (u8 *) n64HeapAlloc(200 * 150 * sizeof(u8));
 
-  // (RGB palette)  - IMG_UNKNOWN_0X49AFAC
+  // (RGB palette)  - IMG_CREDITS_BACKGROUND_CENTER_PAL
   arg0->unk4 = (RGB *) n64HeapAlloc(256 * sizeof(RGB));
 
-  // (128 x 128) CI - IMG_UNKNOWN_0X4A1C4C
+  // (128 x 128) CI - IMG_CREDITS_SPOTLIGHT
   arg0->unkC = (u8 *) n64HeapAlloc(128 * 128 * sizeof(u8));
 
-  // (RGB palette)  - IMG_UNKNOWN_0X4A3BBC
+  // (RGB palette)  - IMG_CREDITS_SPOTLIGHT_PAL
   arg0->unk10 = (RGB *) n64HeapAlloc(256 * sizeof(RGB));
 
   arg0->unk14[0] = n64HeapAlloc(60008);
@@ -60,8 +60,8 @@ void FUN_046770_800804f0_many_heapallocs_for_arg0_elems(UnkStruct_12 *arg0) {
 
   main_8004A34C_threeliner();
 
-  //FUN_03A750_800746c0_twentyliner(&D_273A00, arg0->unk0, IMG_UNKNOWN_0X4946FE);
-  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_UNKNOWN_0X4946FE), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+  //FUN_03A750_800746c0_twentyliner(&D_273A00, arg0->unk0, IMG_CREDITS_BACKGROUND_CENTER);
+  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_CREDITS_BACKGROUND_CENTER), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
   if (bitmap == NULL) {
     return;
   }
@@ -78,8 +78,8 @@ void FUN_046770_800804f0_many_heapallocs_for_arg0_elems(UnkStruct_12 *arg0) {
   al_unlock_bitmap(bitmap);
   al_destroy_bitmap(bitmap);
 
-  //FUN_03A750_800746c0_twentyliner(&D_273A00, arg0->unk4, IMG_UNKNOWN_0X49AFAC);
-  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_UNKNOWN_0X49AFAC), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+  //FUN_03A750_800746c0_twentyliner(&D_273A00, arg0->unk4, IMG_CREDITS_BACKGROUND_CENTER_PAL);
+  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_CREDITS_BACKGROUND_CENTER_PAL), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
   if (bitmap == NULL) {
     return;
   }
@@ -97,8 +97,8 @@ void FUN_046770_800804f0_many_heapallocs_for_arg0_elems(UnkStruct_12 *arg0) {
   al_unlock_bitmap(bitmap);
   al_destroy_bitmap(bitmap);
 
-  //FUN_03A750_800746c0_twentyliner(&D_273A00, sp4C, IMG_UNKNOWN_0X49B274);
-  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_UNKNOWN_0X49B274), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+  //FUN_03A750_800746c0_twentyliner(&D_273A00, sp4C, IMG_CREDITS_BACKGROUND_CENTER_GRAYSCALE);
+  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_CREDITS_BACKGROUND_CENTER_GRAYSCALE), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
   if (bitmap == NULL) {
     return;
   }
@@ -115,8 +115,8 @@ void FUN_046770_800804f0_many_heapallocs_for_arg0_elems(UnkStruct_12 *arg0) {
   al_unlock_bitmap(bitmap);
   al_destroy_bitmap(bitmap);
 
-  //FUN_03A750_800746c0_twentyliner(&D_273A00, arg0->unkC, IMG_UNKNOWN_0X4A1C4C);
-  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_UNKNOWN_0X4A1C4C), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+  //FUN_03A750_800746c0_twentyliner(&D_273A00, arg0->unkC, IMG_CREDITS_SPOTLIGHT);
+  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_CREDITS_SPOTLIGHT), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
   if (bitmap == NULL) {
     return;
   }
@@ -133,8 +133,8 @@ void FUN_046770_800804f0_many_heapallocs_for_arg0_elems(UnkStruct_12 *arg0) {
   al_unlock_bitmap(bitmap);
   al_destroy_bitmap(bitmap);
 
-  //FUN_03A750_800746c0_twentyliner(&D_273A00, arg0->unk10, IMG_UNKNOWN_0X4A3BBC);
-  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_UNKNOWN_0X4A3BBC), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
+  //FUN_03A750_800746c0_twentyliner(&D_273A00, arg0->unk10, IMG_CREDITS_SPOTLIGHT_PAL);
+  bitmap = al_load_bitmap_flags(config_setting_get_string_elem(images, IMG_CREDITS_SPOTLIGHT_PAL), ALLEGRO_NO_PREMULTIPLIED_ALPHA);
   if (bitmap == NULL) {
     return;
   }

@@ -268,7 +268,17 @@ void joystick_init(ALLEGRO_JOYSTICK *joy) {
   if (!joy)
     return;
 
-  if (strcmp(al_get_joystick_name(joy), "8Bitdo FC30 Pro    8Bitdo FC30 Pro") == 0) {
+  if (strcmp(al_get_joystick_name(joy), "ShanWan     Hyperkin Adapter") == 0) {
+    // N64 controller
+    ctrlCfg.btn_a = 1;
+    ctrlCfg.btn_b = 2;
+    ctrlCfg.trig_l = 4;
+    ctrlCfg.trig_r = 5;
+    ctrlCfg.trig_z = 6;
+    ctrlCfg.btn_start = 9;
+    ctrlCfg.dpad_as_stick = true;
+    ctrlCfg.dpad_stick_idx = 2;
+  } else if (strcmp(al_get_joystick_name(joy), "8Bitdo FC30 Pro    8Bitdo FC30 Pro") == 0) {
     // 8Bitdo
     ctrlCfg.btn_a = 1;
     ctrlCfg.btn_b = 4;
@@ -311,16 +321,16 @@ void joystick_init(ALLEGRO_JOYSTICK *joy) {
     ctrlCfg.dpad_btn_r = 0;
     ctrlCfg.dpad_btn_u = 3;
     ctrlCfg.dpad_btn_d = 2;
-  } else {
-    // N64 controller
-    ctrlCfg.btn_a = 1;
-    ctrlCfg.btn_b = 2;
-    ctrlCfg.trig_l = 4;
-    ctrlCfg.trig_r = 5;
-    ctrlCfg.trig_z = 6;
-    ctrlCfg.btn_start = 9;
+  } else if (strcmp(al_get_joystick_name(joy), "Microsoft X-Box 360 pad 0") == 0) {
+    // Steam Deck (shows up as X-Box 360 pad 0)
+    ctrlCfg.btn_a = 0;     // clockwise rotation
+    ctrlCfg.btn_b = 1;     // counter-clockwise rotation
+    ctrlCfg.trig_l = 4;    // hold
+    ctrlCfg.trig_r = 5;    // xswap
+    ctrlCfg.trig_z = 3;    // not implemented
+    ctrlCfg.btn_start = 7; // start
     ctrlCfg.dpad_as_stick = true;
-    ctrlCfg.dpad_stick_idx = 2;
+    ctrlCfg.dpad_stick_idx = 3;
   }
 }
 

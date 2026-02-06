@@ -252,7 +252,12 @@ typedef struct {
   u8 trig_r;
   u8 trig_z;
   u8 btn_start;
-  u8 dpad;
+  bool dpad_as_stick;
+  u8 dpad_stick_idx;
+  u8 dpad_btn_l;
+  u8 dpad_btn_r;
+  u8 dpad_btn_u;
+  u8 dpad_btn_d;
 } CtrlCfg;
 
 CtrlCfg ctrlCfg;
@@ -271,7 +276,8 @@ void joystick_init(ALLEGRO_JOYSTICK *joy) {
     ctrlCfg.trig_r = 9;
     ctrlCfg.trig_z = 10;
     ctrlCfg.btn_start = 11;
-    ctrlCfg.dpad = 4;
+    ctrlCfg.dpad_as_stick = true;
+    ctrlCfg.dpad_stick_idx = 4;
   } else if (strcmp(al_get_joystick_name(joy), "Sony Interactive Entertainment Wireless Controller") == 0) {
     // PS4 controller over usb
     ctrlCfg.btn_a = 0;     // square button
@@ -280,7 +286,8 @@ void joystick_init(ALLEGRO_JOYSTICK *joy) {
     ctrlCfg.trig_r = 5;    // R1 trigger
     ctrlCfg.trig_z = 12;   // right analog stick button
     ctrlCfg.btn_start = 9; // options button
-    ctrlCfg.dpad = 3;      // dpad
+    ctrlCfg.dpad_as_stick = true;
+    ctrlCfg.dpad_stick_idx = 3; // dpad
   } else if (strcmp(al_get_joystick_name(joy), "Microsoft X-Box 360 pad") == 0) {
     // Generic brand Nintendo Switch controller over usb (shows up as X-Box 360?)
     ctrlCfg.btn_a = 0;     // B button
@@ -289,7 +296,21 @@ void joystick_init(ALLEGRO_JOYSTICK *joy) {
     ctrlCfg.trig_r = 5;    // R1 trigger
     ctrlCfg.trig_z = 10;   // right analog stick button
     ctrlCfg.btn_start = 8; // home button
-    ctrlCfg.dpad = 3;      // dpad
+    ctrlCfg.dpad_as_stick = true;
+    ctrlCfg.dpad_stick_idx = 3; // dpad
+  } else if (strcmp(al_get_joystick_name(joy), "SealieComputing N64 RetroPort") == 0) {
+    // RetroUSB N64 usb adapter, dpad registers as 4 distinct buttons rather than a stick with axes
+    ctrlCfg.btn_a = 7;
+    ctrlCfg.btn_b = 6;
+    ctrlCfg.trig_l = 13;
+    ctrlCfg.trig_r = 12;
+    ctrlCfg.trig_z = 5;
+    ctrlCfg.btn_start = 4;
+    ctrlCfg.dpad_as_stick = false;
+    ctrlCfg.dpad_btn_l = 1;
+    ctrlCfg.dpad_btn_r = 0;
+    ctrlCfg.dpad_btn_u = 3;
+    ctrlCfg.dpad_btn_d = 2;
   } else {
     // N64 controller
     ctrlCfg.btn_a = 1;
@@ -298,7 +319,8 @@ void joystick_init(ALLEGRO_JOYSTICK *joy) {
     ctrlCfg.trig_r = 5;
     ctrlCfg.trig_z = 6;
     ctrlCfg.btn_start = 9;
-    ctrlCfg.dpad = 2;
+    ctrlCfg.dpad_as_stick = true;
+    ctrlCfg.dpad_stick_idx = 2;
   }
 }
 
@@ -365,17 +387,24 @@ void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
   }
   */
 
-  if (jst.button[ctrlCfg.btn_a]     >= 16384) contpad->button |= 0x8000;    // A_BUTTON     / CONT_A
-  if (jst.button[ctrlCfg.btn_b]     >= 16384) contpad->button |= 0x4000;    // B_BUTTON     / CONT_B
-  if (jst.button[ctrlCfg.trig_l]    >= 16384) contpad->button |= 0x0020;    // L_TRIG       / CONT_L
-  if (jst.button[ctrlCfg.trig_r]    >= 16384) contpad->button |= 0x0010;    // R_TRIG       / CONT_R
-  if (jst.button[ctrlCfg.trig_z]    >= 16384) contpad->button |= 0x2000;    // Z_TRIG       / CONT_G
-  if (jst.button[ctrlCfg.btn_start] >= 16384) contpad->button |= 0x1000;    // START_BUTTON / CONT_START
+  if (jst.button[ctrlCfg.btn_a]     >= 16384) contpad->button |= 0x8000;  // A_BUTTON     / CONT_A
+  if (jst.button[ctrlCfg.btn_b]     >= 16384) contpad->button |= 0x4000;  // B_BUTTON     / CONT_B
+  if (jst.button[ctrlCfg.trig_l]    >= 16384) contpad->button |= 0x0020;  // L_TRIG       / CONT_L
+  if (jst.button[ctrlCfg.trig_r]    >= 16384) contpad->button |= 0x0010;  // R_TRIG       / CONT_R
+  if (jst.button[ctrlCfg.trig_z]    >= 16384) contpad->button |= 0x2000;  // Z_TRIG       / CONT_G
+  if (jst.button[ctrlCfg.btn_start] >= 16384) contpad->button |= 0x1000;  // START_BUTTON / CONT_START
 
-  if (jst.stick[ctrlCfg.dpad].axis[0] < 0) contpad->button |= 0x0200;       // L_JPAD       / CONT_LEFT
-  else if (jst.stick[ctrlCfg.dpad].axis[0] > 0) contpad->button |= 0x0100;  // R_JPAD       / CONT_RIGHT
-  if (jst.stick[ctrlCfg.dpad].axis[1] < 0) contpad->button |= 0x0800;       // U_JPAD       / CONT_UP
-  else if (jst.stick[ctrlCfg.dpad].axis[1] > 0) contpad->button |= 0x0400;  // D_JPAD       / CONT_DOWN
+  if (ctrlCfg.dpad_as_stick) {
+    if (jst.stick[ctrlCfg.dpad_stick_idx].axis[0] < 0)      contpad->button |= 0x0200;  // L_JPAD / CONT_LEFT
+    else if (jst.stick[ctrlCfg.dpad_stick_idx].axis[0] > 0) contpad->button |= 0x0100;  // R_JPAD / CONT_RIGHT
+    if (jst.stick[ctrlCfg.dpad_stick_idx].axis[1] < 0)      contpad->button |= 0x0800;  // U_JPAD / CONT_UP
+    else if (jst.stick[ctrlCfg.dpad_stick_idx].axis[1] > 0) contpad->button |= 0x0400;  // D_JPAD / CONT_DOWN
+  } else {
+    if (jst.button[ctrlCfg.dpad_btn_l] >= 16384)      contpad->button |= 0x0200;  // L_JPAD / CONT_LEFT
+    else if (jst.button[ctrlCfg.dpad_btn_r] >= 16384) contpad->button |= 0x0100;  // R_JPAD / CONT_RIGHT
+    if (jst.button[ctrlCfg.dpad_btn_u] >= 16384)      contpad->button |= 0x0800;  // U_JPAD / CONT_UP
+    else if (jst.button[ctrlCfg.dpad_btn_d] >= 16384) contpad->button |= 0x0400;  // D_JPAD / CONT_DOWN
+  }
 }
 
 void print_contpad(int i, OSContPad *contpad) {

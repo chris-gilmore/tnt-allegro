@@ -51,6 +51,7 @@ char p3_name[9] = "PLAYER 3";
 static ENetHost *client;
 static ENetPeer *server;
 static int net_flag = false;
+static unsigned int currentPieceFrames = 0;
 
 static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
   int i, n, a;
@@ -367,6 +368,8 @@ void hud_deinit(void) {
 void hud_draw(void) {
   if (D_800CFEE8 == 13) {
     al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 3, 3, 0, "FrameCount: %u, RingCount: %d", framecount, ringcount);
+  } else if (D_800CFEE8 == 9 || D_800CFEE8 == 11) {
+    al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 3, 3, 0, "FrameCount: %u, Current piece frames: %u", framecount, currentPieceFrames);
   } else {
     al_draw_textf(hud_font, al_map_rgb_f(1, 1, 1), 3, 3, 0, "FrameCount: %u", framecount);
   }
@@ -375,9 +378,9 @@ void hud_draw(void) {
 
 // ContPad stuff
 
-void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
+void snapshot_contpad(int i, OSContPad *contpad) {
   ALLEGRO_JOYSTICK_STATE jst;
-  int i, j;
+  ALLEGRO_JOYSTICK *joy = al_get_joystick(i);
 
   if (!joy) {
     return;
@@ -387,11 +390,11 @@ void snapshot_contpad(ALLEGRO_JOYSTICK *joy, OSContPad *contpad) {
 
   /*
   printf("\n");
-  for (i = 0; i < al_get_joystick_num_buttons(joy); i++) {
+  for (int i = 0; i < al_get_joystick_num_buttons(joy); i++) {
     printf("jst.button[%d] = %d\n", i, jst.button[i]);
   }
-  for (j = 0; j < al_get_joystick_num_sticks(joy); j++) {
-    for (i = 0; i < al_get_joystick_num_axes(joy, j); i++) {
+  for (int j = 0; j < al_get_joystick_num_sticks(joy); j++) {
+    for (int i = 0; i < al_get_joystick_num_axes(joy, j); i++) {
       printf("jst.stick[%d].axis[%d] = %f\n", j, i, jst.stick[j].axis[i]);
     }
   }
@@ -521,7 +524,7 @@ static bool contq_enqueue(void) {
   if (key[ALLEGRO_KEY_K])     contpad.button |= 0x0400;  // D_JPAD       / CONT_DOWN
 
   if (net_flag) {
-    snapshot_contpad(al_get_joystick(0), &contpad);
+    snapshot_contpad(0, &contpad);
 
     //print_contpad(0, &contpad);
 
@@ -536,7 +539,7 @@ static bool contq_enqueue(void) {
     //for (int i = 0; i < D_800CFED4; i++) {
     for (int i = 0; i < 4; i++) {
       //if (i == 1 || i == 2) {  // 4TEST
-      snapshot_contpad(al_get_joystick(i), &contpad);
+      snapshot_contpad(i, &contpad);
       //}
 
       //print_contpad(i, &contpad);
@@ -677,6 +680,23 @@ void game_deinit(void) {
 }
 
 
+void update_metrics(void) {
+  static bool isCurrentPieceActive = false;
+
+  if (g_game.unk0 == 0 && g_game.tetris_ptr_arr[0] != NULL) {
+    if (g_game.tetris_ptr_arr[0]->board.currentPiece.state == 0) {
+      isCurrentPieceActive = false;
+    } else if (g_game.tetris_ptr_arr[0]->board.currentPiece.state == 1) {
+      if (isCurrentPieceActive == false) {
+        isCurrentPieceActive = true;
+        currentPieceFrames = 0;
+      }
+      currentPieceFrames++;
+    }
+  }
+}
+
+
 // Main loop
 
 static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
@@ -710,10 +730,16 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
         if (!redraw) {
           framecount++;
           // assert framecount == frmcnt
+
+          update_metrics();
+
           redraw = replay_contq_enqueue(&done);
         }
       } else {
         framecount++;
+
+        update_metrics();
+
         redraw = contq_enqueue();
       }
 

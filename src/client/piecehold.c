@@ -12,7 +12,6 @@ static Point D_800D04C0[8] = {
 };
 
 static Point D_800D04E0[8][2] = {
-  { { 0x0025, 0x003A }, { 0x0179, 0x003A } },  //{ { 0x0025, 0x003A }, { 0x00DE, 0x003A } },
   { { 0x0025, 0x003A }, { 0x0179, 0x003A } },
   { { 0x0025, 0x003A }, { 0x0179, 0x003A } },
   { { 0x0025, 0x003A }, { 0x0179, 0x003A } },
@@ -20,6 +19,19 @@ static Point D_800D04E0[8][2] = {
   { { 0x0025, 0x003A }, { 0x0179, 0x003A } },
   { { 0x0025, 0x003A }, { 0x0179, 0x003A } },
   { { 0x0025, 0x003A }, { 0x0179, 0x003A } },
+  { { 0x0025, 0x003A }, { 0x0179, 0x003A } },
+};
+
+// alternative to above array in which player 2's hold piece is on the left side, like player 1
+static Point piecehold_points_for_2p[8][2] = {
+  { { 0x0025, 0x003A }, { 0x00DE, 0x003A } },
+  { { 0x0025, 0x003A }, { 0x00E0, 0x003A } },
+  { { 0x0025, 0x003A }, { 0x00DE, 0x003A } },
+  { { 0x0025, 0x003A }, { 0x00E0, 0x003A } },
+  { { 0x0025, 0x003A }, { 0x00E0, 0x003A } },
+  { { 0x0025, 0x003A }, { 0x00E0, 0x003A } },
+  { { 0x0025, 0x003A }, { 0x00DE, 0x003A } },
+  { { 0x0025, 0x003A }, { 0x00DE, 0x003A } },
 };
 
 static void   PieceHold_80065710_twoliner_sets_to_0_and_0xff(PieceHoldPieceShadow *);
@@ -228,7 +240,11 @@ static void PieceHold_80066048_tenliner_checks_numplayers(Point *point_ptr, s32 
     Minos_8007104c_fiveliner_nuts(point_ptr, point.x * 4, point.y * 4);
     break;
   case 2:
-    point = D_800D04E0[screenNum][playerNum];
+    if (TRUE) {
+      point = piecehold_points_for_2p[screenNum][playerNum];
+    } else {
+      point = D_800D04E0[screenNum][playerNum];
+    }
     Minos_8007104c_fiveliner_nuts(point_ptr, point.x * 4, point.y * 4);
     break;
   case 3:

@@ -488,7 +488,7 @@ static bool send_receive(ENetHost *client) {
         num_ready_players = 0;
         for (int i = 0; i < 4; i++) {
           g_PV_ptr = &g_PV_arr[i];
-          if (g_PV_ptr->unk1C->unk30 != 0) {  // R_TRIG / CONT_R
+          if (g_PV_ptr->unk1C->unk34 != 0) {  // Z_TRIG / CONT_G
             num_ready_players++;
           }
         }

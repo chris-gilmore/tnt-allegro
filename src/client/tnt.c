@@ -478,7 +478,7 @@ static bool send_receive(ENetHost *client) {
       enet_packet_destroy(event.packet);
 
       frmcnt++;
-      func_800A3A8C(frmcnt);
+      frametime_update(frmcnt);
       for (int i = 0; i < 4; i++) {
         g_PV_ptr = &g_PV_arr[i];
         contq_dequeue();
@@ -497,7 +497,7 @@ static bool send_receive(ENetHost *client) {
           in_lobby = false;
         }
       } else {
-        D_801109F4 = func_800A3AF0();
+        D_801109F4 = frametime_delta();
         Game_line_782_game_c(&g_game);
         draw_flag = true;
       }
@@ -763,7 +763,7 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
           }
 
           // From 00E440.c, has_rounds_and_floors_large_liner()
-          func_800A3A8C(framecount);
+          frametime_update(framecount);
           //for (int i = 0; i < D_800CFED4; i++) {
           for (int i = 0; i < 4; i++) {
             g_PV_ptr = &g_PV_arr[i];

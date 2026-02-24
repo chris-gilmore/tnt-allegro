@@ -415,7 +415,7 @@ Gfx *func_8007DA00(Gfx *gdl) {
   btn = &g_PV_arr[0].unk28;
   btn->unk88 = g_PV_arr[0].unk1C->unk0;
   btn->unk8C = g_PV_arr[0].unk24;
-  FUN_026900_GU_or_ControllerRepeat_Update(btn, btn->unk88, func_800A3AF0());
+  FUN_026900_GU_or_ControllerRepeat_Update(btn, btn->unk88, frametime_delta());
 
   if ((D_800CFEE8 == 13) && (btn->unk84 & 0x8000)) {  // A_BUTTON / CONT_A
     if (D_8011FEA8->unkC0 < (2 * 350)) {

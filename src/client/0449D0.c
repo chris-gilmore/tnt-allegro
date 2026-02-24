@@ -25,7 +25,7 @@ u8 func_8007E750(void) {
     */
     al_draw_filled_rectangle(0, 0, 400, 300, al_map_rgba(0, 0, 0, D_801201E4 * 255));
 
-    D_801201E4 += D_801201E0 * func_800A3AF0();
+    D_801201E4 += D_801201E0 * frametime_delta();
     if (D_801201E4 >= 1.0) {
       return TRUE;
     }

@@ -113,8 +113,9 @@ typedef struct {
   f32 m30, m31, m32, m33; // Row 3
 } MtxF;
 
-#include "newtetris/sram.h"
+#include "newtetris/00E2A0.h"
 #include "newtetris/066700.h"
+#include "newtetris/sram.h"
 #include "newtetris/069170.h"
 #include "newtetris/074B00.h"
 #include "newtetris/06FFD0.h"
@@ -165,6 +166,9 @@ typedef struct {
 #include "newtetris/bootmain.h"
 #include "newtetris/creditstext.h"
 #include "newtetris/credits.h"
+#include "newtetris/03D140.h"
+#include "newtetris/00DB40.h"
+#include "newtetris/00C0D0.h"
 #include "newtetris/009A90.h"
 #include "newtetris/063BC0.h"
 #include "newtetris/cubetiles.h"
@@ -176,7 +180,7 @@ typedef struct {
 #include "newtetris/049380.h"
 #include "newtetris/046DD0.h"
 #include "newtetris/0279C0.h"
-#include "newtetris/00C0D0.h"
+#include "newtetris/01D300.h"
 #include "newtetris/00C680.h"
 #include "newtetris/03AC20.h"
 #include "newtetris/03C130.h"
@@ -209,7 +213,6 @@ typedef struct {
 #include "newtetris/audio.h"
 #include "newtetris/imageparams.h"
 #include "newtetris/animparams.h"
-#include "newtetris/03D140.h"
 #include "newtetris/pfgfx.h"
 #include "newtetris/dbgprntrrl.h"
 #include "newtetris/tetris.h"

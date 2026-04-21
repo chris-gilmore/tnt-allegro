@@ -30,10 +30,8 @@
 // TODO: move this out of here
 ////////////////////////////////////////
 u8 D_800CFD48 = TRUE;
-s8 D_800CF838 = 7;  // max unlocked screen
 u16 draw_buffer;
 ////////////////////////////////////////
-
 
 static FILE *fp;
 static int record = false;
@@ -51,6 +49,7 @@ char p3_name[9] = "PLAYER 3";
 static ENetHost *client;
 static ENetPeer *server;
 static int net_flag = false;
+static int lag_flag = false;
 static unsigned int currentPieceFrames = 0;
 
 static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
@@ -208,7 +207,11 @@ static void disp_post_draw(void) {
 
   if (save_frames) {
     while (last_framecount < framecount) {
-      last_framecount++;
+      if (lag_flag) {
+        last_framecount += 2;
+      } else {
+        last_framecount++;
+      }
       sprintf(filename, "%s/image-%08d.png", frames_dir, last_framecount);
       al_save_bitmap(filename, al_get_backbuffer(disp));
     }
@@ -456,7 +459,11 @@ static bool send_receive(ENetHost *client) {
       msg = (ServerMessage*)event.packet->data;
 
       if (record && !in_lobby) {
-        record_framecount++;
+        if (lag_flag) {
+          record_framecount += 2;
+        } else {
+          record_framecount++;
+        }
         fprintf(fp, "%u", record_framecount);
       }
       for (int i = 0; i < MAX_PLAYER_COUNT; i++) {
@@ -477,7 +484,11 @@ static bool send_receive(ENetHost *client) {
 
       enet_packet_destroy(event.packet);
 
-      frmcnt++;
+      if (lag_flag) {
+        frmcnt += 2;
+      } else {
+        frmcnt++;
+      }
       frametime_update(frmcnt);
       for (int i = 0; i < 4; i++) {
         g_PV_ptr = &g_PV_arr[i];
@@ -616,6 +627,8 @@ void player_init(void) {
 
   // From bootmain.c, main_infinite_loop_at_end_3()
   load_from_sram(FALSE);
+
+  wonders2_80045e50_sets_num_won_compl_q();  // TODO
 }
 
 void player_deinit(void) {
@@ -691,7 +704,11 @@ void update_metrics(void) {
         isCurrentPieceActive = true;
         currentPieceFrames = 0;
       }
-      currentPieceFrames++;
+      if (lag_flag) {
+        currentPieceFrames += 2;
+      } else {
+        currentPieceFrames++;
+      }
     }
   }
 }
@@ -728,7 +745,11 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
       if (replay) {
         if (!redraw) {
-          framecount++;
+          if (lag_flag) {
+            framecount += 2;
+          } else {
+            framecount++;
+          }
           // assert framecount == frmcnt
 
           update_metrics();
@@ -736,7 +757,11 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
           redraw = replay_contq_enqueue(&done);
         }
       } else {
-        framecount++;
+        if (lag_flag) {
+          framecount += 2;
+        } else {
+          framecount++;
+        }
 
         update_metrics();
 
@@ -770,6 +795,13 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
             contq_dequeue();
           }
           FUN_032F00_MVC_control_menu_choice_process();
+
+          if (lag_flag) {
+            // push game elapsed time up 20 jiffies
+            if (g_game.unkE4E8 == 0) {
+              g_game.unkE4E8 = 20;
+            }
+          }
         }
 
         hud_draw();
@@ -838,6 +870,7 @@ int main(int argc, char **argv) {
       {"host",     required_argument, NULL, 'h'},
       {"port",     required_argument, NULL, 'p'},
       {"screen",   required_argument, NULL, 's'},
+      {"lag",      no_argument,       &lag_flag, true},
       {NULL, 0, NULL, 0}
     };
   int option_index = 0;
@@ -944,7 +977,12 @@ int main(int argc, char **argv) {
   must_init(al_install_keyboard(), "keyboard");
   must_init(al_install_joystick(), "joystick");
 
-  ALLEGRO_TIMER *timer = al_create_timer(1.0 / 60.0);
+  ALLEGRO_TIMER *timer;
+  if (lag_flag) {
+    timer = al_create_timer(1.0 / 30.0);
+  } else {
+    timer = al_create_timer(1.0 / 60.0);
+  }
   must_init(timer, "timer");
 
   ALLEGRO_EVENT_QUEUE *queue = al_create_event_queue();

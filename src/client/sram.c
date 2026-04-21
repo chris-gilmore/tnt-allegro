@@ -4,45 +4,41 @@ extern unsigned int game_id;
 
 ////////////////////////////////////////
 
-extern s8 D_800CF838;
-
-////////////////////////////////////////
-
 Sram *g_sram_ptr;
 
-PlayerNode D_800D2D80 = {
+TextList D_800D2D80 = {
   { 'G', 'U', 'E', 'S', 'T', 0, 0, 0, 0 },
-  { 0x20, 0x20 },
+  { 32, 32 },
   0xE,
   NULL,
   &D_800D2D98,
   &D_800D2D98
 };
-PlayerNode D_800D2D98 = {
+TextList D_800D2D98 = {
   { 'N', 'E', 'W', ' ', 'N', 'A', 'M', 'E', 0 },
-  { 0x20, 0x20 },
+  { 32, 32 },
   0xF,
   NULL,
   &D_800D2D80,
   &D_800D2D80
 };
-PlayerNode D_800D2DB0 = {
+TextList D_800D2DB0 = {
   { 'G', 'L', 'O', 'B', 'A', 'L', 0, 0, 0 },
-  { 0x20, 0x20 },
+  { 32, 32 },
   0x9,
   NULL,
   &D_800D2DB0,
   &D_800D2DB0
 };
-PlayerNode D_800D2DC8 = {
-  { 0x20, 0, 0, 0, 0, 0, 0, 0, 0 },
+TextList D_800D2DC8 = {
+  { ' ', 0, 0, 0, 0, 0, 0, 0, 0 },
   { 0, 0 },
   0x5,
   NULL,
   &D_800D2DC8,
   &D_800D2DC8
 };
-PlayerNode D_800D2DE0 = {
+TextList D_800D2DE0 = {
   { 'C', 'H', 'O', 'O', 'S', 'E', 0, 0, 0 },
   { 0xFF, 0xFF },
   0x4,
@@ -101,8 +97,8 @@ u8 FUN_SRAM_80078424_twelveliner_div60_loop_30t_b(u16 time_in_seconds, u16 lines
   return 0;
 }
 
-PlayerNode *FUN_SRAM_8007868c_tenliner_loop_arg0_t(PlayerNode *arg0) {
-  PlayerNode *sp1C;
+TextList *FUN_SRAM_8007868c_tenliner_loop_arg0_t(TextList *arg0) {
+  TextList *sp1C;
   s32 sp18;
 
   sp18 = 0;
@@ -127,12 +123,16 @@ void FUN_SRAM_8007875c_check_gameover_conditions(Player *arg0, GameResults *arg1
   printf("FUN_SRAM_8007875c_check_gameover_conditions()\n");
 }
 
-PlayerNode *func_8007AA5C(PlayerNode *arg0, PlayerNode *arg1) {
-  PlayerNode *sp4;
+Contributions *func_80079F74(Sram *sram_ptr, u8 arg1) {
+  return &sram_ptr->contributions[arg1];
+}
+
+TextList *func_8007AA5C(TextList *arg0, PlayerNode *arg1) {
+  TextList *sp4;
 
   sp4 = arg0;
   do {
-    if ((sp4->salt[0] == arg1->salt[0]) && (sp4->salt[1] == arg1->salt[1]) && (sp4->name[0] == arg1->name[0])) {
+    if ((sp4->salt[0] == arg1->salt[0]) && (sp4->salt[1] == arg1->salt[1]) && (sp4->text[0] == arg1->name[0])) {
       return sp4;
     }
     sp4 = sp4->next;
@@ -149,8 +149,8 @@ u8 func_8007AADC(u8 *arg0, u8 arg1, u8 arg2) {
   }
 }
 
-PlayerNode *func_8007AEB0(PlayerNode *arg0) {
-  PlayerNode *sp1C;
+TextList *func_8007AEB0(TextList *arg0) {
+  TextList *sp1C;
 
   if (((arg0->pack & 0xF) != 0xE) && ((arg0->pack & 0xF) != 0xF) && ((arg0->pack & 0xF) != 0xA) && ((arg0->pack & 0xF) != 5)) {
     arg0->last->next = arg0->next;
@@ -190,6 +190,15 @@ void func_8007B420(Player *arg0) {
   s32 unused;
 }
 
+static void set_total_wonder_lines(Sram *sram_ptr, u32 total_wonder_lines) {
+  sram_ptr->total_wonder_lines_odd_bits = total_wonder_lines & 0xAAAAAAAA;
+  sram_ptr->total_wonder_lines_even_bits = total_wonder_lines & 0x55555555;
+}
+
+u32 get_total_wonder_lines(Sram *sram_ptr) {
+  return sram_ptr->total_wonder_lines_odd_bits | sram_ptr->total_wonder_lines_even_bits;
+}
+
 void load_from_sram(u8 arg0) {
   register Sram *sram_ptr;
 
@@ -199,6 +208,8 @@ void load_from_sram(u8 arg0) {
     func_800AC1A8(sram_ptr, (void *)0x08000000, 0x1900);
 
     sram_ptr->music_mode = 1;
+
+    set_total_wonder_lines(sram_ptr, 2000);  // TODO
   }
   sram_ptr = g_sram_ptr;
 

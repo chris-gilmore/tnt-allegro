@@ -9,12 +9,6 @@ extern f32 D_8012903C_f;
 ////////////////////////////////////////
 
 extern u16 draw_buffer;
-extern s8 D_800CF830;
-extern s8 D_800CF834;
-extern s8 D_800CF838;
-extern s8 D_800CF83C;
-extern u8 D_800CFD48;
-extern u8 D_800CFD4C;
 
 ////////////////////////////////////////
 
@@ -266,9 +260,9 @@ void func_8008F360(UnkStruct_78 *arg0, UnkStruct_77 *arg1, u32 *arg2) {
       j = g_sram_ptr->song - 1;
     }
     for (i = 0; D_800D3D48[j][i] != '.'; i++) {
-      D_800D2DC8.name[i] = D_800D3D48[j][i];
+      D_800D2DC8.text[i] = D_800D3D48[j][i];
     }
-    D_800D2DC8.name[i] = 0;
+    D_800D2DC8.text[i] = 0;
   }
 
   if ((arg0->unk124 == D_800D5850) || (arg0->unk124 == D_800D5D48) || (arg0->unk124 == D_800D42B4) || (arg0->unk124 == D_800D5180)) {
@@ -607,7 +601,7 @@ void func_80090E08(void) {
       }
       FUN_027BF0_check_music_settings_and_play(game_ptr->unkE4F8);
       Audio_LoadSFX(&D_800D3A90);
-      func_8007A078(&D_800D2D80, 0);
+      func_8007A078(&D_800D2D80, 0);  // "GUEST"
       aiplayer_gameinit_related(1, 0, 6);
       D_800CFED4 = 1;
       Game_Init(1, handicap);
@@ -620,9 +614,6 @@ void func_80090E08(void) {
     */
 
   } else if (D_800D3CF0 == 2) {  // wonders progress
-    printf("-- wonders progress\n");
-
-    /*
     if (D_800D3D9C == 5) {
       main_8004A34C_threeliner();
       func_80090A44();
@@ -633,8 +624,10 @@ void func_80090E08(void) {
       D_801109F0 = 4;
       D_800CFEE8 = 7;
       D_800D3CF0 = 0;
+
+      // TODO
+      g_wonderAnim->state = 14;
     }
-    */
 
   } else if (D_800D3CF0 == 4) {  // haluci mode
     main_8004A34C_threeliner();
@@ -655,15 +648,15 @@ void func_80090E08(void) {
       gui_textbox_2 = D_801290D0.unk124[4].unk30;
       gui_textbox_3 = D_801290D0.unk124[5].unk30;
       gui_textbox_4 = D_801290D0.unk124[6].unk30;
-      if (((gui_textbox_1->unk5C == 0xFF) && (gui_textbox_1->node->pack & 0x10) &&
+      if (((gui_textbox_1->unk5C == 0xFF) && (gui_textbox_1->textList->pack & 0x10) &&
            (gui_textbox_2->unk5C == 0xFF) &&
            (gui_textbox_3->unk5C != 0xFF) &&
            (gui_textbox_4->unk5C != 0xFF)) ||
-          ((gui_textbox_1->unk5C == 0xFF) && (gui_textbox_1->node->pack & 0x10) &&
+          ((gui_textbox_1->unk5C == 0xFF) && (gui_textbox_1->textList->pack & 0x10) &&
            (gui_textbox_2->unk5C == 0xFF) &&
            (gui_textbox_3->unk5C == 0xFF) &&
            (gui_textbox_4->unk5C != 0xFF)) ||
-          ((gui_textbox_1->unk5C == 0xFF) && (gui_textbox_1->node->pack & 0x10) &&
+          ((gui_textbox_1->unk5C == 0xFF) && (gui_textbox_1->textList->pack & 0x10) &&
            (gui_textbox_2->unk5C == 0xFF) &&
            (gui_textbox_3->unk5C == 0xFF) &&
            (gui_textbox_4->unk5C == 0xFF))) {
@@ -680,7 +673,7 @@ void func_80090E08(void) {
     if (D_800D5850 == D_801290D0.unk124) {
       gui_textbox_5 = D_801290D0.unk124[3].unk30;
       if (gui_textbox_5->unk5C == 0xFF) {
-        if (gui_textbox_5->node->pack & 0x10) {
+        if (gui_textbox_5->textList->pack & 0x10) {
           D_800D3D34 = 1;
         } else {
           D_800D3D34 = 0;
@@ -833,34 +826,34 @@ static void func_80091A8C(UnkStruct_78 *arg0) {
   }
 
   if (D_800D5850 == temp_s0) {
-    FUN_SRAM_8007868c_tenliner_loop_arg0_t(D_800D57A4.node);
-    D_800D57A4.node = &D_800D2D80;
+    FUN_SRAM_8007868c_tenliner_loop_arg0_t(D_800D57A4.textList);
+    D_800D57A4.textList = &D_800D2D80;  // "GUEST"
     D_800D57A4.unk5D = 0xFE;
     D_800D57A4.unk60 = 0xFD;
     D_800D57A4.unk62 = 0;
   }
 
   if (D_800D5D48 == temp_s0) {
-    FUN_SRAM_8007868c_tenliner_loop_arg0_t(D_800D5AC4.node);
-    D_800D5AC4.node = &D_800D2D80;
+    FUN_SRAM_8007868c_tenliner_loop_arg0_t(D_800D5AC4.textList);
+    D_800D5AC4.textList = &D_800D2D80;  // "GUEST"
     D_800D5AC4.unk5D = 0xFE;
     D_800D5AC4.unk60 = 0xFD;
-    D_800D5B28.node = &D_800D2D80;
-    D_800D5B8C.node = &D_800D2D80;
-    D_800D5BF0.node = &D_800D2D80;
+    D_800D5B28.textList = &D_800D2D80;  // "GUEST"
+    D_800D5B8C.textList = &D_800D2D80;  // "GUEST"
+    D_800D5BF0.textList = &D_800D2D80;  // "GUEST"
     func_800A2E2C();
   }
 
   if (D_800D5180 == temp_s0) {
-    D_800D5014.node = FUN_SRAM_8007868c_tenliner_loop_arg0_t(D_800D5014.node);
-    D_800D5014.node = &D_800D2DB0;
+    D_800D5014.textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(D_800D5014.textList);
+    D_800D5014.textList = &D_800D2DB0;  // "GLOBAL"
     D_800D5014.unk5D = 0xFE;
     D_800D5014.unk60 = 0xFC;
   }
 
   if (D_800D4E1C == temp_s0) {
-    D_800D4CDC.node = FUN_SRAM_8007868c_tenliner_loop_arg0_t(D_800D4CDC.node);
-    D_800D4CDC.node = &D_800D2DC8;
+    D_800D4CDC.textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(D_800D4CDC.textList);
+    D_800D4CDC.textList = &D_800D2DC8;  // " "
     D_800D4CDC.unk5D = 0xF7;
     D_800D4CDC.unk60 = 0xF9;
   }
@@ -1157,21 +1150,21 @@ static void func_80099674(UnkStruct_78 *arg0) {
 
               if (gui_textbox_3->unk5C == 0xFF) {
                 if (D_800D3D00[0] == var_s1) {
-                  displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->node->name, 0xFF, 255 * D_800D3E24, 255 * D_800D3E24, temp_s0[var_s1].unk0.a * D_800D3E2C);
+                  displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->textList->text, 0xFF, 255 * D_800D3E24, 255 * D_800D3E24, temp_s0[var_s1].unk0.a * D_800D3E2C);
                 } else {
-                  displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->node->name, 0xFF, 0xFF, 0xFF, temp_s0[var_s1].unk0.a * D_800D3E2C);
+                  displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->textList->text, 0xFF, 0xFF, 0xFF, temp_s0[var_s1].unk0.a * D_800D3E2C);
                 }
               } else {
                 weird_lots_of_magic_number_setting_66xrefs(&g_gdl, gui_textbox_3->unk14.data.img, NULL, gui_textbox_3->unkC, gui_textbox_3->unk10, temp_s0[var_s1].unk0.r, temp_s0[var_s1].unk0.g, temp_s0[var_s1].unk0.b, temp_s0[var_s1].unk0.a * D_800D3E2C);
-                displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->node->name, 0xFF, 255 * D_800D3E24, 255 * D_800D3E24, temp_s0[var_s1].unk0.a * D_800D3E2C * D_800D3E24);
+                displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->textList->text, 0xFF, 255 * D_800D3E24, 255 * D_800D3E24, temp_s0[var_s1].unk0.a * D_800D3E2C * D_800D3E24);
               }
             }
           }
         } else if (gui_textbox_3->unk5C == 0xFF) {
           if (D_800D3D00[0] == var_s1) {
-            displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->node->name, temp_s0[var_s1].unk0.r, temp_s0[var_s1].unk0.g * D_800D3E24, temp_s0[var_s1].unk0.b * D_800D3E24, temp_s0[var_s1].unk0.a * D_800D3E2C);
+            displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->textList->text, temp_s0[var_s1].unk0.r, temp_s0[var_s1].unk0.g * D_800D3E24, temp_s0[var_s1].unk0.b * D_800D3E24, temp_s0[var_s1].unk0.a * D_800D3E2C);
           } else {
-            displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->node->name, temp_s0[var_s1].unk0.r, temp_s0[var_s1].unk0.g, temp_s0[var_s1].unk0.b, temp_s0[var_s1].unk0.a * D_800D3E2C);
+            displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->textList->text, temp_s0[var_s1].unk0.r, temp_s0[var_s1].unk0.g, temp_s0[var_s1].unk0.b, temp_s0[var_s1].unk0.a * D_800D3E2C);
           }
           if ((gui_textbox_3->unk60 == 0xFF) || (gui_textbox_3->unk60 == 0xFE) || (gui_textbox_3->unk60 == 0xFB) || (gui_textbox_3->unk60 == 0xFA) || (gui_textbox_3->unk60 == 0xF9) || (gui_textbox_3->unk60 == 0xF8) || (gui_textbox_3->unk60 == 0xFC)) {
             weird_lots_of_magic_number_setting_66xrefs(&g_gdl, gui_textbox_3->unk14.data.img, NULL, gui_textbox_3->unkC, gui_textbox_3->unk10, 0xFF, 0xFF, 0xFF, temp_s0[var_s1].unk0.a * D_800D3E2C);
@@ -1179,7 +1172,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
         } else {
           weird_lots_of_magic_number_setting_66xrefs(&g_gdl, gui_textbox_3->unk14.data.img, NULL, gui_textbox_3->unkC, gui_textbox_3->unk10, temp_s0[var_s1].unk0.r, temp_s0[var_s1].unk0.g, temp_s0[var_s1].unk0.b, temp_s0[var_s1].unk0.a * D_800D3E2C);
           if (gui_textbox_3->unk5D != 1) {
-            displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->node->name, 0xFF, 255 * D_800D3E24, 255 * D_800D3E24, temp_s0[var_s1].unk0.a * D_800D3E2C * D_800D3E24);
+            displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->textList->text, 0xFF, 255 * D_800D3E24, 255 * D_800D3E24, temp_s0[var_s1].unk0.a * D_800D3E2C * D_800D3E24);
           }
         }
       }
@@ -1232,31 +1225,31 @@ static void func_80099674(UnkStruct_78 *arg0) {
 
       if ((temp_s0[var_s1].unk24 & GUI_TEXTBOX) && (arg0->unk114 != 0)) {
         gui_textbox_4 = temp_s0[var_s1].unk30;
-        if ((gui_textbox_4->unk5D != 1) && (gui_textbox_4->node->ptr != NULL) && (gui_textbox_4->unk60 != 0xFA)) {
+        if ((gui_textbox_4->unk5D != 1) && (gui_textbox_4->textList->ptr != NULL) && (gui_textbox_4->unk60 != 0xFA)) {
           if (D_800D5D48 == D_801290D0.unk124) {
-            if ((gui_textbox_4->node->pack & 0xF) == 0xC) {
+            if ((gui_textbox_4->textList->pack & 0xF) == 0xC) {
               weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129020, NULL, gui_textbox_4->unkC + 128, gui_textbox_4->unk10 + 3, 0xFF, 0xFF, 0xFF, 255 * D_800D3E2C);
             } else {
               weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129024, NULL, gui_textbox_4->unkC + 128, gui_textbox_4->unk10 + 3, 0xFF, 0xFF, 0xFF, 255 * D_800D3E2C);
             }
-            if ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->node->ptr) + 1) >= 10) {
-              sp5C = displayText_XY_RGBA_3(&g_gdl, &D_80128F28, gui_textbox_4->unkC + 133, gui_textbox_4->unk10 + 8, ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->node->ptr) + 1) / 10) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
-              displayText_XY_RGBA_3(&g_gdl, &D_80128F28, sp5C, gui_textbox_4->unk10 + 8, ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->node->ptr) + 1) % 10) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
+            if ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->textList->ptr) + 1) >= 10) {
+              sp5C = displayText_XY_RGBA_3(&g_gdl, &D_80128F28, gui_textbox_4->unkC + 133, gui_textbox_4->unk10 + 8, ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->textList->ptr) + 1) / 10) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
+              displayText_XY_RGBA_3(&g_gdl, &D_80128F28, sp5C, gui_textbox_4->unk10 + 8, ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->textList->ptr) + 1) % 10) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
             } else {
-              displayText_XY_RGBA_3(&g_gdl, &D_80128F28, gui_textbox_4->unkC + 137, gui_textbox_4->unk10 + 8, (FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->node->ptr) + 1) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
+              displayText_XY_RGBA_3(&g_gdl, &D_80128F28, gui_textbox_4->unkC + 137, gui_textbox_4->unk10 + 8, (FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->textList->ptr) + 1) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
             }
           } else {
-            if ((gui_textbox_4->node->pack & 0xF) == 0xC) {
+            if ((gui_textbox_4->textList->pack & 0xF) == 0xC) {
               weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129020, NULL, gui_textbox_4->unkC + 128, gui_textbox_4->unk10 + 3, 0xFF, 0xFF, 0xFF, 255 * D_800D3E2C);
             } else {
               weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129024, NULL, gui_textbox_4->unkC + 128, gui_textbox_4->unk10 + 3, 0xFF, 0xFF, 0xFF, 255 * D_800D3E2C);
             }
             func_8005BBFC(&g_gdl);
-            if ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->node->ptr) + 1) >= 10) {
-              sp5C = displayText_XY_RGBA_3(&g_gdl, &D_80128F28, gui_textbox_4->unkC + 133, gui_textbox_4->unk10 + 8, ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->node->ptr) + 1) / 10) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
-              displayText_XY_RGBA_3(&g_gdl, &D_80128F28, sp5C, gui_textbox_4->unk10 + 8, ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->node->ptr) + 1) % 10) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
+            if ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->textList->ptr) + 1) >= 10) {
+              sp5C = displayText_XY_RGBA_3(&g_gdl, &D_80128F28, gui_textbox_4->unkC + 133, gui_textbox_4->unk10 + 8, ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->textList->ptr) + 1) / 10) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
+              displayText_XY_RGBA_3(&g_gdl, &D_80128F28, sp5C, gui_textbox_4->unk10 + 8, ((FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->textList->ptr) + 1) % 10) + 0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
             } else {
-              displayText_XY_RGBA_3(&g_gdl, &D_80128F28, gui_textbox_4->unkC + 137, gui_textbox_4->unk10 + 8, (FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->node->ptr) + 1) +  0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
+              displayText_XY_RGBA_3(&g_gdl, &D_80128F28, gui_textbox_4->unkC + 137, gui_textbox_4->unk10 + 8, (FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(gui_textbox_4->textList->ptr) + 1) +  0x30, 0xFF, 0xFF, 0, 255 * D_800D3E2C);
             }
           }
         }

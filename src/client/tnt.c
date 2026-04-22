@@ -25,14 +25,6 @@
 #include <enet/enet.h>
 #include "enet_common.h"
 
-
-////////////////////////////////////////
-// TODO: move this out of here
-////////////////////////////////////////
-u8 D_800CFD48 = TRUE;
-u16 draw_buffer;
-////////////////////////////////////////
-
 static FILE *fp;
 static int record = false;
 static int replay = false;

@@ -8,10 +8,6 @@ static ALLEGRO_BITMAP *img;
 
 ////////////////////////////////////////
 
-extern u16 draw_buffer;
-
-////////////////////////////////////////
-
 void FUN_046770_800804f0_many_heapallocs_for_arg0_elems(UnkStruct_12 *arg0) {
   config_setting_t *root, *images;
   root = config_root_setting(&g_images_cfg);

@@ -2,10 +2,6 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 
-extern u16 draw_buffer;
-
-////////////////////////////////////////
-
 s32 D_80129030;
 s32 D_80129034;
 s32 D_80129038;

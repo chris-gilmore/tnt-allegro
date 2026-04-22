@@ -787,7 +787,7 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
             fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
           }
 
-          // From 00E440.c, has_rounds_and_floors_large_liner()
+          // From 00E2A0.c, has_rounds_and_floors_large_liner()
           frametime_update(framecount);
           //for (int i = 0; i < D_800CFED4; i++) {
           for (int i = 0; i < 4; i++) {

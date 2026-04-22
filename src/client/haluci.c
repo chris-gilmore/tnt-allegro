@@ -5,10 +5,6 @@ extern int ringcount;
 
 ////////////////////////////////////////
 
-extern u16 draw_buffer;
-
-////////////////////////////////////////
-
 #define TWO_PI 6.2831853
 
 static u8 D_8011FD10[256];

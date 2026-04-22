@@ -1,10 +1,6 @@
 #include "common.h"
 #include <allegro5/allegro5.h>
 
-extern u16 draw_buffer;
-
-////////////////////////////////////////
-
 static ALLEGRO_BITMAP *img;
 
 static void   func_800749A0(UnkStruct_33 *, s32, s32);

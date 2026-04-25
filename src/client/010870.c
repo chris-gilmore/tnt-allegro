@@ -1,7 +1,11 @@
 #include "common.h"
 
+u8 D_800CFE5C = 0x0F;
+
 s16 D_800CFED4 = 1;
 s32 D_800CFED8 = 0;
+
+u8 D_800CFEE0 = 0;  // enable fps measurement display
 
 u8 D_800CFEE4 = 0;
 u8 D_800CFEE8 = 15;

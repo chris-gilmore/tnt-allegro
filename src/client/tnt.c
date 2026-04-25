@@ -158,10 +158,8 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
 
 s32 screen_1_width = BUFFER_W;
 
-#define DISP_W 800
-#define DISP_H 600
-//#define DISP_W 960
-//#define DISP_H 720
+#define DISP_W 960
+#define DISP_H 720
 
 static ALLEGRO_DISPLAY* disp;
 static ALLEGRO_BITMAP* cfbuffer;
@@ -787,6 +785,9 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
             contq_dequeue();
           }
           FUN_032F00_MVC_control_menu_choice_process();
+          if (D_800CFEE0 != 0) {
+            func_800A9010(&g_gdl);  // display fps measurement
+          }
 
           if (lag_flag) {
             // push game elapsed time up 20 jiffies

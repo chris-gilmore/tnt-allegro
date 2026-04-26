@@ -788,6 +788,7 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
           if (D_800CFEE0 != 0) {
             func_800A9010(&g_gdl);  // display fps measurement
           }
+          D_800CFED8++;
 
           if (lag_flag) {
             // push game elapsed time up 20 jiffies

@@ -5,7 +5,7 @@
 extern config_t g_images_cfg;
 
 static u8 D_800D02B0 = 10;
-static u8 D_800D02B4 = 0;
+static u8 D_800D02B4 = FALSE;
 
 /*
    201 - mayan skybox
@@ -714,6 +714,7 @@ void FUN_027BF0_800636C0_display_game_stats_screen_q(void) {
     if (D_800D02B0 == 0) {
       tmp = Game_calls_SETGP_magic_7(game_ptr);
       if (D_800D02B4 != tmp) {
+        if (FALSE);
         D_800D02B4 = tmp;
       }
       D_800D02B0 = 10;

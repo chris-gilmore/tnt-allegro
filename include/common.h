@@ -39,7 +39,6 @@ typedef union {
   f32 f;
 } fu;
 
-
 typedef struct {
   u16   button;
   s8    stick_x;  /* -80 <= stick_x <= 80 */
@@ -47,8 +46,10 @@ typedef struct {
   //  u8    errno;
 } OSContPad;
 
-/* Buttons */
+typedef struct {
+} SuperThread;
 
+/* Buttons */
 #define CONT_A      0x8000
 #define CONT_B      0x4000
 #define CONT_G      0x2000
@@ -65,7 +66,6 @@ typedef struct {
 #define CONT_F      0x0001
 
 /* Nintendo's official button names */
-
 #define A_BUTTON        CONT_A
 #define B_BUTTON        CONT_B
 #define L_TRIG          CONT_L
@@ -81,12 +81,6 @@ typedef struct {
 #define R_CBUTTONS      CONT_F
 #define D_CBUTTONS      CONT_D
 
-typedef struct {
-} OSViMode;
-
-typedef struct {
-} SuperThread;
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -101,22 +95,14 @@ typedef struct {
 #include "sched.h"
 #include "gu.h"
 #include "gbi.h"
-
-typedef struct {
-  f32 x, y, z;
-} Vec3;
-
-typedef struct {
-  f32 m00, m01, m02, m03; // Row 0
-  f32 m10, m11, m12, m13; // Row 1
-  f32 m20, m21, m22, m23; // Row 2
-  f32 m30, m31, m32, m33; // Row 3
-} MtxF;
+#include "libaudio.h"
+#include "sptask.h"
+#include "abi.h"
 
 #include "newtetris/066700.h"
 #include "newtetris/sram.h"
 #include "newtetris/069170.h"
-#include "newtetris/074B00.h"
+#include "newtetris/linalg.h"
 #include "newtetris/06FFD0.h"
 #include "newtetris/borganim.h"
 #include "newtetris/072C40.h"
@@ -125,12 +111,12 @@ typedef struct {
 
 #include "newtetris/img_defs.h"
 #include "newtetris/anim_defs.h"
+#include "newtetris/dcm_defs.h"
 #include "newtetris/n64heap.h"
 #include "newtetris/cont.h"
 #include "newtetris/contq.h"
 #include "newtetris/026900.h"
 #include "newtetris/026C80.h"
-#include "newtetris/026F90.h"
 #include "newtetris/078FE0.h"
 #include "newtetris/077340.h"
 #include "newtetris/073D50.h"
@@ -209,7 +195,8 @@ typedef struct {
 #include "newtetris/keyspin.h"
 #include "newtetris/pausemenu.h"
 #include "newtetris/032F00.h"
-#include "newtetris/04BFD0.h"
+#include "newtetris/lz77_codec.h"
+#include "newtetris/dcm.h"
 #include "newtetris/audio.h"
 #include "newtetris/imageparams.h"
 #include "newtetris/animparams.h"

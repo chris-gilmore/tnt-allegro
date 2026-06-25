@@ -369,7 +369,7 @@ void func_8009035C(UnkStruct_77 *arg0, u32 *arg1) {
   Font_Init46Char(&D_80128FA0, IMG_FONT_C);
   func_8009FA2C(&D_801290D0);
   D_800D3CF8 = NULL;
-  Audio_LoadSFX(&D_800D3988);
+  Audio_LoadSFX(&g_menuSfxBank);
   for (i = 0; i < 4; i++) {
     D_800D3FF8[3 + i].unk0.a = 0xA0;
     D_800D3FF8[3 + i].unk0.r = 0xFF;
@@ -416,7 +416,7 @@ void func_800905E8(u8 arg0) {
 
   func_8008F280(&D_801290D0, -1, 400, 300, D_801290D0.img);
 
-  Audio_LoadSFX(&D_800D3988);
+  Audio_LoadSFX(&g_menuSfxBank);
   func_800A36F0(-50, 50);
   func_800A36F0(-50, 50);
   D_8012902C[0] = &D_801290D0;
@@ -572,7 +572,7 @@ void func_80090E08(void) {
     printf("Screen: '%d'\n", game_ptr->unkE4F8);
 
     FUN_027BF0_check_music_settings_and_play(game_ptr->unkE4F8);
-    Audio_LoadSFX(&D_800D3A90);
+    Audio_LoadSFX(&g_gameSfxBank);
     Game_Init(D_800CFED4, handicap);
     if (D_800D3D20 != 0) {
       D_800D3D20 = 0;
@@ -596,7 +596,7 @@ void func_80090E08(void) {
         game_ptr->unkE4F8 = func_800A35EC(0, D_800CF838);
       }
       FUN_027BF0_check_music_settings_and_play(game_ptr->unkE4F8);
-      Audio_LoadSFX(&D_800D3A90);
+      Audio_LoadSFX(&g_gameSfxBank);
       func_8007A078(&D_800D2D80, 0);  // "GUEST"
       aiplayer_gameinit_related(1, 0, 6);
       D_800CFED4 = 1;
@@ -698,7 +698,7 @@ static s32 func_80091440(UnkStruct_78 *arg0, s32 arg1, s32 *arg2) {
 
   func_800A35EC(0, 0xFF);
   if (D_800D3D94 != 0) {
-    Audio2_Play_SFX(&D_801235B0, &D_800D3988, 3);
+    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 3);
     return arg1;
   }
 
@@ -735,11 +735,11 @@ static s32 func_80091440(UnkStruct_78 *arg0, s32 arg1, s32 *arg2) {
     }
     if (temp_s0[sp28].unk24 & GUI_NULL) {
       if (temp_s0[sp28].unk24 & GUI_TEXTBOX) {
-        Audio2_Play_SFX(&D_801235B0, &D_800D3988, 1);
+        Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 1);
         return sp28;
       }
     } else {
-      Audio2_Play_SFX(&D_801235B0, &D_800D3988, 1);
+      Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 1);
       return sp28;
     }
     sp28--;
@@ -755,7 +755,7 @@ static s32 func_80091744(UnkStruct_78 *arg0, s32 arg1, s32 *arg2) {
 
   func_800A35EC(0, 0xFF);
   if (D_800D3D94 != 0) {
-    Audio2_Play_SFX(&D_801235B0, &D_800D3988, 3);
+    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 3);
     return arg1;
   }
 
@@ -792,11 +792,11 @@ static s32 func_80091744(UnkStruct_78 *arg0, s32 arg1, s32 *arg2) {
     }
     if (temp_s0[sp28].unk24 & GUI_NULL) {
       if (temp_s0[sp28].unk24 & GUI_TEXTBOX) {
-        Audio2_Play_SFX(&D_801235B0, &D_800D3988, 1);
+        Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 1);
         return sp28;
       }
     } else {
-      Audio2_Play_SFX(&D_801235B0, &D_800D3988, 1);
+      Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 1);
       return sp28;
     }
     sp28++;
@@ -1275,7 +1275,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
         temp_s0[D_800D3D00[0]].unk0.g = 0xFF;
         temp_s0[D_800D3D00[0]].unk0.b = 0xFF;
         ((void (*)(void *, f32)) temp_s0[6].unk28)(temp_s0[6].unk30, 0);
-        Audio2_Play_SFX(&D_801235B0, &D_800D3988, 4);
+        Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 4);
         func_8005BE40(&g_gdl);
         D_800D57A4.unk61 = FALSE;
         return;
@@ -1287,7 +1287,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
         temp_s0[D_800D3D00[0]].unk0.g = 0xFF;
         temp_s0[D_800D3D00[0]].unk0.b = 0xFF;
         ((void (*)(void *, f32)) temp_s0[9].unk28)(temp_s0[9].unk30, 0);
-        Audio2_Play_SFX(&D_801235B0, &D_800D3988, 4);
+        Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 4);
         func_8005BE40(&g_gdl);
         D_800D5AC4.unk61 = FALSE;
         D_800D5B28.unk61 = FALSE;
@@ -1307,7 +1307,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
               debug_print_reason_routine("gui func call in menu", "bad mojo");
             }
             ((void (*)(void *, f32)) temp_s0[D_800D3D00[0]].unk28)(temp_s0[D_800D3D00[0]].unk30, 0);
-            Audio2_Play_SFX(&D_801235B0, &D_800D3988, 1);
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 1);
           } else {
             return;
           }
@@ -1319,7 +1319,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
               debug_print_reason_routine("gui func call in menu", "bad mojo");
             }
             ((void (*)(void *, f32)) temp_s0[D_800D3D00[0]].unk28)(temp_s0[D_800D3D00[0]].unk30, 0);
-            Audio2_Play_SFX(&D_801235B0, &D_800D3988, 1);
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 1);
           } else {
             return;
           }
@@ -1343,7 +1343,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
         if (temp_s0[D_800D3D00[0]].unk28 != NULL) {
           ((void (*)(void *, f32)) temp_s0[D_800D3D00[0]].unk28)(temp_s0[D_800D3D00[0]].unk30, D_800D3E2C);
         }
-        Audio2_Play_SFX(&D_801235B0, &D_800D3988, 1);
+        Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 1);
       }
 
       if ((temp_s0[D_800D3D00[0]].unk24 & GUI_FUNC) && (arg0->unk114 != 0) && ((g_PV_arr[0].unk24 & 0x8000) || (g_PV_arr[0].unk24 & 0x1000))) {
@@ -1357,7 +1357,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
             debug_print_reason_routine("gui func call in menu", "bad mojo");
           }
           ((void (*)(void *, f32)) temp_s0[D_800D3D00[0]].unk28)(temp_s0[D_800D3D00[0]].unk30, 0);
-          Audio2_Play_SFX(&D_801235B0, &D_800D3988, 2);
+          Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 2);
           func_8005BE40(&g_gdl);
           return;
         }
@@ -1366,7 +1366,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
           debug_print_reason_routine("gui func call in menu", "bad mojo");
         }
         ((void (*)(void *, f32)) temp_s0[D_800D3D00[0]].unk28)(temp_s0[D_800D3D00[0]].unk30, 0);
-        Audio2_Play_SFX(&D_801235B0, &D_800D3988, 2);
+        Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 2);
         func_8005BE40(&g_gdl);
         return;
       }
@@ -1374,7 +1374,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
       if ((temp_s0[D_800D3D00[0]].unk24 & GUI_MENU) && (arg0->unk114 != 0) && (g_PV_arr[0].unk24 & 0x8000) && (D_800D3CF8 == NULL)) {
         D_800D3E34 = 2;
         func_8007E9F8(9);
-        Audio2_Play_SFX(&D_801235B0, &D_800D3988, 4);
+        Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 4);
       }
 
       if ((D_800D3E34 == 0) && (g_PV_arr[0].unk24 & 0x8000)) {
@@ -1415,14 +1415,14 @@ static void func_80099674(UnkStruct_78 *arg0) {
 
         func_8007E9F8(9);
         D_800D3E34 = 1;
-        Audio2_Play_SFX(&D_801235B0, &D_800D3988, 5);
+        Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 5);
         return;
       }
 
       if (sp58->unk84 & 0x800) {  // U_JPAD / CONT_UP
         if (D_800D5D48 == temp_s0) {
           if (D_800D3D94 != 0) {
-            Audio2_Play_SFX(&D_801235B0, &D_800D3988, 3);
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 3);
             return;
           }
 
@@ -1447,7 +1447,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
 
       if (sp58->unk84 & 0x400) {  // D_JPAD / CONT_DOWN
         if (D_800D3D94 != 0) {
-          Audio2_Play_SFX(&D_801235B0, &D_800D3988, 3);
+          Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, 3);
           return;
         }
 
@@ -1548,14 +1548,14 @@ void func_8009D5E4(void) {
     func_8008FF78(&D_801290D0);
     func_8009098C(&D_801290D0);
     rmonPrintf("Loading: %d\n", g_sram_ptr->song);
-    Audio_80084e20_twentyliner(g_sram_ptr->song, &D_80120A70, 1);
+    Audio_80084e20_twentyliner(g_sram_ptr->song, &g_songPlayer, 1);
     main_8004A34C_threeliner();
     func_8008F360(&D_801290D0, D_800D4E1C, D_800D4DD4);
     Font_Init46Char(&D_80128EB0, IMG_FONT_A);
     Font_Init46Char(&D_80128F28, IMG_FONT_B);
     Font_Init46Char(&D_80128FA0, IMG_FONT_C);
     main_8004A34C_threeliner();
-    Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+    Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
     D_800D3D88 = FALSE;
   }
 

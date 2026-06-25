@@ -651,28 +651,17 @@ void game_init(unsigned short num_players) {
   //D_800D3CF0 = 4;  // haluci mode
 
   {
-    int i;
-    char *src;
+    strncpy(game_ptr->players[0].node.name, p0_name, 8);
+    game_ptr->players[0].node.name[8] = 0;
 
-    i = 0;
-    src = p0_name;
-    memset(game_ptr->players[0].node.name, 0, 9);
-    while (*src != 0 && i < 8) game_ptr->players[0].node.name[i++] = *src++;
+    strncpy(game_ptr->players[1].node.name, p1_name, 8);
+    game_ptr->players[1].node.name[8] = 0;
 
-    i = 0;
-    src = p1_name;
-    memset(game_ptr->players[1].node.name, 0, 9);
-    while (*src != 0 && i < 8) game_ptr->players[1].node.name[i++] = *src++;
+    strncpy(game_ptr->players[2].node.name, p2_name, 8);
+    game_ptr->players[2].node.name[8] = 0;
 
-    i = 0;
-    src = p2_name;
-    memset(game_ptr->players[2].node.name, 0, 9);
-    while (*src != 0 && i < 8) game_ptr->players[2].node.name[i++] = *src++;
-
-    i = 0;
-    src = p3_name;
-    memset(game_ptr->players[3].node.name, 0, 9);
-    while (*src != 0 && i < 8) game_ptr->players[3].node.name[i++] = *src++;
+    strncpy(game_ptr->players[3].node.name, p3_name, 8);
+    game_ptr->players[3].node.name[8] = 0;
   }
 }
 
@@ -931,11 +920,8 @@ int main(int argc, char **argv) {
   printf("Game type: '%s'\n", gametype_str[gametype]);
 
   if (nopt != NULL) {
-    int i = 0;
-    char *src = nopt;
-
-    memset(p0_name, 0, sizeof(p0_name));
-    while (*src != 0  && i < 8) p0_name[i++] = *src++;
+    strncpy(p0_name, nopt, 8);
+    p0_name[8] = 0;
   }
   printf("Player 0 name: '%s'\n", p0_name);
   printf("Player 1 name: '%s'\n", p1_name);

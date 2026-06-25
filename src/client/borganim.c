@@ -8,10 +8,10 @@
 static UnkStruct_69 D_80129390;
 static UnkStruct_69 D_801293F0;
 static u8 D_80129450[0x30];  // padding; what is this?
-static MtxF D_80129480;
-static MtxF D_801294C0;  // unused
-static MtxF D_80129500;
-static MtxF D_80129540;
+static Mtx4 D_80129480;
+static Mtx4 D_801294C0;  // unused
+static Mtx4 D_80129500;
+static Mtx4 D_80129540;
 
 static s32 D_800D6200 = 0;
 static UnkStruct_44 *D_800D6204 = NULL;
@@ -26,17 +26,17 @@ static Light D_800D6208 = {
   }
 };
 
-extern /* static */ void   func_800A4CF0(UnkStruct_49 *, MtxF *);
-extern /* static */ void   func_800A4EC0(UnkStruct_49 *, MtxF *);
-static void   func_800A5114(UnkStruct_49 *, MtxF *);
-static void   func_800A52E4(UnkStruct_49 *, MtxF *);
-static void   func_800A53E0(UnkStruct_49 *, MtxF *);
-static void   func_800A5660(UnkStruct_49 *, MtxF *);
-static void   func_800A56E4(MtxF *, MtxF *);
-static void   func_800A57A4(MtxF *, MtxF *);
-static void   func_800A57FC(UnkStruct_49 *, MtxF *);
+extern /* static */ void   func_800A4CF0(UnkStruct_49 *, Mtx4 *);
+extern /* static */ void   func_800A4EC0(UnkStruct_49 *, Mtx4 *);
+static void   func_800A5114(UnkStruct_49 *, Mtx4 *);
+static void   func_800A52E4(UnkStruct_49 *, Mtx4 *);
+static void   func_800A53E0(UnkStruct_49 *, Mtx4 *);
+static void   func_800A5660(UnkStruct_49 *, Mtx4 *);
+static void   func_800A56E4(Mtx4 *, Mtx4 *);
+static void   func_800A57A4(Mtx4 *, Mtx4 *);
+static void   func_800A57FC(UnkStruct_49 *, Mtx4 *);
 static void   func_800A58A4(UnkStruct_32 *);
-static void   func_800A59C0(UnkStruct_32 *, MtxF *);
+static void   func_800A59C0(UnkStruct_32 *, Mtx4 *);
 static void   func_800A652C(UnkStruct_32 *, UnkStruct_50 *);
 static void   func_800A6AC8(UnkStruct_52 *);
 static void   func_800A6B14(UnkStruct_51 *, f32);
@@ -67,16 +67,16 @@ Gfx *func_800A4B98(Gfx *gdl, UnkStruct_44 *arg1) {
 #pragma GLOBAL_ASM("asm/nonmatchings/newtetris/borganim/func_800A4C20.s")
 
 //#pragma GLOBAL_ASM("asm/nonmatchings/newtetris/borganim/func_800A4CF0.s")
-void func_800A4CF0(UnkStruct_49 *arg0, MtxF *arg1) {
+void func_800A4CF0(UnkStruct_49 *arg0, Mtx4 *arg1) {
   printf("-- func_800A4CF0\n");
 }
 
 //#pragma GLOBAL_ASM("asm/nonmatchings/newtetris/borganim/func_800A4EC0.s")
-void func_800A4EC0(UnkStruct_49 *arg0, MtxF *arg1) {
+void func_800A4EC0(UnkStruct_49 *arg0, Mtx4 *arg1) {
   printf("-- func_800A4EC0\n");
 }
 
-static void func_800A5114(UnkStruct_49 *arg0, MtxF *arg1) {
+static void func_800A5114(UnkStruct_49 *arg0, Mtx4 *arg1) {
   f32 *ptr;
   f32 sp48;
   f32 sp44;
@@ -99,30 +99,30 @@ static void func_800A5114(UnkStruct_49 *arg0, MtxF *arg1) {
   sp40 = cosf(-*ptr * DEG2RAD);
   ptr++;
 
-  arg1->m00 = sp40 * sp44;
-  arg1->m10 = (sp34 * sp48) + (sp40 * sp38 * sp3C);
-  arg1->m20 = (sp34 * sp3C) - (sp40 * sp38 * sp48);
+  arg1->a11 = sp40 * sp44;
+  arg1->a12 = (sp34 * sp48) + (sp40 * sp38 * sp3C);
+  arg1->a13 = (sp34 * sp3C) - (sp40 * sp38 * sp48);
 
-  arg1->m01 = -sp34 * sp44;
-  arg1->m11 = (sp40 * sp48) - (sp34 * sp38 * sp3C);
-  arg1->m21 = (sp40 * sp3C) + (sp34 * sp38 * sp48);
+  arg1->a21 = -sp34 * sp44;
+  arg1->a22 = (sp40 * sp48) - (sp34 * sp38 * sp3C);
+  arg1->a23 = (sp40 * sp3C) + (sp34 * sp38 * sp48);
 
-  arg1->m02 = sp38;
-  arg1->m12 = -sp44 * sp3C;
-  arg1->m22 = sp44 * sp48;
+  arg1->a31 = sp38;
+  arg1->a32 = -sp44 * sp3C;
+  arg1->a33 = sp44 * sp48;
 
-  arg1->m30 = *ptr++;
-  arg1->m31 = *ptr++;
-  arg1->m32 = *ptr++;
+  arg1->a14 = *ptr++;
+  arg1->a24 = *ptr++;
+  arg1->a34 = *ptr++;
 
-  arg1->m03 = *ptr++;
-  arg1->m13 = *ptr++;
-  arg1->m23 = *ptr;
+  arg1->a41 = *ptr++;
+  arg1->a42 = *ptr++;
+  arg1->a43 = *ptr;
 
-  arg1->m33 = 1;
+  arg1->a44 = 1;
 }
 
-static void func_800A52E4(UnkStruct_49 *arg0, MtxF *arg1) {
+static void func_800A52E4(UnkStruct_49 *arg0, Mtx4 *arg1) {
   f32 sp24;
   f32 sp20;
   f32 sp1C;
@@ -137,29 +137,29 @@ static void func_800A52E4(UnkStruct_49 *arg0, MtxF *arg1) {
 
   guNormalize(&sp24, &sp20, &sp1C);
 
-  arg1->m00 = 0;
-  arg1->m01 = 0;
-  arg1->m02 = 0;
+  arg1->a11 = 0;
+  arg1->a21 = 0;
+  arg1->a31 = 0;
 
-  arg1->m10 = 0;
-  arg1->m11 = 0;
-  arg1->m12 = 0;
+  arg1->a12 = 0;
+  arg1->a22 = 0;
+  arg1->a32 = 0;
 
-  arg1->m20 = sp24;
-  arg1->m21 = sp20;
-  arg1->m22 = sp1C;
+  arg1->a13 = sp24;
+  arg1->a23 = sp20;
+  arg1->a33 = sp1C;
 
-  arg1->m30 = 0;
-  arg1->m31 = 0;
-  arg1->m32 = 0;
+  arg1->a14 = 0;
+  arg1->a24 = 0;
+  arg1->a34 = 0;
 
-  arg1->m03 = 1;
-  arg1->m13 = 1;
-  arg1->m23 = 1;
-  arg1->m33 = 1;
+  arg1->a41 = 1;
+  arg1->a42 = 1;
+  arg1->a43 = 1;
+  arg1->a44 = 1;
 }
 
-static void func_800A53E0(UnkStruct_49 *arg0, MtxF *arg1) {
+static void func_800A53E0(UnkStruct_49 *arg0, Mtx4 *arg1) {
   f32 temp_fv0;
   f32 temp_fv1;
   f32 temp_fa0;
@@ -173,7 +173,7 @@ static void func_800A53E0(UnkStruct_49 *arg0, MtxF *arg1) {
   f32 sp74;
   f32 sp70;
   f32 sp6C;
-  MtxF sp2C;
+  Mtx4 sp2C;
   f32 sp28;
   f32 sp24;
 
@@ -185,9 +185,9 @@ static void func_800A53E0(UnkStruct_49 *arg0, MtxF *arg1) {
   sp90 = arg0->unk10[5];
   sp6C = arg0->unk10[6];
 
-  sp2C.m30 = temp_fv0;
-  sp2C.m31 = temp_fv1;
-  sp2C.m32 = temp_fa0;
+  sp2C.a14 = temp_fv0;
+  sp2C.a24 = temp_fv1;
+  sp2C.a34 = temp_fa0;
 
   sp88 = temp_fv0 - sp88;
   sp8C = temp_fv1 - sp8C;
@@ -202,9 +202,9 @@ static void func_800A53E0(UnkStruct_49 *arg0, MtxF *arg1) {
   sp84 = -sp88;
   guNormalize(&sp7C, &sp80, &sp84);
 
-  sp2C.m20 = sp88;
-  sp2C.m21 = sp8C;
-  sp2C.m22 = sp90;
+  sp2C.a13 = sp88;
+  sp2C.a23 = sp8C;
+  sp2C.a33 = sp90;
 
   sp70 = (sp8C * sp84) - (sp80 * sp90);
   sp74 = (sp90 * sp7C) - (sp84 * sp88);
@@ -213,23 +213,23 @@ static void func_800A53E0(UnkStruct_49 *arg0, MtxF *arg1) {
   sp28 = cosf(sp6C * DEG2RAD);
   sp24 = sinf(sp6C * DEG2RAD);
 
-  sp2C.m00 = (sp7C * sp28) + (sp70 * sp24);
-  sp2C.m01 = (sp80 * sp28) + (sp74 * sp24);
-  sp2C.m02 = (sp84 * sp28) + (sp78 * sp24);
+  sp2C.a11 = (sp7C * sp28) + (sp70 * sp24);
+  sp2C.a21 = (sp80 * sp28) + (sp74 * sp24);
+  sp2C.a31 = (sp84 * sp28) + (sp78 * sp24);
 
-  sp2C.m10 = (-sp7C * sp24) + (sp70 * sp28);
-  sp2C.m11 = (-sp80 * sp24) + (sp74 * sp28);
-  sp2C.m12 = (-sp84 * sp24) + (sp78 * sp28);
+  sp2C.a12 = (-sp7C * sp24) + (sp70 * sp28);
+  sp2C.a22 = (-sp80 * sp24) + (sp74 * sp28);
+  sp2C.a32 = (-sp84 * sp24) + (sp78 * sp28);
 
-  sp2C.m03 = 1;
-  sp2C.m13 = 1;
-  sp2C.m23 = 1;
-  sp2C.m33 = 1;
+  sp2C.a41 = 1;
+  sp2C.a42 = 1;
+  sp2C.a43 = 1;
+  sp2C.a44 = 1;
 
   *arg1 = sp2C;
 }
 
-static void func_800A5660(UnkStruct_49 *arg0, MtxF *arg1) {
+static void func_800A5660(UnkStruct_49 *arg0, Mtx4 *arg1) {
   switch (arg0->unk2) {
   case 0:
     func_800A4CF0(arg0, arg1);
@@ -249,68 +249,68 @@ static void func_800A5660(UnkStruct_49 *arg0, MtxF *arg1) {
   }
 }
 
-static void func_800A56E4(MtxF *arg0, MtxF *arg1) {
+static void func_800A56E4(Mtx4 *arg0, Mtx4 *arg1) {
   f32 w, x, y, z;
 
-  w = arg0->m03;
-  x = arg0->m00;
-  y = arg0->m01;
-  z = arg0->m02;
+  w = arg0->a41;
+  x = arg0->a11;
+  y = arg0->a21;
+  z = arg0->a31;
   x *= w;
   y *= w;
   z *= w;
-  arg1->m00 = x;
-  arg1->m01 = y;
-  arg1->m02 = z;
+  arg1->a11 = x;
+  arg1->a21 = y;
+  arg1->a31 = z;
 
-  w = arg0->m13;
-  x = arg0->m10;
-  y = arg0->m11;
-  z = arg0->m12;
+  w = arg0->a42;
+  x = arg0->a12;
+  y = arg0->a22;
+  z = arg0->a32;
   x *= w;
   y *= w;
   z *= w;
-  arg1->m10 = x;
-  arg1->m11 = y;
-  arg1->m12 = z;
+  arg1->a12 = x;
+  arg1->a22 = y;
+  arg1->a32 = z;
 
-  w = arg0->m23;
-  x = arg0->m20;
-  y = arg0->m21;
-  z = arg0->m22;
+  w = arg0->a43;
+  x = arg0->a13;
+  y = arg0->a23;
+  z = arg0->a33;
   x *= w;
   y *= w;
   z *= w;
-  arg1->m20 = x;
-  arg1->m21 = y;
-  arg1->m22 = z;
+  arg1->a13 = x;
+  arg1->a23 = y;
+  arg1->a33 = z;
   
-  arg1->m30 = arg0->m30;
-  arg1->m31 = arg0->m31;
-  arg1->m32 = arg0->m32;
+  arg1->a14 = arg0->a14;
+  arg1->a24 = arg0->a24;
+  arg1->a34 = arg0->a34;
 
-  arg1->m03 = 0;
-  arg1->m13 = 0;
-  arg1->m23 = 0;
+  arg1->a41 = 0;
+  arg1->a42 = 0;
+  arg1->a43 = 0;
 
-  arg1->m33 = 1;
+  arg1->a44 = 1;
 }
 
-static void func_800A57A4(MtxF *arg0, MtxF *arg1) {
+static void func_800A57A4(Mtx4 *arg0, Mtx4 *arg1) {
   if (arg1 != arg0) {
     *arg1 = *arg0;
   }
 
-  arg1->m03 = 1;
-  arg1->m13 = 1;
-  arg1->m23 = 1;
+  arg1->a41 = 1;
+  arg1->a42 = 1;
+  arg1->a43 = 1;
 }
 
-static void func_800A57FC(UnkStruct_49 *arg0, MtxF *arg1) {
+static void func_800A57FC(UnkStruct_49 *arg0, Mtx4 *arg1) {
   UnkStruct_49 **var_s1;
   s32 i;
   s32 unused[4];
-  MtxF sp28;
+  Mtx4 sp28;
 
   func_800A5660(arg0, &D_80129480);
   func_800AF0C4(&sp28, arg1, &D_80129480);
@@ -335,23 +335,23 @@ static void func_800A58A4(UnkStruct_32 *arg0) {
   func_800A59C0(arg0, &D_80129500);
 }
 
-static void func_800A59C0(UnkStruct_32 *arg0, MtxF *arg1) {
-  MtxF *var_s0;
+static void func_800A59C0(UnkStruct_32 *arg0, Mtx4 *arg1) {
+  Mtx4 *var_s0;
   UnkStruct_49 *var_s1;
   s32 unused;
   s32 var_s3;
   UnkStruct_45 *temp_s0;
   UnkStruct_75 *sp220;
-  MtxF sp1E0;
-  MtxF sp1A0;
-  MtxF sp160;
-  MtxF sp120;
-  MtxF spE0;
-  MtxF spA0;
+  Mtx4 sp1E0;
+  Mtx4 sp1A0;
+  Mtx4 sp160;
+  Mtx4 sp120;
+  Mtx4 spE0;
+  Mtx4 spA0;
   f32 var_fv0;
   f32 var_fv1;
   s32 i;
-  MtxF sp54;
+  Mtx4 sp54;
 
   sp220 = &arg0->unk8->unk10;
   sp1E0 = *arg1;
@@ -384,9 +384,9 @@ static void func_800A59C0(UnkStruct_32 *arg0, MtxF *arg1) {
       var_s1->unkC->unk80 = sp54;
       *var_s0 = sp54;
       func_800AE880(&var_s1->unkC->unkC0, &arg0->unk8C);
-      var_s1->unkC->unk80.m30 *= 16;
-      var_s1->unkC->unk80.m31 *= 16;
-      var_s1->unkC->unk80.m32 *= 16;
+      var_s1->unkC->unk80.a14 *= 16;
+      var_s1->unkC->unk80.a24 *= 16;
+      var_s1->unkC->unk80.a34 *= 16;
       func_800AE880(&var_s1->unkC->unk80, &arg0->unkCC);
       var_s1->unk0 |= 0x2;
       temp_s0 = sp220->unk24;
@@ -423,7 +423,7 @@ static void func_800A59C0(UnkStruct_32 *arg0, MtxF *arg1) {
         guMtxF2L((f32 (*)[4]) &spA0, &temp_s0->unk10.unk1C->unk0[arg0->unk4]);
         */
       } else {
-        memcpy(&projection, &sp120, sizeof(MtxF));
+        memcpy(&projection, &sp120, sizeof(Mtx4));
         al_use_projection_transform(&projection);
         /*
         guMtxF2L((f32 (*)[4]) &sp120, &temp_s0->unk10.unk1C->unk0[arg0->unk4]);
@@ -1164,7 +1164,7 @@ static Gfx *func_800A7EFC(Gfx *gdl, UnkStruct_32 *arg1) {
   static UnkStruct_45 *D_80129590;
   static UnkStruct_49 *D_80129594;
   static u8 D_80129598[0x40];  // padding; what is this?
-  static MtxF *D_801295D8;
+  static Mtx4 *D_801295D8;
   static s16 *D_801295DC;
 
   s32 tmp;
@@ -1174,7 +1174,7 @@ static Gfx *func_800A7EFC(Gfx *gdl, UnkStruct_32 *arg1) {
   s32 var_a2;
   s32 var_s0;
   UnkStruct_39 **var_a0;
-  MtxF *temp_v1_2;
+  Mtx4 *temp_v1_2;
   s8 *dir;
   f32 temp_fv0_4;
 
@@ -1222,9 +1222,9 @@ static Gfx *func_800A7EFC(Gfx *gdl, UnkStruct_32 *arg1) {
     for (D_80129580 = D_801293F0.unk4->unk4; D_80129580 != 0; D_80129580--) {
       temp_v1_2 = &D_80129594->unkC->unkC0;
       dir = ((*var_a0)->unk8.unk10->lights + temp_t6)->l.dir;
-      *dir++ = temp_v1_2->m20 * 90;
-      *dir++ = temp_v1_2->m21 * 90;
-      *dir = temp_v1_2->m22 * 90;
+      *dir++ = temp_v1_2->a13 * 90;
+      *dir++ = temp_v1_2->a23 * 90;
+      *dir = temp_v1_2->a33 * 90;
 
       red = (*var_a0)->unk8.red;
       if (red > 1.0) {
@@ -1365,21 +1365,21 @@ static Gfx *func_800A7EFC(Gfx *gdl, UnkStruct_32 *arg1) {
         Vec3 sp110;
         Vec3 sp104;
         Vec3 spF8;
-        MtxF *temp_s0;
+        Mtx4 *temp_s0;
         UnkStruct_49 *temp_s1;
 
         temp_s0 = &D_801293F0.unk8->unkC->unkC0;
         temp_s1 = D_801293F0.unk8;
 
-        sp110.x = arg1->unk4C.m30 - temp_s0->m30;
-        sp110.y = arg1->unk4C.m31 - temp_s0->m31;
-        sp110.z = arg1->unk4C.m32 - temp_s0->m32;
+        sp110.x = arg1->unk4C.a14 - temp_s0->a14;
+        sp110.y = arg1->unk4C.a24 - temp_s0->a24;
+        sp110.z = arg1->unk4C.a34 - temp_s0->a34;
 
         guNormalize(&sp110.x, &sp110.y, &sp110.z);
 
-        sp104.x = temp_s0->m10;
-        sp104.y = temp_s0->m11;
-        sp104.z = temp_s0->m12;
+        sp104.x = temp_s0->a12;
+        sp104.y = temp_s0->a22;
+        sp104.z = temp_s0->a32;
 
         vec3_cross(&spF8, &sp104, &sp110);
 
@@ -1387,39 +1387,39 @@ static Gfx *func_800A7EFC(Gfx *gdl, UnkStruct_32 *arg1) {
 
         vec3_cross(&sp110, &spF8, &sp104);
 
-        D_801295D8->m00 = temp_s1->unk10[6] * spF8.x;
-        D_801295D8->m01 = temp_s1->unk10[6] * spF8.y;
-        D_801295D8->m02 = temp_s1->unk10[6] * spF8.z;
-        D_801295D8->m10 = temp_s1->unk10[7] * sp104.x;
-        D_801295D8->m11 = temp_s1->unk10[7] * sp104.y;
-        D_801295D8->m12 = temp_s1->unk10[7] * sp104.z;
-        D_801295D8->m20 = temp_s1->unk10[8] * sp110.x;
-        D_801295D8->m21 = temp_s1->unk10[8] * sp110.y;
-        D_801295D8->m22 = temp_s1->unk10[8] * sp110.z;
-        D_801295D8->m30 = temp_s0->m30;
-        D_801295D8->m31 = temp_s0->m31;
-        D_801295D8->m32 = temp_s0->m32;
-        D_801295D8->m33 = 1;
-        D_801295D8->m03 = 0;
-        D_801295D8->m13 = 0;
-        D_801295D8->m23 = 0;
+        D_801295D8->a11 = temp_s1->unk10[6] * spF8.x;
+        D_801295D8->a21 = temp_s1->unk10[6] * spF8.y;
+        D_801295D8->a31 = temp_s1->unk10[6] * spF8.z;
+        D_801295D8->a12 = temp_s1->unk10[7] * sp104.x;
+        D_801295D8->a22 = temp_s1->unk10[7] * sp104.y;
+        D_801295D8->a32 = temp_s1->unk10[7] * sp104.z;
+        D_801295D8->a13 = temp_s1->unk10[8] * sp110.x;
+        D_801295D8->a23 = temp_s1->unk10[8] * sp110.y;
+        D_801295D8->a33 = temp_s1->unk10[8] * sp110.z;
+        D_801295D8->a14 = temp_s0->a14;
+        D_801295D8->a24 = temp_s0->a24;
+        D_801295D8->a34 = temp_s0->a34;
+        D_801295D8->a44 = 1;
+        D_801295D8->a41 = 0;
+        D_801295D8->a42 = 0;
+        D_801295D8->a43 = 0;
       } else {
         D_801293F0.unk8->unkC->unk80 = D_801293F0.unk8->unkC->unkC0;
       }
 
       temp_fv0_4 = D_801293F0.unkC->unk10.unk8;
-      D_801295D8->m00 *= temp_fv0_4;
-      D_801295D8->m10 *= temp_fv0_4;
-      D_801295D8->m20 *= temp_fv0_4;
-      D_801295D8->m01 *= temp_fv0_4;
-      D_801295D8->m11 *= temp_fv0_4;
-      D_801295D8->m21 *= temp_fv0_4;
-      D_801295D8->m02 *= temp_fv0_4;
-      D_801295D8->m12 *= temp_fv0_4;
-      D_801295D8->m22 *= temp_fv0_4;
-      D_801295D8->m30 *= 16;
-      D_801295D8->m31 *= 16;
-      D_801295D8->m32 *= 16;
+      D_801295D8->a11 *= temp_fv0_4;
+      D_801295D8->a12 *= temp_fv0_4;
+      D_801295D8->a13 *= temp_fv0_4;
+      D_801295D8->a21 *= temp_fv0_4;
+      D_801295D8->a22 *= temp_fv0_4;
+      D_801295D8->a23 *= temp_fv0_4;
+      D_801295D8->a31 *= temp_fv0_4;
+      D_801295D8->a32 *= temp_fv0_4;
+      D_801295D8->a33 *= temp_fv0_4;
+      D_801295D8->a14 *= 16;
+      D_801295D8->a24 *= 16;
+      D_801295D8->a34 *= 16;
 
       /*
       guMtxF2L((f32 (*)[4]) D_801295D8, &D_801293F0.unk8->unkC->unk0[temp_t6]);
@@ -1449,7 +1449,7 @@ static Gfx *func_800A7EFC(Gfx *gdl, UnkStruct_32 *arg1) {
               Mtx spA8;
 
               /*
-              guLookAtReflect(&spA8, D_801293F0.unkC->unk8->unk0 + temp_t6, arg1->unk4C.m30, arg1->unk4C.m31, arg1->unk4C.m32, D_801293F0.unk8->unkC->unkC0.m30, D_801293F0.unk8->unkC->unkC0.m31, D_801293F0.unk8->unkC->unkC0.m32, 0.0, 1.0, 0.0);
+              guLookAtReflect(&spA8, D_801293F0.unkC->unk8->unk0 + temp_t6, arg1->unk4C.a14, arg1->unk4C.a24, arg1->unk4C.a34, D_801293F0.unk8->unkC->unkC0.a14, D_801293F0.unk8->unkC->unkC0.a24, D_801293F0.unk8->unkC->unkC0.a34, 0.0, 1.0, 0.0);
               gSPLookAt(gdl++, D_801293F0.unkC->unk8->unk0 + temp_t6);
               */
             }

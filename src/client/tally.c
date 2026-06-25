@@ -116,7 +116,7 @@ static void calls_game_deinit(void) {
   main_8004A34C_threeliner();
   Audio_UnloadSFX();
   Game_Deinit();
-  Audio_LoadSFX(&D_800D3988);
+  Audio_LoadSFX(&g_menuSfxBank);
   //D_8011F250 = n64HeapAlloc(240008);
   D_8011F250 = al_create_bitmap(400, 300);
   /*

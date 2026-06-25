@@ -179,74 +179,74 @@ void FUN_027BF0_check_music_settings_and_play(s32 screen) {
     switch (screen) {
     case 0:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(9, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(9, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 1:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(10, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(10, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 2:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(11, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(11, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 3:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(12, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(12, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 4:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(13, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(13, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 5:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(14, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(14, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 6:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(15, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(15, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 7:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(15, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(15, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     }
@@ -256,74 +256,74 @@ void FUN_027BF0_check_music_settings_and_play(s32 screen) {
     switch (screen) {
     case 0:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(9, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(9, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 1:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(10, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(10, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 2:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(11, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(11, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 3:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(12, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(12, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 4:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(13, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(13, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 5:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(14, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(14, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 6:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(15, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(15, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 7:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(15, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(15, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     }
@@ -333,74 +333,74 @@ void FUN_027BF0_check_music_settings_and_play(s32 screen) {
     switch (screen) {
     case 0:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(9, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(9, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 1:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(10, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(10, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 2:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(11, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(11, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 3:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(12, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(12, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 4:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(13, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(13, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 5:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(14, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(14, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 6:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(15, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(15, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     case 7:
       if (sp1C == 0xFE) {
-        Audio_80084e20_twentyliner(15, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(15, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       } else if (sp1C < 16) {
-        Audio_80084e20_twentyliner(sp1C, &D_80120A70, 1);
-        Audio2_GFXDone_SendPlayMessage(&D_80120A70);
+        Audio_80084e20_twentyliner(sp1C, &g_songPlayer, 1);
+        Audio2_GFXDone_SendPlayMessage(&g_songPlayer);
       }
       break;
     }
@@ -429,7 +429,7 @@ void FUN_027BF0_Init(s32 screen) {
       func_800764A0(&D_800D13D8, &D_800D1030);
       func_800764A0(&D_800D1474, &D_800D1030);
       /*
-      func_80076EC0(&D_800D02B8, 1);
+      func_80076EC0(&D_800D02B8, TRUE);
       */
       bzero(&sp20, sizeof(UnkStruct_31));
       sp20.unk0.width = 17, sp20.unk0.height = 64;
@@ -440,10 +440,10 @@ void FUN_027BF0_Init(s32 screen) {
     case 1:
       func_800764B8(&D_800D2890);
       /*
-      func_80076EC0(&D_800D03A8, 1);
+      func_80076EC0(&D_800D03A8, TRUE);
       */
       /*
-      func_80076EC0(&D_800D0468, 1);
+      func_80076EC0(&D_800D0468, TRUE);
       */
       break;
     case 2:
@@ -454,16 +454,16 @@ void FUN_027BF0_Init(s32 screen) {
     case 3:
       func_800764B8(&D_800D2008);
       /*
-      func_80076EC0(&D_800D0318, 1);
+      func_80076EC0(&D_800D0318, TRUE);
       */
       /*
-      func_80076EC0(&D_800D0408, 1);
+      func_80076EC0(&D_800D0408, TRUE);
       */
       break;
     case 4:
       func_800764B8(&D_800D2C38);
       /*
-      func_80076EC0(&D_800D0378, 1);
+      func_80076EC0(&D_800D0378, TRUE);
       */
       break;
     case 5:
@@ -474,10 +474,10 @@ void FUN_027BF0_Init(s32 screen) {
       func_800764A0(&D_800D1780, &D_800D1510);
       func_800764B8(&D_800D181C);
       /*
-      func_80076EC0(&D_800D02E8, 1);
+      func_80076EC0(&D_800D02E8, TRUE);
       */
       /*
-      func_80076EC0(&D_800D03D8, 1);
+      func_80076EC0(&D_800D03D8, TRUE);
       */
       break;
     case 6:
@@ -495,10 +495,10 @@ void FUN_027BF0_Init(s32 screen) {
       func_800764A0(&D_800D2758, &D_800D20A4);
       func_800764A0(&D_800D27F4, &D_800D20A4);
       /*
-      func_80076EC0(&D_800D0348, 1);
+      func_80076EC0(&D_800D0348, TRUE);
       */
       /*
-      func_80076EC0(&D_800D0438, 1);
+      func_80076EC0(&D_800D0438, TRUE);
       */
       break;
     case 7:

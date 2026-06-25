@@ -123,7 +123,7 @@ static Gfx *func_800AD2FC(Gfx *gdl, UnkStruct_86 *arg1, UnkStruct_32 *arg2) {
   f32 tmp;
   UnkStruct_84 spF8;
   UnkStruct_84 spE8;
-  MtxF spA8;
+  Mtx4 spA8;
   u8 r, g, b, a;
 
   if (arg1->unk118 & 0x4) {
@@ -156,24 +156,24 @@ static Gfx *func_800AD2FC(Gfx *gdl, UnkStruct_86 *arg1, UnkStruct_32 *arg2) {
       temp_fs0 = (f32) var_s2->unk1C / arg1->unkD4;
       temp_fs1 = 1.0 - temp_fs0;
       spA8 = arg2->unk4C;
-      spA8.m30 = var_s2->unk4.x * 16;
-      spA8.m31 = var_s2->unk4.y * 16;
-      spA8.m32 = var_s2->unk4.z * 16;
+      spA8.a14 = var_s2->unk4.x * 16;
+      spA8.a24 = var_s2->unk4.y * 16;
+      spA8.a34 = var_s2->unk4.z * 16;
       if (arg1->unk118 & 0x1) {
         var_fv0 = var_s2->unk0;
       } else {
         var_fv0 = (arg1->unk10C * temp_fs1) + (arg1->unk110 * temp_fs0);
       }
       var_fv0 *= 0.0625;
-      spA8.m00 *= var_fv0;
-      spA8.m10 *= var_fv0;
-      spA8.m20 *= var_fv0;
-      spA8.m01 *= var_fv0;
-      spA8.m11 *= var_fv0;
-      spA8.m21 *= var_fv0;
-      spA8.m02 *= var_fv0;
-      spA8.m12 *= var_fv0;
-      spA8.m22 *= var_fv0;
+      spA8.a11 *= var_fv0;
+      spA8.a12 *= var_fv0;
+      spA8.a13 *= var_fv0;
+      spA8.a21 *= var_fv0;
+      spA8.a22 *= var_fv0;
+      spA8.a23 *= var_fv0;
+      spA8.a31 *= var_fv0;
+      spA8.a32 *= var_fv0;
+      spA8.a33 *= var_fv0;
       /*
       guMtxF2L((f32 (*)[4]) &spA8, var_s2->unk20[sp11C]);
       */
@@ -193,7 +193,7 @@ static Gfx *func_800AD2FC(Gfx *gdl, UnkStruct_86 *arg1, UnkStruct_32 *arg2) {
       ALLEGRO_TRANSFORM trans, backup;
       al_copy_transform(&backup, al_get_current_transform());
 
-      memcpy(&trans, &spA8, sizeof(MtxF));
+      memcpy(&trans, &spA8, sizeof(Mtx4));
       al_use_transform(&trans);
 
       ALLEGRO_COLOR white = al_map_rgb_f(1, 1, 1);

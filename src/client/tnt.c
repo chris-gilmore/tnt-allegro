@@ -157,6 +157,7 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
 #define BUFFER_H 300
 
 s32 screen_1_width = BUFFER_W;
+s32 screen_1_height = BUFFER_H;
 
 #define DISP_W 960
 #define DISP_H 720
@@ -641,6 +642,7 @@ void game_init(unsigned short num_players) {
   register Game *game_ptr = &g_game;
 
   D_800CFEE8 = 4;  // MainMenu choice
+  //D_800CFEE8 = 2;  // intro: 2 = spinning_n64_3d_logo, 1 = bps_and_h2o_logo, 3 = animation_and_tetris_start
   func_800905E8(0);
 
   D_800CFED4 = num_players;

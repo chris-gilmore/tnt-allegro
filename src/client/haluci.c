@@ -196,8 +196,8 @@ static void func_8007CC14(void) {
 void func_8007CF40(u8 arg0) {
   UnkStruct_1 *btn;
   btn = &g_PV_arr[0].unk28;
-  FUN_026900_80060ad4_oneliner_calls_fun(btn);
-  FUN_026900_80060b04_twelveliner_loops_32t(btn, 0xC000, 16, 1);  // Buttons A and B only
+  FUN_026C80_80060ad4_oneliner_calls_fun(btn);
+  FUN_026C80_80060b04_twelveliner_loops_32t(btn, 0xC000, 16, 1);  // Buttons A and B only
   g_PV_arr[0].unk20 = g_PV_arr[0].unk24 = 0;
 
   Gfx *sp34;
@@ -411,7 +411,7 @@ Gfx *func_8007DA00(Gfx *gdl) {
   btn = &g_PV_arr[0].unk28;
   btn->unk88 = g_PV_arr[0].unk1C->unk0;
   btn->unk8C = g_PV_arr[0].unk24;
-  FUN_026900_GU_or_ControllerRepeat_Update(btn, btn->unk88, frametime_delta());
+  FUN_026C80_GU_or_ControllerRepeat_Update(btn, btn->unk88, frametime_delta());
 
   if ((D_800CFEE8 == 13) && (btn->unk84 & 0x8000)) {  // A_BUTTON / CONT_A
     if (D_8011FEA8->unkC0 < (2 * 350)) {

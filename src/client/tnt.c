@@ -42,7 +42,10 @@ static ENetHost *client;
 static ENetPeer *server;
 static int net_flag = false;
 static int lag_flag = false;
+static int intro_flag = false;
+static int haluci_flag = false;
 static unsigned int currentPieceFrames = 0;
+int verbose_flag = false;
 
 static void print_joystick_info(ALLEGRO_JOYSTICK *joy) {
   int i, n, a;
@@ -159,6 +162,8 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
 s32 screen_1_width = BUFFER_W;
 s32 screen_1_height = BUFFER_H;
 
+//#define DISP_W 800
+//#define DISP_H 600
 #define DISP_W 960
 #define DISP_H 720
 
@@ -538,8 +543,8 @@ static bool contq_enqueue(void) {
     if (record) {
       fprintf(fp, "%u", framecount);
     }
-    //for (int i = 0; i < D_800CFED4; i++) {
-    for (int i = 0; i < 4; i++) {
+    //for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < D_800CFED4; i++) {
       //if (i == 1 || i == 2) {  // 4TEST
       snapshot_contpad(i, &contpad);
       //}
@@ -568,8 +573,8 @@ static unsigned int button[4] = { 0, 0, 0, 0 };
 static bool replay_contq_enqueue(bool *done_ptr) {
   OSContPad contpad;
 
-  //for (int i = 0; i < D_800CFED4; i++) {
-  for (int i = 0; i < 4; i++) {
+  //for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < D_800CFED4; i++) {
     contpad.button = button[i];
     FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
   }
@@ -641,16 +646,20 @@ void player_deinit(void) {
 void game_init(unsigned short num_players) {
   register Game *game_ptr = &g_game;
 
-  D_800CFEE8 = 4;  // MainMenu choice
-  //D_800CFEE8 = 2;  // intro: 2 = spinning_n64_3d_logo, 1 = bps_and_h2o_logo, 3 = animation_and_tetris_start
   func_800905E8(0);
 
-  D_800CFED4 = num_players;
-  game_ptr->gameType = gametype;
+  D_800CFEE8 = 4;  // main menu
 
-  // comment this out to try out the gui system / menus
-  D_800D3CF0 = 1;  // game mode
-  //D_800D3CF0 = 4;  // haluci mode
+  if (intro_flag) {
+    D_800CFEE8 = 3;  // intro: 2 = spinning_n64_3d_logo, 1 = bps_and_h2o_logo, 3 = animation_and_tetris_start
+  } else if (haluci_flag) {
+    D_800D3CF0 = 4;  // haluci mode
+  } else {
+    D_800CFED4 = num_players;
+    game_ptr->gameType = gametype;
+
+    D_800D3CF0 = 1;  // game mode
+  }
 
   {
     strncpy(game_ptr->players[0].node.name, p0_name, 8);
@@ -770,8 +779,8 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
           // From 00E2A0.c, has_rounds_and_floors_large_liner()
           frametime_update(framecount);
-          //for (int i = 0; i < D_800CFED4; i++) {
-          for (int i = 0; i < 4; i++) {
+          //for (int i = 0; i < 4; i++) {
+          for (int i = 0; i < D_800CFED4; i++) {
             g_PV_ptr = &g_PV_arr[i];
             contq_dequeue();
           }
@@ -856,11 +865,14 @@ int main(int argc, char **argv) {
       {"port",     required_argument, NULL, 'p'},
       {"screen",   required_argument, NULL, 's'},
       {"lag",      no_argument,       &lag_flag, true},
+      {"verbose",  no_argument,       NULL, 'v'},
+      {"intro",    no_argument,       &intro_flag, true},
+      {"haluci",   no_argument,       &haluci_flag, true},
       {NULL, 0, NULL, 0}
     };
   int option_index = 0;
 
-  while ((c = getopt_long(argc, argv, "g:n:h:p:s:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "g:n:h:p:s:v", long_options, &option_index)) != -1) {
     switch (c) {
     case 0:
       break;
@@ -878,6 +890,9 @@ int main(int argc, char **argv) {
       break;
     case 'p':
       popt = optarg;
+      break;
+    case 'v':
+      verbose_flag = true;
       break;
     case '?':
       break;

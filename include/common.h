@@ -187,8 +187,14 @@ typedef struct {
 #include "newtetris/nextpieces.h"
 #include "newtetris/multisquareglow.h"
 #include "newtetris/multisquare.h"
+#include "newtetris/004220.h"
+#include <newtetris/008050.h>
 #include "newtetris/005580.h"
 #include "newtetris/0074E0.h"
+#include <newtetris/aisquarelist.h>
+#include "newtetris/006780.h"
+#include <newtetris/006930.h>
+#include <newtetris/006BB0.h>
 #include "newtetris/aiplayer.h"
 #include "newtetris/board.h"
 #include "newtetris/lineeffect.h"

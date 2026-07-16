@@ -5,6 +5,7 @@
 extern config_t g_images_cfg;
 extern int g_screen;
 extern f32 D_8012903C_f;
+extern int verbose_flag;
 
 ////////////////////////////////////////
 
@@ -137,10 +138,11 @@ void func_8008F360(UnkStruct_78 *arg0, UnkStruct_77 *arg1, u32 *arg2) {
   i = 0;
   main_8004A34C_threeliner();
 
-  rmonPrintf("\n");
   for (i = 0; (arg0->unk124[i].unk24 & GUI_QUIT) != GUI_QUIT; i++) {
-    // DEBUG: print gui elements
-    func_8009D400(arg0->unk124[i].unk24);
+    if (verbose_flag) {
+      // DEBUG: print gui elements
+      func_8009D400(arg0->unk124[i].unk24);
+    }
 
     if ((arg0->unk124[i].unk24 & GUI_NULL) != GUI_NULL) {
       arg0->unk124[i].unk0.a = 0xA0;
@@ -581,9 +583,6 @@ void func_80090E08(void) {
     main_8004A34C_threeliner();
 
   } else if (D_800D3CF0 == 3) {  // attract mode
-    printf("-- attract mode\n");
-
-    /*
     main_8004A34C_threeliner();
     func_80090A44();
     if (func_800A35EC(0, 10) < 8) {
@@ -607,7 +606,6 @@ void func_80090E08(void) {
       D_800CFD48 = TRUE;
       D_800CFD4C = TRUE;
     }
-    */
 
   } else if (D_800D3CF0 == 2) {  // wonders progress
     if (D_800D3D9C == 5) {

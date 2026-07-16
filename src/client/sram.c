@@ -1,6 +1,7 @@
 #include "common.h"
 
 extern unsigned int game_id;
+extern int verbose_flag;
 
 ////////////////////////////////////////
 
@@ -120,11 +121,17 @@ TextList *FUN_SRAM_8007868c_tenliner_loop_arg0_t(TextList *arg0) {
 }
 
 void FUN_SRAM_8007875c_check_gameover_conditions(Player *arg0, GameResults *arg1, u8 arg2) {
-  printf("FUN_SRAM_8007875c_check_gameover_conditions()\n");
+  printf("-- sram: FUN_SRAM_8007875c_check_gameover_conditions\n");
 }
 
 Contributions *func_80079F74(Sram *sram_ptr, u8 arg1) {
   return &sram_ptr->contributions[arg1];
+}
+
+void func_8007A078(TextList *arg0, u8 arg1) {
+  if (verbose_flag) {
+    printf("-- sram: func_8007A078\n");
+  }
 }
 
 TextList *func_8007AA5C(TextList *arg0, PlayerNode *arg1) {
@@ -174,7 +181,7 @@ TextList *func_8007AEB0(TextList *arg0) {
 }
 
 void func_8007AF88(Player *arg0, u8 *arg1, s32 arg2) {
-  printf("func_8007AF88()\n");
+  printf("-- sram: func_8007AF88\n");
 }
 
 void func_8007B38C(PlayerNode *arg0) {

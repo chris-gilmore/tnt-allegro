@@ -217,7 +217,7 @@ void load_from_sram(u8 arg0) {
     sram_ptr->music_mode = 1;
     sram_ptr->song = 0;
 
-    set_total_wonder_lines(sram_ptr, 2000);  // TODO
+    set_total_wonder_lines(sram_ptr, 500000);  // HACK: unlocks all wonders and screens
   }
   sram_ptr = g_sram_ptr;
 

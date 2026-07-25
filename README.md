@@ -85,21 +85,35 @@ $ ln -snf images.orig images
 $ ln -snf anims.orig anims
 ```
 
-## Example usage
-
-Record player's moves to file `./saved_moves_0x05261ec7.001` if it does not exist, else replay moves from that file.
+## Usage
 ```
-$ ./build/tnt --sprint --screen 7 --gameid 0x05261ec7 --name "GILLY" ./saved_moves_0x05261ec7.001
+Usage: ./build/tnt [options] [FILE [DIR]]
+
+Positional arguments:
+  FILE           Record moves to FILE if does not exist, else replay moves from FILE
+  DIR            Save frames to DIR if replaying moves from FILE
+
+Options:
+  -h, --help     show this help message
+  -v, --verbose  enable verbose output
+  -n NUMPLAYERS  (default: 1)
+  -o OPPONENT    (default: Off) 1=Easy 2=Medium 3=Hard 4=Very hard 5=Master
+  -0 NAME        (default: 'PLAYER 0')
+  -1 NAME        (default: 'PLAYER 1')
+  -2 NAME        (default: 'PLAYER 2')
+  -3 NAME        (default: 'PLAYER 3')
+  -s SCREEN      (default: random) 0=Mayan 1=Greek 2=Egyptian 3=Celtic 4=African 5=Japanese 6=Russian 7=Finale
+  -g GAMEID      (default: random) GAMEID modulo 0x0C000000
+
+game mode:
+  Choose one of these game modes.  (default: Marathon)
+
+  --sprint
+  --ultra
+
+garbage mode:
+  Choose one of these garbage modes.  (default: None)
+
+  --hotpotato
+  --directed
 ```
-
-Game type is one of `--marathon`, `--sprint` (default), or `--ultra`.
-
-Default screen is random.
-
-Default gameid is random.
-
-Default name is `"PLAYER 0"`.
-
-Arg1 (optional) is file name for recording or replaying moves.
-
-Arg2 (optional) is dir name for saving frames as png files.

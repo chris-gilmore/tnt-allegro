@@ -137,6 +137,7 @@ typedef struct {
 #include "newtetris/boardinfo.h"
 #include "newtetris/garbage.h"
 #include <newtetris/hotpotato.h>
+#include "newtetris/aimedat.h"
 #include "newtetris/landfill.h"
 #include "newtetris/01D6E0.h"
 #include "newtetris/gamefinish.h"

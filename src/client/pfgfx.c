@@ -188,7 +188,7 @@ static void PFGFX_SetTextDisplayPos_2p(u8 screen) {
   Minos_80070cb8_threeliner_set_OR_4(g_pfGfx_ptr->unkB0.x, g_pfGfx_ptr->unkB0.y);
   Minos_80070a34_twentyliner();
   currentplayer = g_currentplayer;
-  if (TRUE) {
+  if (FALSE) {
     sp2C[0] = lookahead_points_for_2p[screen][currentplayer].unk0;
     sp2C[2] = lookahead_points_for_2p[screen][currentplayer].unk4;
   } else {

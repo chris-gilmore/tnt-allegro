@@ -240,7 +240,7 @@ static void PieceHold_80066048_tenliner_checks_numplayers(Point *point_ptr, s32 
     Minos_8007104c_fiveliner_nuts(point_ptr, point.x * 4, point.y * 4);
     break;
   case 2:
-    if (TRUE) {
+    if (FALSE) {
       point = piecehold_points_for_2p[screenNum][playerNum];
     } else {
       point = D_800D04E0[screenNum][playerNum];

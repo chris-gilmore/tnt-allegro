@@ -571,7 +571,7 @@ void func_80090E08(void) {
     if (g_screen != -1) {
       game_ptr->unkE4F8 = g_screen;
     }
-    printf("Screen: '%d'\n", game_ptr->unkE4F8);
+    printf("Screen: %d\n", game_ptr->unkE4F8);
 
     FUN_027BF0_check_music_settings_and_play(game_ptr->unkE4F8);
     Audio_LoadSFX(&g_gameSfxBank);
@@ -689,6 +689,7 @@ void func_80090E08(void) {
   }
 }
 
+// move up
 static s32 func_80091440(UnkStruct_78 *arg0, s32 arg1, s32 *arg2) {
   register UnkStruct_77 *temp_s0 = arg0->unk124;
   s32 sp28;
@@ -746,6 +747,7 @@ static s32 func_80091440(UnkStruct_78 *arg0, s32 arg1, s32 *arg2) {
   return arg1;
 }
 
+// move down
 static s32 func_80091744(UnkStruct_78 *arg0, s32 arg1, s32 *arg2) {
   register UnkStruct_77 *temp_s0 = arg0->unk124;
   s32 sp28;

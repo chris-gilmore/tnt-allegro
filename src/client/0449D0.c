@@ -324,7 +324,7 @@ void func_8007F344(void) {
     func_80060D58(0);
     */
     D_800CFEE8 = 4;
-    D_800D31D8 = 0;
+    D_800D31D8 = 2;  // TODO: change back to 0
     D_800D31D4 = 1;
     break;
   }

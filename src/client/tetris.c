@@ -32,7 +32,7 @@ static void Tetris_CheckButtons(void) {
     if (currentPiece_ptr->state == 1) {
       if (temp_s1->unk8C & 0x20) {           // L_TRIG / CONT_L
         PieceHold_Swap(&tetris_ptr->pieceHold, currentPiece_ptr);
-        Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, 1);
+        Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, SFX_GAME_1);
       }
       if (temp_s1->unk8C & 0x10) {           // R_TRIG / CONT_R
         if ((g_currentplayer ^ XSWAP_PAIR) < g_playercount) {
@@ -40,7 +40,7 @@ static void Tetris_CheckButtons(void) {
         } else {
           PieceHold_Cross_Swap(&tetris_ptr->pieceHold, currentPiece_ptr, &g_game.tetris_ptr_arr[g_currentplayer ^ XSWAP_SELF]->pieceHold);
         }
-        Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, 1);
+        Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, SFX_GAME_1);
       }
       if (temp_s1->unk84 & 0x200) {          // L_JPAD / CONT_LEFT
         currentPiece_ptr->possibleMoves |= 0x1;
@@ -68,14 +68,14 @@ static void Tetris_CheckButtons(void) {
       }
       if (temp_s1->unk8C & 0x400) {          // D_JPAD / CONT_DOWN
         currentPiece_ptr->fallVelocity = 0x100;
-        Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, 0xE);
+        Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, SFX_GAME_14);
       }
       if (!(temp_s1->unk88 & 0x400)) {       // D_JPAD / CONT_DOWN
         currentPiece_ptr->fallVelocity = currentPiece_ptr->fallVelocityCopy;
       }
       if (temp_s1->unk8C & 0x800) {          // U_JPAD / CONT_UP
         CurrentPiece_800676ac_fourliner_looper(currentPiece_ptr);
-        Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, 0xE);
+        Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, SFX_GAME_14);
       }
     }
     if ((g_playercount >= 3) && (g_landfill_ptr->type == LANDFILLTYPE_DIRECTED)) {
@@ -236,12 +236,12 @@ void Tetris_Init(Tetris *tetris_ptr, GameVars *gameVars_ptr) {
   Garbage_Init(tetris_ptr->garbage_ptr, &seed);
   switch (g_landfill_ptr->type) {
   case LANDFILLTYPE_NONE:
-    Garbage_80072e2c_set_arg0p_to_arg1(g_garbage_ptr, 0);
+    Garbage_80072e2c_set_arg0p_to_arg1(g_garbage_ptr, FALSE);
     break;
   case LANDFILLTYPE_DIRECTED:
-    Garbage_80072e2c_set_arg0p_to_arg1(g_garbage_ptr, 1);
+    Garbage_80072e2c_set_arg0p_to_arg1(g_garbage_ptr, TRUE);
     currentplayer = g_currentplayer;
-    Landfill_800723a0_calls_garbage_fun(currentplayer, currentplayer, 0);
+    Landfill_800723a0_calls_garbage_fun(currentplayer, currentplayer, FALSE);
     Landfill_8007240c_fiveliner(currentplayer, (currentplayer + 1) % g_playercount);
     if (g_playercount == 2) {
       if (g_currentplayer == 0) {
@@ -252,7 +252,7 @@ void Tetris_Init(Tetris *tetris_ptr, GameVars *gameVars_ptr) {
     }
     break;
   case LANDFILLTYPE_HOTPOTATO:
-    Garbage_80072e2c_set_arg0p_to_arg1(g_garbage_ptr, 1);
+    Garbage_80072e2c_set_arg0p_to_arg1(g_garbage_ptr, TRUE);
     temp_s1 = g_landfill_ptr->unk30.unk0;
     Landfill_8007240c_fiveliner(g_currentplayer, temp_s1);
     break;

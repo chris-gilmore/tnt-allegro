@@ -215,7 +215,7 @@ static void disp_post_draw(void) {
       } else {
         last_framecount++;
       }
-      sprintf(filename, "%s/image-%08d.png", frames_dir, last_framecount);
+      snprintf(filename, sizeof(filename), "%s/image-%08d.png", frames_dir, last_framecount);
       al_save_bitmap(filename, al_get_backbuffer(disp));
     }
   }

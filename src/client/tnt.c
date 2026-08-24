@@ -174,8 +174,8 @@ s32 screen_1_height = BUFFER_H;
 #define DISP_W 960
 #define DISP_H 720
 
-static ALLEGRO_DISPLAY* disp;
-static ALLEGRO_BITMAP* cfbuffer;
+static ALLEGRO_DISPLAY *disp;
+static ALLEGRO_BITMAP *cfbuffer;
 
 static void disp_init(void) {
   al_add_new_bitmap_flag(ALLEGRO_NO_PRESERVE_TEXTURE);
@@ -544,7 +544,7 @@ static bool send_receive(ENetHost *client) {
             num_ready_players++;
           }
         }
-        if (num_ready_players > 1) {
+        if (num_ready_players >= D_800CFED4) {
           func_80090E08();
           in_lobby = false;
         }
@@ -904,7 +904,7 @@ enum {
   OPT_PORT,
 };
 
-int main(int argc, char **argv) {
+int main(int argc, char *argv[]) {
   int c;
   char *nopt = NULL;
   char *oopt = NULL;
@@ -1127,11 +1127,7 @@ int main(int argc, char **argv) {
 
   player_init();
 
-  if (net_flag) {
-    game_init(2);
-  } else {
-    game_init(num_players);
-  }
+  game_init(num_players);
 
   must_init(al_init_primitives_addon(), "primitives");
 

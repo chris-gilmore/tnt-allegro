@@ -78,7 +78,7 @@ static void gamefinish_80052D40_doesnothing(UnkStruct_7 *arg0) {
 
 void gamefinish_80052D48_twoliner(UnkStruct_20 *arg0) {
   arg0->state = 4;
-  arg0->unk1 = TRUE;
+  arg0->unk1 = 1;
 }
 
 static void gamefinish_magic_number_180_sprint_twoliner(UnkStruct_20 *arg0) {
@@ -99,7 +99,7 @@ static void gamefinish_80052D8C_nevercalled(UnkStruct_20 *arg0) {
 }
 
 static void gamefinish_80052DA0_oneliner(UnkStruct_20 *arg0, u32 arg1) {
-  arg0->unk1 = FALSE;
+  arg0->unk1 = 0;
 }
 
 void gamefinish_80052DAC_read_playfield_logic_cell(UnkStruct_20 *arg0) {
@@ -166,7 +166,7 @@ u8 gamefinish_c_line_383(UnkStruct_20 *arg0, u32 arg1) {
     return 2;
   }
 
-  arg0->unk1 = FALSE;
+  arg0->unk1 = 0;
   FUN_026900_80060770_sevenliner(&arg0->unkC, arg1);
   alpha = arg0->unkC.alpha;
   g_currentPiece_ptr->alpha = alpha;
@@ -187,7 +187,7 @@ u8 gamefinish_c_line_383(UnkStruct_20 *arg0, u32 arg1) {
     gamefinish_80052FC8_eightliner(arg0, arg1);
     break;
   case 4:
-    arg0->unk1 = TRUE;
+    arg0->unk1 = 1;
     break;
   default:
     debug_print_reason_routine_linenum("invalid state", "gamefinish.c", 383);

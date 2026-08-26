@@ -56,6 +56,8 @@ static u8 D_800D2DFC[30] = {
   70, 73, 77, 80, 83, 87, 90, 93, 97, 100
 };
 
+s16 D_800D2E1C = 0;
+
 // calculating rank
 u8 FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(Player *arg0) {
   s32 i;
@@ -98,6 +100,21 @@ u8 FUN_SRAM_80078424_twelveliner_div60_loop_30t_b(u16 time_in_seconds, u16 lines
   return 0;
 }
 
+void FUN_SRAM_800785e0_sixliner_loop_arg0_t(TextList *arg0) {
+  TextList *sp1C;
+
+  sp1C = arg0;
+  do {
+    if (((sp1C->pack & 0xF) == 0xF) || ((sp1C->pack & 0xF) == 0xE) || ((sp1C->pack & 0xF) == 0xA) || ((sp1C->pack & 0xF) == 9) || ((sp1C->pack & 0xF) == 8)) {
+      // do nothing
+    } else if (((Player *) sp1C->ptr)->unkD0 == 0) {
+      func_8007AEB0(sp1C);
+    }
+
+    sp1C = sp1C->next;
+  } while (sp1C != arg0);
+}
+
 TextList *FUN_SRAM_8007868c_tenliner_loop_arg0_t(TextList *arg0) {
   TextList *sp1C;
   s32 sp18;
@@ -134,7 +151,7 @@ void func_8007A078(TextList *arg0, u8 arg1) {
   }
 }
 
-TextList *func_8007AA5C(TextList *arg0, PlayerNode *arg1) {
+TextList *func_8007AA5C(TextList *arg0, Player *arg1) {
   TextList *sp4;
 
   sp4 = arg0;
@@ -184,8 +201,8 @@ void func_8007AF88(Player *arg0, u8 *arg1, s32 arg2) {
   printf("-- sram: func_8007AF88\n");
 }
 
-void func_8007B38C(PlayerNode *arg0) {
-  rmonPrintf("Name: %s\n", arg0->name);
+void func_8007B38C(TextList *arg0) {
+  rmonPrintf("Name: %s\n", arg0->text);
   rmonPrintf("Salt: %x %x\n", arg0->salt[0], arg0->salt[1]);
   rmonPrintf("Pack: %x\n", arg0->pack);
   rmonPrintf("Ptr: %x\n", arg0->ptr);

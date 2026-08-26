@@ -16,13 +16,13 @@ static void   func_800A0A44(GUI_Textbox *, f32);
 static void   func_800A1060(GUI_Textbox *, f32);
 static void   func_800A167C(GUI_Textbox *, f32);
 static void   func_800A1C98(GUI_Textbox *, f32);
-static void   func_800A2148(GUI_Textbox *);
+static void   func_800A2148(GUI_Textbox *, f32);
 static void   func_800A27BC(GUI_Toggle *, f32);
 static void   func_800A286C(GUI_Toggle *);
 static void   func_800A287C(GUI_Toggle *);
-static void   func_800A2884(GUI_Textbox *);
+static void   start_single_player_game(GUI_Textbox *);
 static void   func_800A2A94(GUI_Toggle *);
-static void   func_800A2AA4(void);
+static void   start_multi_player_game(void);
 
 static void func_800A0480(void *arg0) {
   D_800D3CF0 = 2;
@@ -41,11 +41,93 @@ static void func_800A04A8(GUI_Textbox *arg0) {
 }
 
 static void func_800A04F4(GUI_Textbox *arg0) {
-  printf("-- func_800A04F4\n");
+  u8 sp1F = 0;
+
+  /*
+  FUN_001050_8003b5d0_controller_sendrecvmsg(&superThread);
+  sp1F = FUN_001050_getControllerStatus(&superThread, 0);
+  */
+
+  if (sp1F & 0x1) {
+    /*
+    sp1F = FUN_001050_cpakInit(&superThread, 0);
+    */
+    if ((((sp1F >> 4) & 0xF) == 0xA) || (((sp1F >> 4) & 0xF) == 0xB) || (((sp1F >> 4) & 0xF) == 1) || (((sp1F >> 4) & 0xF) == 4)) {
+      /*
+      FUN_001050_8003b5d0_controller_sendrecvmsg(&superThread);
+      sp1F = FUN_001050_8003b3e4_motor_sendrecvmsg_3(&superThread, 0);
+      */
+      if (sp1F == 0) {
+        arg0->unk5D = 0xF0;
+        /*
+      } else if (FUN_001050_gbpakInit(&superThread, 0) == 0) {
+        arg0->unk5D = 0xF0;
+        */
+      } else {
+        arg0->unk5D = 0xED;
+      }
+      D_800D3D10[0] = D_800D3D00[0];
+      arg0->unk60 = 0xFE;
+      D_800D42B4[8].unk24 = GUI_TEXTBOX | GUI_TITLE;
+      D_800D3D00[0] = 8;
+    } else {
+      D_800D3D10[0] = D_800D3D00[0];
+      arg0->unk60 = 0xFE;
+      arg0->unk5D = 0xFE;
+      D_800D42B4[8].unk24 = GUI_TEXTBOX | GUI_TITLE;
+      D_800D3D00[0] = 8;
+    }
+  } else {
+    arg0->unk5D = 0xF0;
+    arg0->unk60 = 0xFE;
+    D_800D42B4[8].unk24 = GUI_TEXTBOX | GUI_TITLE;
+    D_800D3D00[0] = 8;
+  }
 }
 
 static void func_800A06D0(GUI_Textbox *arg0) {
-  printf("-- func_800A06D0\n");
+  u8 sp1F = 0;
+
+  /*
+  FUN_001050_8003b5d0_controller_sendrecvmsg(&superThread);
+  sp1F = FUN_001050_getControllerStatus(&superThread, 0);
+  */
+
+  if (sp1F & 0x1) {
+    /*
+    sp1F = FUN_001050_cpakInit(&superThread, 0);
+    */
+    if ((((sp1F >> 4) & 0xF) == 0xA) || (((sp1F >> 4) & 0xF) == 0xB) || (((sp1F >> 4) & 0xF) == 1) || (((sp1F >> 4) & 0xF) == 4)) {
+      D_800D3D10[0] = D_800D3D00[0];
+      arg0->unk60 = 0xFB;
+      D_800D42B4[8].unk24 = GUI_TEXTBOX | GUI_TITLE;
+      D_800D3D00[0] = 8;
+      /*
+      FUN_001050_8003b5d0_controller_sendrecvmsg(&superThread);
+      sp1F = FUN_001050_8003b3e4_motor_sendrecvmsg_3(&superThread, 0)
+      */
+      if (sp1F == 0) {
+        arg0->unk5D = 0xF0;
+        /*
+      } else if (FUN_001050_gbpakInit(&superThread, 0) == 0) {
+        arg0->unk5D = 0xF0;
+        */
+      } else {
+        arg0->unk5D = 0xED;
+      }
+    } else {
+      D_800D3D10[0] = D_800D3D00[0];
+      arg0->unk60 = 0xFB;
+      arg0->unk5D = 0xFE;
+      D_800D42B4[8].unk24 = GUI_TEXTBOX | GUI_TITLE;
+      D_800D3D00[0] = 8;
+    }
+  } else {
+    arg0->unk60 = 0xFB;
+    arg0->unk5D = 0xF0;
+    D_800D42B4[8].unk24 = GUI_TEXTBOX | GUI_TITLE;
+    D_800D3D00[0] = 8;
+  }
 }
 
 static void func_800A08A0(GUI_Textbox *arg0) {
@@ -77,7 +159,7 @@ u32 D_800D3FB0[18] = { 3, 4, 0x48, 0, 0x56, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0x23, 
 UnkStruct_77 D_800D3FF8[9] = {
   {
     { { NULL }, NULL, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -85,7 +167,7 @@ UnkStruct_77 D_800D3FF8[9] = {
   },
   {
     { { NULL }, NULL, 0x1E, 0x31, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -93,7 +175,7 @@ UnkStruct_77 D_800D3FF8[9] = {
   },
   {
     { { NULL }, NULL, 0x32, 0x2A, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -101,7 +183,7 @@ UnkStruct_77 D_800D3FF8[9] = {
   },
   {
     { { "ONE!PLAYER" }, NULL, 0x87, 0x61, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x51,
+    GUI_CENTX | GUI_MENU | GUI_TITLE,
     NULL,
     D_800D5850,
     D_800D5808,
@@ -109,7 +191,7 @@ UnkStruct_77 D_800D3FF8[9] = {
   },
   {
     { { "MULTI!PLAYER" }, NULL, 0x87, 0x77, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x51,
+    GUI_CENTX | GUI_MENU | GUI_TITLE,
     NULL,
     D_800D5D48,
     D_800D5CE8,
@@ -117,7 +199,7 @@ UnkStruct_77 D_800D3FF8[9] = {
   },
   {
     { { "WONDERS" }, NULL, 0x82, 0x8D, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x45,
+    GUI_CENTX | GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A0480,
     NULL,
     NULL,
@@ -125,7 +207,7 @@ UnkStruct_77 D_800D3FF8[9] = {
   },
   {
     { { "OPTIONS" }, NULL, 0x82, 0xA3, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x51,
+    GUI_CENTX | GUI_MENU | GUI_TITLE,
     NULL,
     D_800D53C8,
     D_800D5378,
@@ -133,7 +215,7 @@ UnkStruct_77 D_800D3FF8[9] = {
   },
   {
     { { NULL }, NULL, 0xC8, 0x100, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -141,7 +223,7 @@ UnkStruct_77 D_800D3FF8[9] = {
   },
   {
     { { ":" }, NULL, 3, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -194,7 +276,7 @@ u32 D_800D4254[24] = {
 UnkStruct_77 D_800D42B4[12] = {
   {
     { { NULL }, NULL, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     D_800D53C8,
     D_800D5378,
@@ -202,7 +284,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { NULL }, NULL, 1, 0x11, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -210,7 +292,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { NULL }, NULL, 0x14, 0x18, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -218,7 +300,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { NULL }, NULL, 0x37, 0x42, 0xFF, 0xFF, 0xFF, 0xFF, 1 },
-    8,
+    GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -226,7 +308,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { "TRANSFER FROM GAME BOY" }, NULL, 0x5F, 0x54, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    8,
+    GUI_NULL,
     (void (*)(void *, ...)) func_800A04A8,
     NULL,
     &D_800D41F0,
@@ -234,7 +316,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { "TRANSFER NAME" }, NULL, 0x61, 0x5C, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    5,
+    GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A04F4,
     NULL,
     &D_800D41F0,
@@ -242,7 +324,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { "DUMP LINES TO GAME PAK" }, NULL, 0x61, 0x72, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    5,
+    GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A06D0,
     NULL,
     &D_800D41F0,
@@ -250,7 +332,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { "DELETE NAME" }, NULL, 0x61, 0xA2, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    5,
+    GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A08A0,
     NULL,
     &D_800D41F0,
@@ -258,7 +340,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { "NAME:" }, NULL, 0x50, 0xCD, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x201,
+    GUI_TEXTBOX | GUI_TITLE,
     NULL,
     NULL,
     &D_800D41F0,
@@ -266,7 +348,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { NULL }, NULL, 0xC8, 0xF6, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x48,
+    GUI_CENTX | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -274,7 +356,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { NULL }, NULL, 0xC8, 0x109, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -282,7 +364,7 @@ UnkStruct_77 D_800D42B4[12] = {
   },
   {
     { { ":" }, NULL, 5, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -385,7 +467,7 @@ u32 D_800D4DD4[18] = { 3, 4, 0x63, 0, 0x61, 0x62, 0, 0, 0, 0, 0, 0, 0x40, 0, 0x1
 UnkStruct_77 D_800D4E1C[9] = {
   {
     { { NULL }, NULL, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     D_800D53C8,
     D_800D5378,
@@ -393,7 +475,7 @@ UnkStruct_77 D_800D4E1C[9] = {
   },
   {
     { { NULL }, NULL, 0, 0x17, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -401,7 +483,7 @@ UnkStruct_77 D_800D4E1C[9] = {
   },
   {
     { { NULL }, NULL, 0x32, 0xF, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -409,7 +491,7 @@ UnkStruct_77 D_800D4E1C[9] = {
   },
   {
     { { "MUSIC LEVEL" }, NULL, 0x3C, 0x5C, 0xFF, 0xFF, 0xFF, 0xFF, 1 },
-    0x1005,
+    GUI_SLIDER | GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A08EC,
     NULL,
     &D_800D4564,
@@ -417,7 +499,7 @@ UnkStruct_77 D_800D4E1C[9] = {
   },
   {
     { { "SFX LEVEL" }, NULL, 0x3C, 0x7A, 0xFF, 0xFF, 0xFF, 0xFF, 1 },
-    0x1005,
+    GUI_SLIDER | GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A097C,
     NULL,
     &D_800D4928,
@@ -425,7 +507,7 @@ UnkStruct_77 D_800D4E1C[9] = {
   },
   {
     { { "MUSIC MODE:" }, NULL, 0x3C, 0xAF, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    0x405,
+    GUI_TOGGLE | GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A0A08,
     NULL,
     &D_800D4DC4,
@@ -433,7 +515,7 @@ UnkStruct_77 D_800D4E1C[9] = {
   },
   {
     { { "SONG:" }, NULL, 0x3C, 0xCF, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    0x201,
+    GUI_TEXTBOX | GUI_TITLE,
     NULL,
     NULL,
     &D_800D4CDC,
@@ -441,7 +523,7 @@ UnkStruct_77 D_800D4E1C[9] = {
   },
   {
     { { NULL }, NULL, 0xC8, 0x10B, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -449,7 +531,7 @@ UnkStruct_77 D_800D4E1C[9] = {
   },
   {
     { { ":" }, NULL, 3, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -457,39 +539,318 @@ UnkStruct_77 D_800D4E1C[9] = {
   },
 };
 
+// SCORES / MARATHON
 static void func_800A0A44(GUI_Textbox *arg0, f32 arg1) {
-  printf("-- func_800A0A44\n");
+  char sp48[80];
+  GlobalScore *sp44;
+  u16 y = 152;
+  u16 x = 56;
+  s32 i;
+
+  if ((arg0->textList->pack & 0xF) == 9) {
+    for (i = 0; i < 5; i++) {
+      sp44 = g_sram_ptr->global_marathon + i;
+      if ((sp44->unkC > 0) && (sp44->unk10 > 0)) {
+        // name
+        sprintf(sp48, "%s", sp44->name);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // rank
+        x += 80;
+        sprintf(sp48, "%d", FUN_SRAM_80078424_twelveliner_div60_loop_30t_b(sp44->unk14, sp44->unk16) + 1);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // lines
+        x += 70;
+        sprintf(sp48, "%d", sp44->unkC);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // time
+        x += 80;
+        displayTimeFormatted_XY_RGBA(sp44->unk10 * 60, &D_80128FA0, x + 40, y, 0xFF, 0xFF, 0xFF, 255 * arg1);
+        y += 18;
+
+        x = 56;
+      }
+    }
+
+    return;
+  }
+
+  if (arg0->textList->ptr != NULL) {
+    for (i = 0; i < 5; i++) {
+      if (((((Player *) arg0->textList->ptr)->marathon_scores.unk0[i] + ((Player *) arg0->textList->ptr)->marathon_scores.unk14[i]) > 0) && (((Player *) arg0->textList->ptr)->marathon_scores.unk28[i] > 0)) {
+        // name
+        sprintf(sp48, "%s", ((Player *) arg0->textList->ptr)->name);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // rank
+        x += 80;
+        sprintf(sp48, "%d", FUN_SRAM_80078424_twelveliner_div60_loop_30t_b(((Player *) arg0->textList->ptr)->marathon_scores.unk28[i], ((Player *) arg0->textList->ptr)->marathon_scores.unk0[i] + ((Player *) arg0->textList->ptr)->marathon_scores.unk14[i]) + 1);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // lines
+        x += 70;
+        sprintf(sp48, "%d", ((Player *) arg0->textList->ptr)->marathon_scores.unk0[i] + ((Player *) arg0->textList->ptr)->marathon_scores.unk14[i]);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // time
+        x += 80;
+        displayTimeFormatted_XY_RGBA(((Player *) arg0->textList->ptr)->marathon_scores.unk28[i] * 60, &D_80128FA0, x + 40, y, 0xFF, 0xFF, 0xFF, 255 * arg1);
+        y += 18;
+
+        x = 56;
+      }
+    }
+  }
 }
 
+// SCORES / SPRINT
 static void func_800A1060(GUI_Textbox *arg0, f32 arg1) {
-  printf("-- func_800A1060\n");
+  char sp48[80];
+  GlobalScore *sp44;
+  u16 y = 152;
+  u16 x = 56;
+  s32 i;
+
+  if ((arg0->textList->pack & 0xF) == 9) {
+    for (i = 0; i < 5; i++) {
+      sp44 = g_sram_ptr->global_sprint + i;
+      if ((sp44->unkC > 0) && (sp44->unk10 > 0)) {
+        // name
+        sprintf(sp48, "%s", sp44->name);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // rank
+        x += 80;
+        sprintf(sp48, "%d", FUN_SRAM_80078424_twelveliner_div60_loop_30t_b(sp44->unk14, sp44->unk16) + 1);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // lines
+        x += 70;
+        sprintf(sp48, "%d", sp44->unkC);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // time
+        x += 80;
+        displayTimeFormatted_XY_RGBA(sp44->unk10 * 60, &D_80128FA0, x + 40, y, 0xFF, 0xFF, 0xFF, 255 * arg1);
+        y += 18;
+
+        x = 56;
+      }
+    }
+
+    return;
+  }
+
+  if (arg0->textList->ptr != NULL) {
+    for (i = 0; i < 5; i++) {
+      if (((((Player *) arg0->textList->ptr)->sprint_scores.unk0[i] + ((Player *) arg0->textList->ptr)->sprint_scores.unk14[i]) > 0) && (((Player *) arg0->textList->ptr)->sprint_scores.unk28[i] > 0)) {
+        // name
+        sprintf(sp48, "%s", ((Player *) arg0->textList->ptr)->name);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // rank
+        x += 80;
+        sprintf(sp48, "%d", FUN_SRAM_80078424_twelveliner_div60_loop_30t_b(((Player *) arg0->textList->ptr)->sprint_scores.unk28[i], ((Player *) arg0->textList->ptr)->sprint_scores.unk0[i] + ((Player *) arg0->textList->ptr)->sprint_scores.unk14[i]) + 1);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // lines
+        x += 70;
+        sprintf(sp48, "%d", ((Player *) arg0->textList->ptr)->sprint_scores.unk0[i] + ((Player *) arg0->textList->ptr)->sprint_scores.unk14[i]);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // time
+        x += 80;
+        displayTimeFormatted_XY_RGBA(((Player *) arg0->textList->ptr)->sprint_scores.unk28[i] * 60, &D_80128FA0, x + 40, y, 0xFF, 0xFF, 0xFF, 255 * arg1);
+        y += 18;
+
+        x = 56;
+      }
+    }
+  }
 }
 
+// SCORES / ULTRA
 static void func_800A167C(GUI_Textbox *arg0, f32 arg1) {
-  printf("-- func_800A167C\n");
+  char sp48[80];
+  GlobalScore *sp44;
+  u16 y = 152;
+  u16 x = 56;
+  s32 i;
+
+  if ((arg0->textList->pack & 0xF) == 9) {
+    for (i = 0; i < 5; i++) {
+      sp44 = g_sram_ptr->global_ultra + i;
+      if ((sp44->unkC > 0) && (sp44->unk10 > 0)) {
+        // name
+        sprintf(sp48, "%s", sp44->name);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // rank
+        x += 90;
+        sprintf(sp48, "%d", FUN_SRAM_80078424_twelveliner_div60_loop_30t_b(sp44->unk14, sp44->unk16) + 1);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // lines
+        x += 70;
+        sprintf(sp48, "%d", sp44->unkC);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // time
+        x += 80;
+        displayTimeFormatted_XY_RGBA(sp44->unk10 * 60, &D_80128FA0, x + 40, y, 0xFF, 0xFF, 0xFF, 255 * arg1);
+        y += 18;
+
+        x = 56;
+      }
+    }
+
+    return;
+  }
+
+  if (arg0->textList->ptr != NULL) {
+    for (i = 0; i < 5; i++) {
+      if (((((Player *) arg0->textList->ptr)->ultra_scores.unk0[i] + ((Player *) arg0->textList->ptr)->ultra_scores.unk14[i]) > 0) && (((Player *) arg0->textList->ptr)->ultra_scores.unk28[i] > 0)) {
+        // name
+        sprintf(sp48, "%s", ((Player *) arg0->textList->ptr)->name);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // rank
+        x += 90;
+        sprintf(sp48, "%d", FUN_SRAM_80078424_twelveliner_div60_loop_30t_b(((Player *) arg0->textList->ptr)->ultra_scores.unk28[i], ((Player *) arg0->textList->ptr)->ultra_scores.unk0[i] + ((Player *) arg0->textList->ptr)->ultra_scores.unk14[i]) + 1);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // lines
+        x += 70;
+        sprintf(sp48, "%d", ((Player *) arg0->textList->ptr)->ultra_scores.unk0[i] + ((Player *) arg0->textList->ptr)->ultra_scores.unk14[i]);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+
+        // time
+        x += 80;
+        displayTimeFormatted_XY_RGBA(((Player *) arg0->textList->ptr)->ultra_scores.unk28[i] * 60, &D_80128FA0, x + 40, y, 0xFF, 0xFF, 0xFF, 255 * arg1);
+        y += 18;
+
+        x = 56;
+      }
+    }
+  }
 }
 
+// SCORES / GENERAL
 static void func_800A1C98(GUI_Textbox *arg0, f32 arg1) {
-  printf("-- func_800A1C98\n");
+  char sp48[80];
+  u16 y = 150;
+  u16 x = 56;
+
+  if ((arg0->textList->pack & 0xF) == 9) {
+    sprintf(sp48, "TOTAL WONDER LINES: %d", get_total_wonder_lines(g_sram_ptr));
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+    y += 15;
+    return;
+  }
+
+  if (arg0->textList->ptr != NULL) {
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, ((Player *) arg0->textList->ptr)->name, 0xFF, 0xFF, 0xFF, 255 * arg1);
+    x += 80;
+    sprintf(sp48, "%d", FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(arg0->textList->ptr) + 1);
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+    y += 19;
+
+    x = 56;
+    sprintf(sp48, "LINES TO DUMP: %d", ((Player *) arg0->textList->ptr)->unkC4);
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+    y += 15;
+
+    sprintf(sp48, "TOTAL LINES NO BONUS: %d", ((Player *) arg0->textList->ptr)->unkC8);
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+    y += 15;
+
+    sprintf(sp48, "TOTAL BONUS LINES: %d", ((Player *) arg0->textList->ptr)->unkCC);
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+    y += 15;
+
+    sprintf(sp48, "TOTAL LINES: %d", ((Player *) arg0->textList->ptr)->unkC8 + ((Player *) arg0->textList->ptr)->unkCC);
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, sp48, 0xFF, 0xFF, 0xFF, 255 * arg1);
+    y += 15;
+  }
 }
 
-static void func_800A2148(GUI_Textbox *arg0) {
-  printf("-- func_800A2148\n");
+// SCORES / GUI_Textbox
+static void func_800A2148(GUI_Textbox *arg0, f32 arg1) {
+  char sp40[80];  // unused
+  u16 y = 152;
+  u16 x = 60;
+
+  if ((arg0->textList->pack & 0xF) == 9) {
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "PRESS ", 0xFF, 0xFF, 0xFF, 0xFF);
+    x += get_text_width(&D_80128FA0, "PRESS ");
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+    x += get_text_width(&D_80128FA0, "A ");
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "TO ENTER NAME SELECTION.", 0xFF, 0xFF, 0xFF, 0xFF);
+    y += 15;
+
+    x = 60;
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "PRESS UP OR DOWN ON THE CONTROL", 0xFF, 0xFF, 0xFF, 0xFF);
+    y += 15;
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "PAD TO FIND A NAME,", 0xFF, 0xFF, 0xFF, 0xFF);
+    y += 15;
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "THEN PRESS ", 0xFF, 0xFF, 0xFF, 0xFF);
+    x += get_text_width(&D_80128FA0, "THEN PRESS ");
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+    x += get_text_width(&D_80128FA0, "A ");
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "TO CHOOSE THE NAME.", 0xFF, 0xFF, 0xFF, 0xFF);
+
+    return;
+  }
+
+  if (arg0->textList->ptr != NULL) {
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "PRESS ", 0xFF, 0xFF, 0xFF, 0xFF);
+    x += get_text_width(&D_80128FA0, "PRESS ");
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+    x += get_text_width(&D_80128FA0, "A ");
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "TO ENTER NAME SELECTION.", 0xFF, 0xFF, 0xFF, 0xFF);
+    y += 15;
+
+    x = 60;
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "PRESS UP OR DOWN ON THE CONTROL", 0xFF, 0xFF, 0xFF, 0xFF);
+    y += 15;
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "PAD TO FIND A NAME,", 0xFF, 0xFF, 0xFF, 0xFF);
+    y += 15;
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "THEN PRESS ", 0xFF, 0xFF, 0xFF, 0xFF);
+    x += get_text_width(&D_80128FA0, "THEN PRESS ");
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+    x += get_text_width(&D_80128FA0, "A ");
+
+    displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, x, y, "TO CHOOSE THE NAME.", 0xFF, 0xFF, 0xFF, 0xFF);
+  }
 }
 
+// SCORES / GUI_Toggle
 static void func_800A27BC(GUI_Toggle *arg0, f32 arg1) {
   switch (arg0->cur) {
   case 0:
-    func_800A1C98(&D_800D5014, arg1);
+    func_800A1C98(&D_800D5014, arg1);  // GENERAL
     break;
   case 1:
-    func_800A0A44(&D_800D5014, arg1);
+    func_800A0A44(&D_800D5014, arg1);  // MARATHON
     break;
   case 2:
-    func_800A1060(&D_800D5014, arg1);
+    func_800A1060(&D_800D5014, arg1);  // SPRINT
     break;
   case 3:
-    func_800A167C(&D_800D5014, arg1);
+    func_800A167C(&D_800D5014, arg1);  // ULTRA
     break;
   }
 }
@@ -501,16 +862,124 @@ static void func_800A286C(GUI_Toggle *arg0) {
 static void func_800A287C(GUI_Toggle *arg0) {
 }
 
-static void func_800A2884(GUI_Textbox *arg0) {
-  printf("-- func_800A2884\n");
+static void start_single_player_game(GUI_Textbox *arg0) {
+  s32 i;
+
+  if (arg0->textList == &D_800D2D98) {  // "NEW NAME"
+    return;
+  }
+
+  if ((arg0->textList->pack & 0x10) != 0x10) {
+    return;
+  }
+
+  for (i = 0; i < 4; i++) {
+    g_game.players[i].salt[0] = 0xFF;
+    g_game.players[i].salt[1] = 0;
+  }
+
+  D_800D2E1C = 0;
+
+  if (arg0->textList == &D_800D2D80) {  // "GUEST"
+    arg0->textList->pack = 0xE;
+  }
+
+  func_8007A078(arg0->textList, 0);  // Player 0
+
+  if (D_800D5794.cur != 0) {
+    func_8007A078(&D_800D2D80, 1);  // "GUEST", Player 1
+    aiplayer_gameinit_related(2, D_800D567C.cur, D_800D5794.cur - 1);
+    D_800CFED4 = 2;  // num players is 2
+    g_game.landfill.type = LANDFILLTYPE_DIRECTED;
+    g_game.players[1].unkD0 = 1;
+  } else {
+    D_800CFED4 = 1;  // num players is 1
+    g_game.landfill.type = LANDFILLTYPE_NONE;
+  }
+
+  FUN_SRAM_800785e0_sixliner_loop_arg0_t(&D_800D2D80);  // "GUEST"
+  D_800D3CF0 = 1;  // game mode
+  g_gdl = FUN_80048934_inits_struct_q(g_gdl, 0);
+  g_gdl = FUN_80048934_inits_struct_q(g_gdl, 1);
+  arg0->unk5D = 0xFE;
+  arg0->textList = &D_800D2D80;  // "GUEST"
+  D_800D2D98.pack = 0xF;  // "NEW NAME"
+  D_800D2D80.pack = 0xE;  // "GUEST"
+  g_game.gameType = D_800D567C.cur;
+  arg0->unk61 = FALSE;
 }
 
 static void func_800A2A94(GUI_Toggle *arg0) {
   g_game.landfill.type = arg0->cur;
 }
 
-static void func_800A2AA4(void) {
-  printf("-- func_800A2AA4\n");
+static void start_multi_player_game(void) {
+  if (D_800D3D34 == 0) {
+    return;
+  }
+
+  D_800CFED4 = 0;
+  D_800D2E1C = 0;
+
+  if (((D_800D5AC4.textList->pack & 0xF) == 0xE) || ((D_800D5AC4.textList->pack & 0xF) == 0xF)) {
+    if (((D_800D5AC4.textList->pack >> 4) & 0xF) & 0x1) {
+      func_8007A078(D_800D5AC4.textList, 0);  // Player 0
+      D_800CFED4++;  // increment num players
+    }
+  } else {
+    if (((D_800D5AC4.textList->pack >> 4) & 0xF) & 0x1) {
+      func_8007A078(D_800D5AC4.textList, 0);  // Player 0
+      D_800CFED4++;  // increment num players
+    }
+  }
+
+  if (((D_800D5B28.textList->pack & 0xF) == 0xE) || ((D_800D5B28.textList->pack & 0xF) == 0xF)) {
+    if (((D_800D5B28.textList->pack >> 4) & 0xF) & 0x2) {
+      func_8007A078(D_800D5B28.textList, 1);  // Player 1
+      D_800CFED4++;  // increment num players
+    }
+  } else {
+    if (((D_800D5B28.textList->pack >> 4) & 0xF) & 0x2) {
+      func_8007A078(D_800D5B28.textList, 1);  // Player 1
+      D_800CFED4++;  // increment num players
+    }
+  }
+
+  if (((D_800D5B8C.textList->pack & 0xF) == 0xE) || ((D_800D5B8C.textList->pack & 0xF) == 0xF)) {
+    if (((D_800D5B8C.textList->pack >> 4) & 0xF) & 0x4) {
+      func_8007A078(D_800D5B8C.textList, 2);  // Player 2
+      D_800CFED4++;  // increment num players
+    }
+  } else {
+    if (((D_800D5B8C.textList->pack >> 4) & 0xF) & 0x4) {
+      func_8007A078(D_800D5B8C.textList, 2);  // Player 2
+      D_800CFED4++;  // increment num players
+    }
+  }
+
+  if (((D_800D5BF0.textList->pack & 0xF) == 0xE) || ((D_800D5BF0.textList->pack & 0xF) == 0xF)) {
+    if (((D_800D5BF0.textList->pack >> 4) & 0xF) & 0x8) {
+      func_8007A078(D_800D5BF0.textList, 3);  // Player 3
+      D_800CFED4++;  // increment num players
+    }
+  } else {
+    if (((D_800D5BF0.textList->pack >> 4) & 0xF) & 0x8) {
+      func_8007A078(D_800D5BF0.textList, 3);  // Player 3
+      D_800CFED4++;  // increment num players
+    }
+  }
+
+  if (D_800CFED4 < 2) {
+    D_800D3D34 = 0;
+    D_800CFED4 = 4;
+    return;
+  }
+
+  D_800D5AC4.unk5D = 0xFE;
+  func_800A2E2C();
+  g_game.gameType = D_800D5AB4.cur;
+  g_game.landfill.type = D_800D5CD8.cur;
+  D_800D3CF0 = 1;  // game mode
 }
 
 void func_800A2E2C(void) {
@@ -584,7 +1053,7 @@ GUI_Toggle D_800D5170 = { 4, D_800D50E0, D_800D50C0, 0 };
 UnkStruct_77 D_800D5180[9] = {
   {
     { { NULL }, NULL, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     D_800D53C8,
     D_800D5378,
@@ -592,7 +1061,7 @@ UnkStruct_77 D_800D5180[9] = {
   },
   {
     { { NULL }, NULL, 0, 0x14, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -600,7 +1069,7 @@ UnkStruct_77 D_800D5180[9] = {
   },
   {
     { { NULL }, NULL, 0x32, 0x10, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -608,7 +1077,7 @@ UnkStruct_77 D_800D5180[9] = {
   },
   {
     { { NULL }, NULL, 0x32, 0x3F, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -616,7 +1085,7 @@ UnkStruct_77 D_800D5180[9] = {
   },
   {
     { { NULL }, NULL, 0x12C, 0x3F, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -624,7 +1093,7 @@ UnkStruct_77 D_800D5180[9] = {
   },
   {
     { { NULL }, NULL, 0x37, 0x42, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0xC04,
+    GUI_WINDOW | GUI_TOGGLE | GUI_FUNC,
     (void (*)(void *, ...)) func_800A27BC,
     NULL,
     &D_800D5170,
@@ -632,7 +1101,7 @@ UnkStruct_77 D_800D5180[9] = {
   },
   {
     { { NULL }, NULL, 0xD3, 0xAF, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0xA00,
+    GUI_WINDOW | GUI_TEXTBOX,
     (void (*)(void *, ...)) func_800A2148,
     NULL,
     &D_800D5014,
@@ -640,7 +1109,7 @@ UnkStruct_77 D_800D5180[9] = {
   },
   {
     { { NULL }, NULL, 0xC8, 0x10D, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -648,7 +1117,7 @@ UnkStruct_77 D_800D5180[9] = {
   },
   {
     { { ":" }, NULL, 5, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -659,7 +1128,7 @@ u32 D_800D5378[20] = { 3, 4, 0x60, 0, 0x5E, 0x5F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 UnkStruct_77 D_800D53C8[10] = {
   {
     { { NULL }, NULL, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     D_800D3FF8,
     D_800D3FB0,
@@ -667,7 +1136,7 @@ UnkStruct_77 D_800D53C8[10] = {
   },
   {
     { { NULL }, NULL, 0x28, 0x32, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -675,7 +1144,7 @@ UnkStruct_77 D_800D53C8[10] = {
   },
   {
     { { NULL }, NULL, 0x32, 0x28, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -683,7 +1152,7 @@ UnkStruct_77 D_800D53C8[10] = {
   },
   {
     { { "SCORES" }, NULL, 0x82, 0x67, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x51,
+    GUI_CENTX | GUI_MENU | GUI_TITLE,
     NULL,
     D_800D5180,
     D_800D5078,
@@ -691,7 +1160,7 @@ UnkStruct_77 D_800D53C8[10] = {
   },
   {
     { { "DATA" }, NULL, 0x82, 0x7E, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x51,
+    GUI_CENTX | GUI_MENU | GUI_TITLE,
     NULL,
     D_800D42B4,
     D_800D4254,
@@ -699,7 +1168,7 @@ UnkStruct_77 D_800D53C8[10] = {
   },
   {
     { { "AUDIO" }, NULL, 0x82, 0x95, 0xFF, 0xFF, 0xFF, 0x64, 0 },
-    0x51,
+    GUI_CENTX | GUI_MENU | GUI_TITLE,
     NULL,
     D_800D4E1C,
     D_800D4DD4,
@@ -707,7 +1176,7 @@ UnkStruct_77 D_800D53C8[10] = {
   },
   {
     { { "CREDITS" }, NULL, 0x82, 0xAC, 0xFF, 0xFF, 0xFF, 0x64, 0 },
-    0x45,
+    GUI_CENTX | GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A0494,
     NULL,
     NULL,
@@ -715,7 +1184,7 @@ UnkStruct_77 D_800D53C8[10] = {
   },
   {
     { { NULL }, NULL, 0xC8, 0xCB, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x48,
+    GUI_CENTX | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -723,7 +1192,7 @@ UnkStruct_77 D_800D53C8[10] = {
   },
   {
     { { NULL }, NULL, 0xC8, 0xFC, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -731,7 +1200,7 @@ UnkStruct_77 D_800D53C8[10] = {
   },
   {
     { { ":" }, NULL, 3, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -776,7 +1245,7 @@ u32 D_800D5808[18] = { 3, 4, 0x49, 0, 0x58, 0x59, 0, 0, 0, 0, 0, 0, 0, 0, 0x19, 
 UnkStruct_77 D_800D5850[9] = {
   {
     { { NULL }, NULL, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     D_800D3FF8,
     D_800D3FB0,
@@ -784,7 +1253,7 @@ UnkStruct_77 D_800D5850[9] = {
   },
   {
     { { NULL }, NULL, 0, 0x25, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -792,7 +1261,7 @@ UnkStruct_77 D_800D5850[9] = {
   },
   {
     { { NULL }, NULL, 0x32, 0x14, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -800,7 +1269,7 @@ UnkStruct_77 D_800D5850[9] = {
   },
   {
     { { "NAME:" }, NULL, 0x3C, 0x51, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x201,
+    GUI_TEXTBOX | GUI_TITLE,
     NULL,
     NULL,
     &D_800D57A4,
@@ -808,7 +1277,7 @@ UnkStruct_77 D_800D5850[9] = {
   },
   {
     { { "OPPONENT:" }, NULL, 0x3A, 0x88, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    0x405,
+    GUI_TOGGLE | GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A287C,
     NULL,
     &D_800D5794,
@@ -816,7 +1285,7 @@ UnkStruct_77 D_800D5850[9] = {
   },
   {
     { { "GAME:" }, NULL, 0x3A, 0xA6, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    0x405,
+    GUI_TOGGLE | GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A286C,
     NULL,
     &D_800D567C,
@@ -824,15 +1293,15 @@ UnkStruct_77 D_800D5850[9] = {
   },
   {
     { { "START" }, NULL, 0x78, 0xCA, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x45,
-    (void (*)(void *, ...)) func_800A2884,
+    GUI_CENTX | GUI_FUNC | GUI_TITLE,
+    (void (*)(void *, ...)) start_single_player_game,
     NULL,
     &D_800D57A4,
     0x7F000000,
   },
   {
     { { NULL }, NULL, 0xC8, 0x104, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -840,7 +1309,7 @@ UnkStruct_77 D_800D5850[9] = {
   },
   {
     { { ":" }, NULL, 3, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -957,7 +1426,7 @@ u32 D_800D5CE8[24] = {
 UnkStruct_77 D_800D5D48[12] = {
   {
     { { NULL }, NULL, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     D_800D3FF8,
     D_800D3FB0,
@@ -965,7 +1434,7 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { NULL }, NULL, 0x3C, 0x2E, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -973,7 +1442,7 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { NULL }, NULL, 0x3C, 0x1E, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -981,7 +1450,7 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { NULL }, NULL, 0x26, 0x7A, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x200,
+    GUI_TEXTBOX,
     NULL,
     NULL,
     &D_800D5AC4,
@@ -989,7 +1458,7 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { NULL }, NULL, 0xD1, 0x2F, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x200,
+    GUI_TEXTBOX,
     NULL,
     NULL,
     &D_800D5B28,
@@ -997,7 +1466,7 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { NULL }, NULL, 0xD1, 0x64, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x200,
+    GUI_TEXTBOX,
     NULL,
     NULL,
     &D_800D5B8C,
@@ -1005,7 +1474,7 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { NULL }, NULL, 0xD1, 0x9B, 0xFF, 0xFF, 0xFF, 0xA0, 0 },
-    0x200,
+    GUI_TEXTBOX,
     NULL,
     NULL,
     &D_800D5BF0,
@@ -1013,7 +1482,7 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { "GAME:" }, NULL, 0x3C, 0xA0, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    0x405,
+    GUI_TOGGLE | GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A286C,
     NULL,
     &D_800D5AB4,
@@ -1021,7 +1490,7 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { "GARBAGE:" }, NULL, 0x3C, 0xB7, 0xFF, 0xFF, 0xFF, 0xA0, 1 },
-    0x405,
+    GUI_TOGGLE | GUI_FUNC | GUI_TITLE,
     (void (*)(void *, ...)) func_800A2A94,
     NULL,
     &D_800D5CD8,
@@ -1029,15 +1498,15 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { "START" }, NULL, 0x64, 0xDB, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x45,
-    (void (*)(void *, ...)) func_800A2AA4,
+    GUI_CENTX | GUI_FUNC | GUI_TITLE,
+    (void (*)(void *, ...)) start_multi_player_game,
     NULL,
     NULL,
     0x7F000000,
   },
   {
     { { NULL }, NULL, 0xC8, 0xFC, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x48,
+    GUI_CENTX | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -1045,7 +1514,7 @@ UnkStruct_77 D_800D5D48[12] = {
   },
   {
     { { ":" }, NULL, 3, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -1056,7 +1525,7 @@ u32 D_800D5FE8[10] = { 3, 4, 0x6C, 0, 0x5C, 0x5D, 0x23, 0, 0, 0 };
 UnkStruct_77 D_800D6010[5] = {
   {
     { { NULL }, NULL, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -1064,7 +1533,7 @@ UnkStruct_77 D_800D6010[5] = {
   },
   {
     { { NULL }, NULL, 0, 0x28, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -1072,7 +1541,7 @@ UnkStruct_77 D_800D6010[5] = {
   },
   {
     { { NULL }, NULL, 0x32, 0x14, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -1080,7 +1549,7 @@ UnkStruct_77 D_800D6010[5] = {
   },
   {
     { { NULL }, NULL, 0xC8, 0x106, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0x4A,
+    GUI_CENTX | GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -1088,7 +1557,7 @@ UnkStruct_77 D_800D6010[5] = {
   },
   {
     { { ":" }, NULL, 0, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -1099,7 +1568,7 @@ u32 D_800D6128[4] = { 3, 4, 0, 0 };
 UnkStruct_77 D_800D6138[2] = {
   {
     { { NULL }, NULL, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0 },
-    0xA,
+    GUI_NULL | GUI_PIC,
     NULL,
     NULL,
     NULL,
@@ -1107,7 +1576,7 @@ UnkStruct_77 D_800D6138[2] = {
   },
   {
     { { ":" }, NULL, 0, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,
@@ -1118,7 +1587,7 @@ u32 D_800D61A8[2] = { 0, 0 };
 UnkStruct_77 D_800D61B0[1] = {
   {
     { { ":" }, NULL, 1, 0, 0, 0, 0, 0, 0 },
-    0x8008,
+    GUI_QUIT | GUI_NULL,
     NULL,
     NULL,
     NULL,

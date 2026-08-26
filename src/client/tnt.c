@@ -723,17 +723,17 @@ void game_init(unsigned short num_players) {
   }
 
   {
-    strncpy(game_ptr->players[0].node.name, p0_name, 8);
-    game_ptr->players[0].node.name[8] = 0;
+    strncpy(game_ptr->players[0].name, p0_name, 8);
+    game_ptr->players[0].name[8] = 0;
 
-    strncpy(game_ptr->players[1].node.name, p1_name, 8);
-    game_ptr->players[1].node.name[8] = 0;
+    strncpy(game_ptr->players[1].name, p1_name, 8);
+    game_ptr->players[1].name[8] = 0;
 
-    strncpy(game_ptr->players[2].node.name, p2_name, 8);
-    game_ptr->players[2].node.name[8] = 0;
+    strncpy(game_ptr->players[2].name, p2_name, 8);
+    game_ptr->players[2].name[8] = 0;
 
-    strncpy(game_ptr->players[3].node.name, p3_name, 8);
-    game_ptr->players[3].node.name[8] = 0;
+    strncpy(game_ptr->players[3].name, p3_name, 8);
+    game_ptr->players[3].name[8] = 0;
   }
 }
 

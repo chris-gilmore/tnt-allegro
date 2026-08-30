@@ -115,15 +115,16 @@ typedef struct {
 #include "newtetris/n64heap.h"
 #include "newtetris/cont.h"
 #include "newtetris/contq.h"
-#include "newtetris/026900.h"
 #include "newtetris/026C80.h"
 #include "newtetris/078FE0.h"
 #include "newtetris/077340.h"
 #include "newtetris/073D50.h"
+#include <newtetris/09F3D0.h>
 #include "newtetris/073120.h"
 #include "newtetris/haluci.h"
 #include "newtetris/color.h"
 #include "newtetris/piecedefs.h"
+#include "newtetris/026900.h"
 #include "newtetris/027BF0.h"
 #include "newtetris/font.h"
 #include "newtetris/formattime.h"
@@ -143,6 +144,8 @@ typedef struct {
 #include "newtetris/gamefinish.h"
 #include "newtetris/rand.h"
 #include "newtetris/03A750.h"
+#include <newtetris/09F590.h>
+#include <newtetris/sprite.h>
 #include "newtetris/06F290.h"
 #include "newtetris/010870.h"
 #include "newtetris/00E2A0.h"

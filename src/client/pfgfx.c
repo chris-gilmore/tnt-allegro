@@ -84,13 +84,14 @@ static UnkStruct_26 lookahead_points_for_2p[8][2] = {
   }
 };
 
-static void   PFGFX_8005fc70_doesnothing(void);
-static void   PFGFX_SetTextDisplayPos_1p(u8);
-static void   PFGFX_SetTextDisplayPos_2p(u8);
-static void   PFGFX_SetTextDisplayPos_3p(u8);
-static void   PFGFX_SetTextDisplayPos_4p(u8);
+static void PFGFX_Sets_x58_x59_Checks_NumPlayers_CurrPlayer(void);
+static void PFGFX_8005fc70_doesnothing(void);
+static void PFGFX_SetTextDisplayPos_1p(u8);
+static void PFGFX_SetTextDisplayPos_2p(u8);
+static void PFGFX_SetTextDisplayPos_3p(u8);
+static void PFGFX_SetTextDisplayPos_4p(u8);
 
-void PFGFX_Sets_x58_x59_Checks_NumPlayers_CurrPlayer(void) {
+static void PFGFX_Sets_x58_x59_Checks_NumPlayers_CurrPlayer(void) {
   register PfGfx *pfGfx_ptr = g_pfGfx_ptr;
 
   switch (g_playercount) {
@@ -313,8 +314,4 @@ void PFGFX_Playfield_Init(u8 screen) {
     debug_print_reason_routine("Playfield:Init invalid playercount", "pfgfx.c");
     break;
   }
-}
-
-void PFGFX_80060654_doesnothing(void) {
-  PFGFX_8005fc70_doesnothing();
 }

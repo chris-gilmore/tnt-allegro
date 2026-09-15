@@ -52,9 +52,9 @@ UnkStruct_86 *func_800ACEA0(u32 arg0, UnkStruct_44 *arg1) {
   sp2C->unk110 = 16;
   sp2C->unk114 = 0.995;
   sp2C->unk118 = 0;
-  sp2C->unkF8 = 0;
-  sp2C->unkFC = 0;
-  sp2C->unk100 = 0;
+  sp2C->unkF8.x = 0;
+  sp2C->unkF8.y = 0;
+  sp2C->unkF8.z = 0;
 
   sc = sp2C->unkD0->unk8.unk2;
   tc = sp2C->unkD0->unk8.unk4;

@@ -328,7 +328,7 @@ static void func_800AA608(void *addr) {
     obj->unk8.unkC = n64HeapAlloc(num1 * sizeof(u16));
 
     for (i = 0; i < num1; i++) {
-      obj->unk8.unkC[i] = config_setting_get_int_elem(list1, i);
+      ((u16 *) obj->unk8.unkC)[i] = config_setting_get_int_elem(list1, i);
     }
   } else {
     obj->unk8.unkC = NULL;

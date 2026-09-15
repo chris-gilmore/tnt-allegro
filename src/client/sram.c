@@ -10,7 +10,7 @@ Sram *g_sram_ptr;
 TextList D_800D2D80 = {
   { 'G', 'U', 'E', 'S', 'T', 0, 0, 0, 0 },
   { 32, 32 },
-  0xE,
+  14,
   NULL,
   &D_800D2D98,
   &D_800D2D98
@@ -18,7 +18,7 @@ TextList D_800D2D80 = {
 TextList D_800D2D98 = {
   { 'N', 'E', 'W', ' ', 'N', 'A', 'M', 'E', 0 },
   { 32, 32 },
-  0xF,
+  15,
   NULL,
   &D_800D2D80,
   &D_800D2D80
@@ -26,7 +26,7 @@ TextList D_800D2D98 = {
 TextList D_800D2DB0 = {
   { 'G', 'L', 'O', 'B', 'A', 'L', 0, 0, 0 },
   { 32, 32 },
-  0x9,
+  9,
   NULL,
   &D_800D2DB0,
   &D_800D2DB0
@@ -34,7 +34,7 @@ TextList D_800D2DB0 = {
 TextList D_800D2DC8 = {
   { ' ', 0, 0, 0, 0, 0, 0, 0, 0 },
   { 0, 0 },
-  0x5,
+  5,
   NULL,
   &D_800D2DC8,
   &D_800D2DC8
@@ -42,21 +42,19 @@ TextList D_800D2DC8 = {
 TextList D_800D2DE0 = {
   { 'C', 'H', 'O', 'O', 'S', 'E', 0, 0, 0 },
   { 0xFF, 0xFF },
-  0x4,
+  4,
   NULL,
   &D_800D2DE0,
   &D_800D2DE0
 };
-
-// /* 099078 800D2DF8 800D2D98 */ .word D_800D2D98
-
 static u8 D_800D2DFC[30] = {
   3, 7, 10, 13, 17, 20, 23, 27, 30, 33,
   37, 40, 43, 47, 50, 53, 57, 60, 63, 67,
   70, 73, 77, 80, 83, 87, 90, 93, 97, 100
 };
+u16 D_800D2E1C = 0;
 
-s16 D_800D2E1C = 0;
+static void set_total_wonder_lines(Sram *, u32);
 
 // calculating rank
 u8 FUN_SRAM_80078300_twelveliner_div60_loop_30t_a(Player *arg0) {
@@ -105,9 +103,9 @@ void FUN_SRAM_800785e0_sixliner_loop_arg0_t(TextList *arg0) {
 
   sp1C = arg0;
   do {
-    if (((sp1C->pack & 0xF) == 0xF) || ((sp1C->pack & 0xF) == 0xE) || ((sp1C->pack & 0xF) == 0xA) || ((sp1C->pack & 0xF) == 9) || ((sp1C->pack & 0xF) == 8)) {
+    if (((sp1C->pack & 0xF) == 15) || ((sp1C->pack & 0xF) == 14) || ((sp1C->pack & 0xF) == 10) || ((sp1C->pack & 0xF) == 9) || ((sp1C->pack & 0xF) == 8)) {
       // do nothing
-    } else if (((Player *) sp1C->ptr)->unkD0 == 0) {
+    } else if (!((Player *) sp1C->ptr)->unkD0) {
       func_8007AEB0(sp1C);
     }
 
@@ -122,7 +120,7 @@ TextList *FUN_SRAM_8007868c_tenliner_loop_arg0_t(TextList *arg0) {
   sp18 = 0;
   sp1C = arg0;
   do {
-    if (((sp1C->pack & 0xF) == 0xF) || ((sp1C->pack & 0xF) == 0xE) || ((sp1C->pack & 0xF) == 0xA) || ((sp1C->pack & 0xF) == 9) || ((sp1C->pack & 0xF) == 8) || ((sp1C->pack & 0xF) == 6) || ((sp1C->pack & 0xF) == 5) || ((sp1C->pack & 0xF) == 4) || ((sp1C->pack & 0xF) == 0xB)) {
+    if (((sp1C->pack & 0xF) == 15) || ((sp1C->pack & 0xF) == 14) || ((sp1C->pack & 0xF) == 10) || ((sp1C->pack & 0xF) == 9) || ((sp1C->pack & 0xF) == 8) || ((sp1C->pack & 0xF) == 6) || ((sp1C->pack & 0xF) == 5) || ((sp1C->pack & 0xF) == 4) || ((sp1C->pack & 0xF) == 11)) {
       sp18++;
       if (sp18 == 100) {
         break;
@@ -137,7 +135,7 @@ TextList *FUN_SRAM_8007868c_tenliner_loop_arg0_t(TextList *arg0) {
   return sp1C;
 }
 
-void FUN_SRAM_8007875c_check_gameover_conditions(Player *arg0, GameResults *arg1, u8 arg2) {
+void FUN_SRAM_8007875c_check_gameover_conditions(Player *player, GameResults *gameResults, u8 arg2) {
   printf("-- sram: FUN_SRAM_8007875c_check_gameover_conditions\n");
 }
 
@@ -173,10 +171,11 @@ u8 func_8007AADC(u8 *arg0, u8 arg1, u8 arg2) {
   }
 }
 
+// deletes a TextList node and returns its parent
 TextList *func_8007AEB0(TextList *arg0) {
   TextList *sp1C;
 
-  if (((arg0->pack & 0xF) != 0xE) && ((arg0->pack & 0xF) != 0xF) && ((arg0->pack & 0xF) != 0xA) && ((arg0->pack & 0xF) != 5)) {
+  if (((arg0->pack & 0xF) != 14) && ((arg0->pack & 0xF) != 15) && ((arg0->pack & 0xF) != 10) && ((arg0->pack & 0xF) != 5)) {
     arg0->last->next = arg0->next;
 
     if (arg0->next != NULL) {
@@ -224,28 +223,31 @@ u32 get_total_wonder_lines(Sram *sram_ptr) {
 }
 
 void load_from_sram(u8 arg0) {
-  register Sram *sram_ptr;
+  Sram *sram_ptr;
 
-  if (arg0 == FALSE) {
-    g_sram_ptr = (Sram *) n64HeapAlloc(0x1900);
+  if (arg0 == 0) {
+    g_sram_ptr = n64HeapAlloc(sizeof(Sram));
     sram_ptr = g_sram_ptr;
-    func_800AC1A8(sram_ptr, (void *)0x08000000, 0x1900);
+    func_800AC1A8(sram_ptr, (void *) SRAM_START_ADDR, sizeof(Sram));
 
     sram_ptr->music_mode = 1;
     sram_ptr->song = 0;
+    sram_ptr->game_id = game_id;
 
     set_total_wonder_lines(sram_ptr, 500000);  // HACK: unlocks all wonders and screens
   }
-  sram_ptr = g_sram_ptr;
 
-  if (arg0 == TRUE) {
-    sram_ptr->unk18F4 = game_id;
+  sram_ptr = g_sram_ptr;
+  if (arg0 == 1) {
+    sram_ptr->game_id = game_id;
   }
 
   g_game.unkE4F8 = D_800CF838;
 }
 
-void func_8007C5CC(Sram *sram_ptr) {
-  //sram_ptr->unk18F4 = osGetTime();
-  sram_ptr->unk18F4 = game_id;
+void save_to_sram(Sram *sram_ptr) {
+  //sram_ptr->game_id = osGetTime();
+  sram_ptr->game_id = game_id;
+
+  func_800AC22C(sram_ptr, (void *) SRAM_START_ADDR, sizeof(Sram));
 }

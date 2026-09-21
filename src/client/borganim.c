@@ -26,28 +26,29 @@ static Light D_800D6208 = {
   }
 };
 
-extern /* static */ void   func_800A4CF0(UnkStruct_49 *, Mtx4 *);
-extern /* static */ void   func_800A4EC0(UnkStruct_49 *, Mtx4 *);
-static void   func_800A5114(UnkStruct_49 *, Mtx4 *);
-static void   func_800A52E4(UnkStruct_49 *, Mtx4 *);
-static void   func_800A53E0(UnkStruct_49 *, Mtx4 *);
-static void   func_800A5660(UnkStruct_49 *, Mtx4 *);
-static void   func_800A56E4(Mtx4 *, Mtx4 *);
-static void   func_800A57A4(Mtx4 *, Mtx4 *);
-static void   func_800A57FC(UnkStruct_49 *, Mtx4 *);
-static void   func_800A58A4(UnkStruct_32 *);
-static void   func_800A59C0(UnkStruct_32 *, Mtx4 *);
-static void   func_800A652C(UnkStruct_32 *, UnkStruct_50 *);
-static void   func_800A6AC8(UnkStruct_52 *);
-static void   func_800A6B14(UnkStruct_51 *, f32);
-static void   func_800A6B60(UnkStruct_51 *, f32);
-static void   func_800A6BB0(UnkStruct_51 *, f32);
-static void   func_800A6D08(UnkStruct_51 *);
-static void   func_800A6E48(UnkStruct_51 *);
-static void   func_800A70A8(UnkStruct_32 *);
-static Gfx   *func_800A7374(Gfx *);
-static Gfx   *func_800A74DC(Gfx *);
-static Gfx   *func_800A7EFC(Gfx *, UnkStruct_32 *);
+extern /* static */ void func_800A4CF0(UnkStruct_49 *, Mtx4 *);
+extern /* static */ void func_800A4EC0(UnkStruct_49 *, Mtx4 *);
+static void func_800A5114(UnkStruct_49 *, Mtx4 *);
+static void func_800A52E4(UnkStruct_49 *, Mtx4 *);
+static void func_800A53E0(UnkStruct_49 *, Mtx4 *);
+static void func_800A5660(UnkStruct_49 *, Mtx4 *);
+static void func_800A56E4(Mtx4 *, Mtx4 *);
+static void func_800A57A4(Mtx4 *, Mtx4 *);
+static void func_800A57FC(UnkStruct_49 *, Mtx4 *);
+static void func_800A58A4(UnkStruct_32 *);
+static void func_800A59C0(UnkStruct_32 *, Mtx4 *);
+static void func_800A652C(UnkStruct_32 *, UnkStruct_50 *);
+static void func_800A6AC8(UnkStruct_52 *);
+static void func_800A6B14(UnkStruct_51 *, f32);
+static void func_800A6B60(UnkStruct_51 *, f32);
+static void func_800A6BB0(UnkStruct_51 *, f32);
+static void func_800A6D08(UnkStruct_51 *);
+static void func_800A6D90(UnkStruct_51 *);
+static void func_800A6E48(UnkStruct_51 *);
+static void func_800A70A8(UnkStruct_32 *);
+static Gfx *func_800A7374(Gfx *);
+static Gfx *func_800A74DC(Gfx *);
+static Gfx *func_800A7EFC(Gfx *, UnkStruct_32 *);
 
 #pragma GLOBAL_ASM("asm/nonmatchings/newtetris/borganim/func_800A4B80.s")
 
@@ -759,9 +760,34 @@ static void func_800A6D08(UnkStruct_51 *arg0) {
   }
 }
 
-#pragma GLOBAL_ASM("asm/nonmatchings/newtetris/borganim/func_800A6D90.s")
+static void func_800A6D90(UnkStruct_51 *arg0) {
+  UnkStruct_52 *var_s1;
+  s32 var_s0;
 
-#pragma GLOBAL_ASM("asm/nonmatchings/newtetris/borganim/func_800A6DD8.s")
+  var_s1 = arg0->unk1C;
+  for (var_s0 = arg0->unk18; var_s0 != 0; var_s0--) {
+    func_800A6AC8(var_s1);
+    var_s1++;
+  }
+}
+
+void func_800A6DD8(UnkStruct_32 *arg0) {
+  UnkStruct_50 *var_s2;
+  UnkStruct_51 *var_s1;
+  s32 var_s0;
+
+  var_s2 = arg0->unk1D0;
+  arg0->unk6 = 1;
+  while (var_s2 != NULL) {
+    var_s1 = var_s2->unk20.unk8;
+    for (var_s0 = var_s2->unk20.unk4; var_s0 != 0; var_s0--) {
+      func_800A6D90(var_s1);
+      var_s1++;
+    }
+
+    var_s2 = var_s2->unkC;
+  }
+}
 
 static void func_800A6E48(UnkStruct_51 *arg0) {
   UnkStruct_52 *var_s0;

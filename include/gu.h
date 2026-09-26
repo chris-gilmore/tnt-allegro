@@ -2,6 +2,7 @@
 #define _GU_H_
 
 extern void   guMtxIdentF(f32 mf[4][4]);
+extern void   guAlignF(float mf[4][4], float a, float x, float y, float z);
 extern void   guNormalize(f32 *x, f32 *y, f32 *z);
 extern int    guRandom(void);
 extern s16    sins(u16 angle);

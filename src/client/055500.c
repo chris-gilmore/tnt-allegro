@@ -2549,6 +2549,7 @@ static void func_80091D60(GUI_Textbox *arg0, UnkStruct_78 *arg1, s32 arg2, f32 a
                   Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
                   Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
                   set_total_wonder_lines(g_sram_ptr, 1000000);
+                  wonders2_80045fdc_sets_num_won_compl_q();
                   save_to_sram(g_sram_ptr);
                   sp47 = TRUE;
                 }

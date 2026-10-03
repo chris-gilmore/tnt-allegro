@@ -68,7 +68,6 @@ void gets_lineCounts_loops_numPlayers_checks_gametype(void) {
       sp28->unk1[0] = 1;
     }
 
-    /*
     for (i = 0; i < sp28->unk5; i++) {
       sp2C = func_8007AA5C(&D_800D2D80, &g_game.players[i]);
       if (sp2C != NULL) {
@@ -96,7 +95,6 @@ void gets_lineCounts_loops_numPlayers_checks_gametype(void) {
         }
       }
     }
-    */
     D_800D0144 = FALSE;
   } else {  // exit from pause menu
     sp28->unk5 = g_playercount;
@@ -231,7 +229,6 @@ void game_over_display_stuff_huge_function_q(void) {
     if (D_800D0158-- == 0) {
       D_800D0158 = 2;
       FUN_80055704_threeliner();
-      /*
       if ((spFC->unk0 != 0) && wonders2_80045fdc_sets_num_won_compl_q()) {
         g_game.unkE4F8 = D_800CF838;
         if ((spFC->unk5 > 1) && (spF8[1].unkD0 == 0)) {
@@ -249,7 +246,6 @@ void game_over_display_stuff_huge_function_q(void) {
 
         return;
       }
-      */
       if ((spFC->unk5 > 1) && (spF8[1].unkD0 == 0)) {
         func_8009035C(D_800D5D48, D_800D5CE8);
       } else {

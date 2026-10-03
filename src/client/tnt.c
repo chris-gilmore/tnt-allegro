@@ -34,6 +34,7 @@ static char *frames_dir = NULL;
 static unsigned int framecount = 0;
 int ringcount = 0;
 unsigned int game_id = 0;
+int set_game_id = FALSE;
 static unsigned char g_opponent = 0;
 static unsigned int gametype = GAMETYPE_MARATHON;
 static unsigned int landfilltype = LANDFILLTYPE_NONE;
@@ -671,8 +672,6 @@ void player_init(void) {
 
   // From bootmain.c, main_infinite_loop_at_end_3()
   load_from_sram(FALSE);
-
-  wonders2_80045e50_sets_num_won_compl_q();  // TODO
 }
 
 void player_deinit(void) {
@@ -702,7 +701,7 @@ void game_init(unsigned short num_players) {
   D_800CFEE8 = 4;  // main menu
 
   if (intro_flag) {
-    D_800CFEE8 = 3;  // intro: 2 = spinning_n64_3d_logo, 1 = bps_and_h2o_logo, 3 = animation_and_tetris_start
+    D_800CFEE8 = 1;  // intro: 2 = spinning_n64_3d_logo, 1 = bps_and_h2o_logo, 3 = animation_and_tetris_start
   } else if (haluci_flag) {
     D_800D3CF0 = 4;  // haluci mode
   } else {
@@ -720,18 +719,20 @@ void game_init(unsigned short num_players) {
     printf("Opponent: '%s'\n", opponent_str[g_opponent]);
     printf("Game type: '%s'\n", gametype_str[game_ptr->gameType]);
     printf("Garbage type: '%s'\n", landfilltype_str[game_ptr->landfill.type]);
-  }
 
-  {
+    printf("Player 0 name: '%s'\n", p0_name);
     strncpy(game_ptr->players[0].name, p0_name, 8);
     game_ptr->players[0].name[8] = 0;
 
+    printf("Player 1 name: '%s'\n", p1_name);
     strncpy(game_ptr->players[1].name, p1_name, 8);
     game_ptr->players[1].name[8] = 0;
 
+    printf("Player 2 name: '%s'\n", p2_name);
     strncpy(game_ptr->players[2].name, p2_name, 8);
     game_ptr->players[2].name[8] = 0;
 
+    printf("Player 3 name: '%s'\n", p3_name);
     strncpy(game_ptr->players[3].name, p3_name, 8);
     game_ptr->players[3].name[8] = 0;
   }
@@ -1046,10 +1047,6 @@ int main(int argc, char *argv[]) {
     strncpy(p3_name, p3opt, 8);
     p3_name[8] = 0;
   }
-  printf("Player 0 name: '%s'\n", p0_name);
-  printf("Player 1 name: '%s'\n", p1_name);
-  printf("Player 2 name: '%s'\n", p2_name);
-  printf("Player 3 name: '%s'\n", p3_name);
 
   if (sopt != NULL) {
     g_screen = strtoul(sopt, NULL, 0) % 8;
@@ -1057,10 +1054,8 @@ int main(int argc, char *argv[]) {
 
   if (gopt != NULL) {
     game_id = strtoul(gopt, NULL, 0);
-  } else {
-    game_id = osGetTime();
+    set_game_id = TRUE;
   }
-  printf("Game id: '0x%08x'\n", game_id);
 
   char *host = "localhost";
   int port = DEFAULT_PORT;

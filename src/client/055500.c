@@ -7,6 +7,8 @@ extern int g_screen;
 extern f32 D_8012903C_f;
 extern int verbose_flag;
 
+extern u8 FUN_001050_getControllerErrNo(SuperThread *, u8);
+
 ////////////////////////////////////////
 
 Font D_80128EB0;
@@ -856,7 +858,1806 @@ static void func_80091A8C(UnkStruct_78 *arg0) {
 }
 
 static void func_80091D60(GUI_Textbox *arg0, UnkStruct_78 *arg1, s32 arg2, f32 arg3) {
-  printf("-- func_80091D60\n");
+  register UnkStruct_77 *temp_s0 = arg1->unk124;
+  UnkStruct_1 *sp218;
+  Player *sp214;
+  TextList *sp210;
+  s32 sp20C;
+  s32 pfs_err_1;
+  /*
+  OSPfsState cpaknote_1;
+  */
+  TextList *sp1E4;
+  Player *sp1E0;
+  u8 *sp1DC;
+  s32 file_no_1;
+  s32 sp1D4;  // x
+  s32 sp1D0;  // y
+  s32 sp1CC;
+  s32 sp1C8;
+  s32 sp1C4;
+  TextList *sp1C0;
+  s32 sp1BC;  // y
+  s32 sp1B8;  // x
+  s32 sp1B4;  // y
+  s32 sp1B0;  // x
+  s32 sp1AC;  // y
+  s32 sp1A8;  // x
+  s32 sp1A4;
+  TextList *sp1A0;
+  /*
+  OSPfsState cpaknote_2;
+  */
+  u8 sp17F;
+  s32 pfs_err_2;
+  s32 sp174;
+  s32 file_no_2;
+  u8 *sp16C;
+  s32 sp168;  // y
+  s32 sp164;  // x
+  s32 sp160;  // y
+  s32 sp15C;  // x
+  s32 sp158;  // y
+  s32 sp154;  // x
+  s32 sp150;  // y
+  s32 sp14C;  // x
+  s32 sp148;  // y
+  s32 sp144;  // x
+  s32 sp140;  // y
+  s32 sp13C;  // x
+  s32 sp138;  // y
+  s32 sp134;  // x
+  s32 sp130;  // y
+  s32 sp12C;  // x
+  s32 sp128;  // y
+  s32 sp124;  // x
+  s32 sp120;
+  s32 sp11C;  // y
+  s32 sp118;  // x
+  s32 sp114;  // y
+  s32 sp110;  // x
+  TextList *sp10C;
+  TextList *sp108;
+  TextList *sp104;
+  s32 sp100;
+  s32 spFC;  // unused
+  s32 spF8;  // unused
+  /*
+  OSPfsState cpaknote_3;
+  */
+  u8 spD7;
+  s32 pfs_err_3;
+  s32 spCC;
+  s32 file_no_3;
+  u8 *spC4;
+  /*
+  OSPfsState cpaknote_4;
+  */
+  u8 spA3;
+  s32 sp9C;
+  s32 sp98;
+  s32 sp94;
+  /*
+  OSPfsState cpaknote_5;
+  */
+  u8 sp73;
+  s32 pfs_err_5;
+  s32 sp68;
+  s32 sp64;
+  s32 file_no_5;
+  u8 *sp5C;
+  s32 sp58;
+  s32 sp54;  // x
+  s32 sp50;  // y
+  s32 sp4C;  // unused
+  TextList *sp48;
+  u8 sp47;
+
+  /*
+  sp218 = &g_PV_arr[arg0->unk5C].unk28;  // (bug?) when arg0->unk5C is 0xFF, then we have an out-of-bounds array access.  maybe it should have been [arg2]?
+  */
+  sp218 = &g_PV_arr[arg2].unk28;
+
+  if (arg0->unk62 == 2) {
+    if (arg0->unk5D == 0xFE) {
+      if (arg2 == 0) {
+        arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+        if (arg0->unk60 != 0xFB) {
+          for (sp20C = 0; sp20C < 32; sp20C++) {
+            if (g_sram_ptr->bitpattern & (1 << sp20C)) {
+              sp210 = n64HeapAlloc(sizeof(TextList));
+              sp214 = n64HeapAlloc(sizeof(Player));
+              func_8007B430(sp214, g_sram_ptr->players, sp20C * SRAM_PLAYER_SZ);
+              func_8007A6C4(sp214, sp210, 0xD);
+              if (func_80079F90(arg0->textList, sp210)) {
+                n64HeapUnalloc(sp210);
+                n64HeapUnalloc(sp214);
+              } else {
+                func_8007B420(sp214);
+              }
+            }
+          }
+        }
+      }
+
+      /*
+      FUN_001050_8003b5d0_controller_sendrecvmsg(&superThread);
+      //arg0->unk5E = FUN_001050_getControllerStatus(&superThread, arg0->unk5C);  // (bug?) arg0->unk5C can be 0xFF, which would lead to an out-of-bounds array access.  maybe it should have been arg2?
+      arg0->unk5E = FUN_001050_getControllerStatus(&superThread, arg2);
+      */
+
+      D_800D2D98.pack = 0xF;  // "NEW NAME"
+      D_800D2D80.pack = 0xE;  // "GUEST"
+      arg0->unk5C = 0;
+      arg0->unk5D = 0;
+      switch (arg0->unk60) {
+      case 0xFB:
+      case 0xFD:
+      case 0xFE:
+      case 0xFF:
+        /*
+        if (D_800D5D48 == temp_s0) {
+          if (FUN_001050_cpakInit(&superThread, 0) == 0) {
+            arg0->unk5F = 1;
+          }
+          if (FUN_001050_cpakInit(&superThread, 1) == 0) {
+            D_800D5B28.unk5F = 1;
+          }
+          if (FUN_001050_cpakInit(&superThread, 2) == 0) {
+            D_800D5B8C.unk5F = 1;
+          }
+          if (FUN_001050_cpakInit(&superThread, 3) == 0) {
+            D_800D5BF0.unk5F = 1;
+          }
+        } else if (FUN_001050_cpakInit(&superThread, 0) == 0) {
+          arg0->unk5F = 1;
+        }
+        */
+        break;
+      case 0xFC:
+        /*
+        if (FUN_001050_cpakInit(&superThread, 0) == 0) {
+          arg0->unk5F = 1;
+        }
+        */
+        arg0->unk5C = 0;
+        break;
+      default:
+        arg0->unk5F = 0;
+        D_800D5B28.unk5F = 0;
+        D_800D5B8C.unk5F = 0;
+        D_800D5BF0.unk5F = 0;
+        break;
+      }
+      D_800D3DD8 = 1;
+    }
+
+    if ((arg0->unk5F == 1) && (D_800D3DD8 == 1)) {
+      /*
+      if (FUN_001050_getControllerStatus(&superThread, arg0->unk5C) & CONT_CARD_ON) {
+        D_800D3DE4 = 8;
+        bzero(cpaknote_1.ext_name, 4);
+        bzero(cpaknote_1.game_name, 16);
+        cpaknote_1.file_size = 128;
+        cpaknote_1.game_code = 0x4E524945;  // 'NRIE'
+        cpaknote_1.company_code = 0x3031;   // '01'
+        sprintf(cpaknote_1.game_name, "%c%c%c%c%c%c%c%c%c", 0x27, 0x1E, 0x30, 0x2D, 0x1E, 0x2D, 0x2B, 0x22, 0x2C);  // 'NEWTETRIS' (using N64 font codes)
+        cpaknote_1.ext_name[0] = D_800D3DEC + D_800D3DE8;
+        FUN_001050_cpakInit(&superThread, arg0->unk5C);
+        for (D_800D3DE8 = 0; D_800D3DE8 < 16; D_800D3DE8++) {
+          D_800D3DF0 = 0;
+          cpaknote_1.ext_name[0] = D_800D3DEC + D_800D3DE8;
+          pfs_err_1 = FUN_001050_cpakFindFile(&superThread, &cpaknote_1, arg0->unk5C);
+          file_no_1 = pfs_err_1;
+          if (!((pfs_err_1 >> 4) & 0xF)) {
+            sp1DC = n64HeapAlloc(128);
+            bzero(sp1DC, 128);
+            pfs_err_1 = FUN_001050_cpakRead(&superThread, file_no_1, 128, 0, sp1DC, arg0->unk5C);
+            if (((pfs_err_1 >> 4) & 0xF) || ((sp1DC[6] == 0) && (sp1DC[7] == 0))) {
+              pfs_err_1 = FUN_001050_cpakDeleteFile(&superThread, &cpaknote_1, arg0->unk5C);
+              n64HeapUnalloc(sp1E4);
+              n64HeapUnalloc(sp1E0);
+              n64HeapUnalloc(sp1DC);
+              D_800D3DF0 = 1;
+            }
+            if (D_800D3DF0 == 0) {
+              sp1E4 = n64HeapAlloc(sizeof(TextList));
+              sp1E0 = n64HeapAlloc(sizeof(Player));
+              func_8007B430(sp1E0, sp1DC, 0);
+              func_8007A6C4(sp1E0, sp1E4, (arg0->unk5C << 4) | 0xC);
+              sp1E0->unkD4 = (arg0->unk5C << 4) | 0xC;
+              if (func_80079F90(arg0->textList, sp1E4)) {
+                n64HeapUnalloc(sp1E4);
+                n64HeapUnalloc(sp1E0);
+              }
+              n64HeapUnalloc(sp1DC);
+            }
+          }
+        }
+      }
+
+      FUN_001050_8003b5d0_controller_sendrecvmsg(&superThread);
+      arg0->unk5F = 0;
+      arg0->unk5E = FUN_001050_getControllerStatus(&superThread, arg0->unk5C);
+      if (arg0->unk60 == 0xFC) {
+        arg0->unk5C = 0xFF;
+      }
+      */
+
+    } else if (arg0->unk5D >= 0x81) {
+      sp1D4 = 60;
+      sp1D0 = 50;
+
+      if (arg0->unk5D == 0xF7) {
+        for (sp1CC = 0; sp1CC < 5; sp1CC++) {
+          arg0->textList->text[sp1CC] = D_800D3D48[15][sp1CC];  // "TITLE"
+        }
+        arg0->textList->text[sp1CC] = 0;
+        if (D_800CF830 == 48) {
+          sp1C4 = 15;
+        } else {
+          sp1C4 = (D_800CF838 % 7) + 9;
+        }
+        for (sp1CC = 0; sp1CC < sp1C4; sp1CC++) {
+          sp1C0 = n64HeapAlloc(sizeof(TextList));
+          for (sp1C8 = 0; D_800D3D48[sp1CC][sp1C8] != '.'; sp1C8++) {
+            sp1C0->text[sp1C8] = D_800D3D48[sp1CC][sp1C8];
+          }
+          sp1C0->text[sp1C8] = 0;
+          sp1C0->pack = 3;
+          sp1C0->salt[0] = sp1CC + 1;
+          sp1C0->ptr = NULL;
+          if (func_80079F90(arg0->textList, sp1C0)) {
+            n64HeapUnalloc(sp1C0);
+          }
+        }
+        arg0->unk5D = 0;
+        arg0->textList = &D_800D2DC8;  // " "
+        for (sp1CC = 0; sp1CC < g_sram_ptr->song; sp1CC++) {
+          arg0->textList = arg0->textList->last;
+        }
+
+      } else if (arg0->unk5D == 0xF6) {
+        arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+        arg0->unk5D = 0;
+
+      } else if (arg0->unk5D == 0xEF) {
+        /*
+        sp1BC = sp1D0;
+        sp1B8 = sp1D4;
+        weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1BC, "WARNING THERE ARE NOT", 0xFF, 0xFF, 0xFF, 0xFF);
+        sp1BC += 15;
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1BC, "ENOUGH NOTES OR PAGES", 0xFF, 0xFF, 0xFF, 0xFF);
+        sp1BC += 15;
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1BC, "REMAINING TO SAVE A NEW", 0xFF, 0xFF, 0xFF, 0xFF);
+        sp1BC += 15;
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1BC, "NAME TO THE CONTROLLER PAK", 0xFF, 0xFF, 0xFF, 0xFF);
+        sp1BC += 20;
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1BC, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+        sp1B8 += get_text_width(&D_80128F28, "PRESS ");
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1B8, sp1BC, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+        sp1B8 += get_text_width(&D_80128F28, "A ");
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1B8, sp1BC, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+        if (g_PV_arr[arg2].unk24 & 0x8000) {
+          arg0->unk4 = 0;
+          arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+          arg0->unk5D = 0xF6;
+          D_800D42B4[8].unk24 = GUI_NULL;
+          D_800D3D10[0] = D_800D3D00[0];
+          D_800D3D00[0] = 5;
+          arg0->unk60 = 0xF8;
+        }
+        */
+
+      } else if (arg0->unk5D == 0xF3) {
+        /*
+        sp1B4 = sp1D0;
+        sp1B0 = sp1D4;
+        weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 9, 0xFF, 0xFF, 0xFF, 0xFF);
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1B4, "THERE IS NOT ENOUGH", 0xFF, 0xFF, 0xFF, 0xFF);
+        sp1B4 += 15;
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1B4, "SPACE REMAINING ON THE", 0xFF, 0xFF, 0xFF, 0xFF);
+        sp1B4 += 15;
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1B4, "GAME PAK TO SAVE A NEW", 0xFF, 0xFF, 0xFF, 0xFF);
+        sp1B4 += 15;
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1B4, "NAME: PLEASE DELETE ONE", 0xFF, 0xFF, 0xFF, 0xFF);
+        sp1B4 += 20;
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1B4, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+        sp1B0 += get_text_width(&D_80128F28, "PRESS ");
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1B0, sp1B4, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+        sp1B0 += get_text_width(&D_80128F28, "A ");
+        displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1B0, sp1B4, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+        if (g_PV_arr[arg2].unk24 & 0x8000) {
+          arg0->unk61 = FALSE;
+          arg0->unk5D = 0;
+          D_800D3DD4 = 0;
+        }
+        */
+
+      } else if (D_800D3DD4 == 0) {
+
+        if (arg0->unk5D == 0xFB) {
+          sp1AC = sp1D0;
+          sp1A8 = sp1D4;
+          sp1A0 = arg0->textList;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1AC, "ARE YOU SURE YOU WANT TO", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp1AC += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp1AC, "DELETE THIS PLAYER?", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp1AC += 25;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1A8, sp1AC, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp1A8 += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1A8, sp1AC, "ACCEPT ", 0xFF, 0xFF, 0, 0xFF);
+          sp1A8 += get_text_width(&D_80128F28, "ACCEPT ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1A8, sp1AC, "B ", 0x70, 0xC3, 0x74, 0xFF);
+          sp1A8 += get_text_width(&D_80128F28, "B ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1A8, sp1AC, "CANCEL ", 0xFF, 0xFF, 0, 0xFF);
+
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3DF4 = 0;
+
+            switch (sp1A0->pack & 0xF) {
+            case 0xD:
+              for (sp1A4 = 0; sp1A4 < 32; sp1A4++) {
+                if (func_8007AADC(g_sram_ptr->players + (sp1A4 * SRAM_PLAYER_SZ), arg0->textList->salt[0], arg0->textList->salt[1])) {
+                  func_8007A62C(g_sram_ptr, sp1A4);
+                  bzero(g_sram_ptr->players + (sp1A4 * SRAM_PLAYER_SZ), SRAM_PLAYER_SZ);
+                  arg0->textList = func_8007AEB0(arg0->textList);
+                  break;
+                }
+              }
+              save_to_sram(g_sram_ptr);
+              arg0->unk5D = 0xF1;
+              return;
+            case 0xC:
+              /*
+              sp17F = 0x1A;  // cpak note extension name base 'A' (N64 font code)
+              sp174 = 0;
+              bzero(cpaknote_2.ext_name, 4);
+              bzero(cpaknote_2.game_name, 16);
+              cpaknote_2.file_size = 128;
+              cpaknote_2.game_code = 0x4E524945;  // 'NRIE'
+              cpaknote_2.company_code = 0x3031;   // '01'
+              sprintf(cpaknote_2.game_name, "%c%c%c%c%c%c%c%c%c", 0x27, 0x1E, 0x30, 0x2D, 0x1E, 0x2D, 0x2B, 0x22, 0x2C);  // 'NEWTETRIS' (using N64 font codes)
+              cpaknote_2.ext_name[0] = sp17F;
+              sp16C = n64HeapAlloc(128);
+              pfs_err_2 = FUN_001050_cpakInit(&superThread, arg0->unk5C);
+              if ((pfs_err_2 >> 4) & 0xF) {
+                arg0->unk5D = 0xFA;
+                n64HeapUnalloc(sp16C);
+                return;
+              }
+
+              for (sp174 = 0; sp174 < 16; sp174++) {
+                cpaknote_2.ext_name[0] = sp17F + sp174;
+                pfs_err_2 = FUN_001050_cpakFindFile(&superThread, &cpaknote_2, arg0->unk5C);
+                if (!((pfs_err_2 >> 4) & 0xF)) {
+                  file_no_2 = pfs_err_2;
+                  pfs_err_2 = FUN_001050_cpakRead(&superThread, file_no_2, 32, 0, sp16C, arg0->unk5C);
+                  if (func_8007AADC(sp16C, ((Player *) arg0->textList->ptr)->salt[0], ((Player *) arg0->textList->ptr)->salt[1])) {
+                    pfs_err_2 = FUN_001050_cpakDeleteFile(&superThread, &cpaknote_2, arg0->unk5C);
+                    if ((pfs_err_2 >> 4) & 0xF) {
+                      arg0->unk5D = 0xFA;
+                      n64HeapUnalloc(sp16C);
+                      return;
+                    }
+                    arg0->textList = func_8007AEB0(arg0->textList);
+                    break;
+                  }
+                }
+              }
+              n64HeapUnalloc(sp16C);
+              arg0->unk5D = 0xF1;
+              */
+              return;
+            }
+          }
+
+          if (g_PV_arr[arg2].unk24 & 0x4000) {
+            D_800D3D00[arg0->unk5C] = 5;
+            D_800D3D10[arg0->unk5C] = 7;
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5C = 0xFF;
+            arg0->unk5D = 0xF6;
+            arg0->unk4 = 0;
+            D_800D3DF4 = 0;
+            D_800D3D10[0] = D_800D3D00[0];
+            D_800D3D00[0] = 7;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            arg0->unk60 = 0xF8;
+            D_800D3DF4 = 0;
+          }
+        }
+
+        if (arg0->unk5D == 0xF1) {
+          sp168 = sp1D0 + 10;
+          sp164 = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp168, "DELETE SUCCESSFUL", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp168 += 20;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp168, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp164 += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp164, sp168, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp164 += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp164, sp168, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3DF8 = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5D = 0xF6;
+            arg0->unk60 = 0xF8;
+            arg0->unk5C = 0xFF;
+            arg0->unk4 = 0;
+            D_800D3D10[0] = D_800D3D00[0];
+            D_800D3D00[0] = 7;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            return;
+          }
+        }
+
+        /*
+        if (arg0->unk5D == 0xF4) {
+          sp160 = sp1D0 + 10;
+          sp15C = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp160, "TRANSFER TO CONTROLLER", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp160 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp160, "PAK SUCCESSFUL", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp160 += 20;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp160, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp15C += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp15C, sp160, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp15C += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp15C, sp160, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3DFC = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+            arg0->unk5D = 0xF6;
+            arg0->unk60 = 0xF8;
+            arg0->unk5C = 0xFF;
+            arg0->unk4 = 0;
+            D_800D3D10[0] = D_800D3D00[0];
+            D_800D3D00[0] = 5;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            return;
+          }
+        }
+
+        if (arg0->unk5D == 0xEE) {
+          sp158 = sp1D0 + 10;
+          sp154 = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp158, "TRANSFER TO GAME", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp158 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp158, "PAK SUCCESSFUL", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp158 += 20;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp158, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp154 += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp154, sp158, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp154 += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp154, sp158, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3E00 = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+            arg0->unk5D = 0xF6;
+            arg0->unk60 = 0xF8;
+            arg0->unk5C = 0xFF;
+            arg0->unk4 = 0;
+            D_800D3D10[0] = D_800D3D00[0];
+            D_800D3D00[0] = 5;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            return;
+          }
+        }
+
+        if (arg0->unk5D == 0xF2) {
+          sp150 = sp1D0 + 10;
+          sp14C = sp1D4;
+          if (D_800D3E04 == 0) {
+            D_800D3E04 = 1;
+            g_PV_arr[arg2].unk24 = 0;
+            D_80129018 = n64HeapAlloc(20);
+            sprintf(D_80129018, "%d", D_800D3DD0);
+          }
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp14C, sp150, "DUMPED ", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp14C += get_text_width(&D_80128F28, "DUMPED ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp14C, sp150, D_80129018, 0xFF, 0xFF, 0xFF, 0xFF);
+          sp150 += 15;
+          sp14C = sp1D4;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp150, "LINES TO GAME PAK", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp150 += 20;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp150, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp14C += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp14C, sp150, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp14C += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp14C, sp150, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            n64HeapUnalloc(D_80129018);
+            D_800D3E04 = 0;
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5C = 0xFF;
+            arg0->unk5D = 0xF6;
+            arg0->unk4 = 0;
+            D_800D3E04 = 0;
+            D_800D3D10[0] = D_800D3D00[0];
+            D_800D3D00[0] = 6;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            return;
+          }
+        }
+
+        if (arg0->unk5D == 0xFA) {
+          sp148 = sp1D0;
+          sp144 = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp148, "ERROR ACCESSING", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp148 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp148, "CONTROLLER PAK", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp148 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp148, "PLEASE REINSERT CONTROLLER", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp148 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp148, "PAK AND TRY AGAIN", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp148 += 25;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp148, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp144 += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp144, sp148, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp144 += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp144, sp148, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3E08 = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            arg0->unk4 = 0;
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5D = 0xF6;
+            arg0->unk5C = 0xFF;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            D_800D3D10[0] = D_800D3D00[0];
+            if (arg0->unk60 == 0xFF) {
+              D_800D3D00[0] = 7;
+            }
+            if (arg0->unk60 == 0xFE) {
+              D_800D3D00[0] = 5;
+            }
+            if (arg0->unk60 == 0xFB) {
+              D_800D3D00[0] = 6;
+            }
+            if (arg0->unk60 == 0xFA) {
+              D_800D3D00[0] = 4;
+            }
+            arg0->unk60 = 0xF8;
+          }
+        }
+
+        if (arg0->unk5D == 0xEB) {
+          sp140 = sp1D0;
+          sp13C = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp140, "ERROR", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp140 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp140, "CONTROLLER PAK DAMAGED", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp140 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp140, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp13C += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp13C, sp140, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp13C += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp13C, sp140, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3E0C = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            arg0->unk4 = 0;
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5D = 0xF6;
+            arg0->unk5C = 0xFF;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            D_800D3D10[0] = D_800D3D00[0];
+            if (arg0->unk60 == 0xFF) {
+              D_800D3D00[0] = 7;
+            }
+            if (arg0->unk60 == 0xFE) {
+              D_800D3D00[0] = 5;
+            }
+            if (arg0->unk60 == 0xFB) {
+              D_800D3D00[0] = 6;
+            }
+            if (arg0->unk60 == 0xFA) {
+              D_800D3D00[0] = 4;
+            }
+            arg0->unk60 = 0xF8;
+          }
+        }
+
+        if (arg0->unk5D == 0xEA) {
+          sp138 = sp1D0;
+          sp134 = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp138, "ERROR", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp138 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp138, "NEW CONTROLLER PAK INSERTED", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp138 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp138, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp134 += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp134, sp138, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp134 += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp134, sp138, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3E10 = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            arg0->unk4 = 0;
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5D = 0xF6;
+            arg0->unk5C = 0xFF;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            D_800D3D10[0] = D_800D3D00[0];
+            if (arg0->unk60 == 0xFF) {
+              D_800D3D00[0] = 7;
+            }
+            if (arg0->unk60 == 0xFE) {
+              D_800D3D00[0] = 5;
+            }
+            if (arg0->unk60 == 0xFB) {
+              D_800D3D00[0] = 6;
+            }
+            if (arg0->unk60 == 0xFA) {
+              D_800D3D00[0] = 4;
+            }
+            arg0->unk60 = 0xF8;
+          }
+        }
+
+        if (arg0->unk5D == 0xE9) {
+          sp130 = sp1D0;
+          sp12C = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp130, "ERROR", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp130 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp130, "DEVICE FAILED", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp130 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp130, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp12C += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp12C, sp130, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp12C += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp12C, sp130, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3E14 = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            arg0->unk4 = 0;
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5D = 0xF6;
+            arg0->unk5C = 0xFF;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            D_800D3D10[0] = D_800D3D00[0];
+            if (arg0->unk60 == 0xFF) {
+              D_800D3D00[0] = 7;
+            }
+            if (arg0->unk60 == 0xFE) {
+              D_800D3D00[0] = 5;
+            }
+            if (arg0->unk60 == 0xFB) {
+              D_800D3D00[0] = 6;
+            }
+            if (arg0->unk60 == 0xFA) {
+              D_800D3D00[0] = 4;
+            }
+            arg0->unk60 = 0xF8;
+          }
+        }
+
+        if (arg0->unk5D == 0xED) {
+          sp128 = sp1D0 - 3;
+          sp124 = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp1D4, sp128, "CORRUPTED CONTROLLER PAK. WOULD YOU", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp128 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp1D4, sp128, "LIKE TO REPAIR THE CONTROLLER PAK?", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp128 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp1D4, sp128, "SAVED DATA MAY BE LOST", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp128 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp1D4, sp128, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp124 += get_text_width(&D_80128FA0, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp124, sp128, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp124 += get_text_width(&D_80128FA0, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp124, sp128, "TO REPAIR ", 0xFF, 0xFF, 0, 0xFF);
+          sp128 += 15;
+          sp124 = sp1D4;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp1D4, sp128, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp124 += get_text_width(&D_80128FA0, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp124, sp128, "B ", 0x70, 0xC3, 0x74, 0xFF);
+          sp124 += get_text_width(&D_80128FA0, "B ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp124, sp128, "TO CONTINUE WITHOUT", 0xFF, 0xFF, 0, 0xFF);
+          sp128 += 15;
+          sp124 = sp1D4;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128FA0, sp1D4, sp128, "SAVING TO THE CONTROLLER PAK", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            sp120 = 0;
+            FUN_001050_8003b5d0_controller_sendrecvmsg(&superThread);
+            sp120 = FUN_001050_cpakInit(&superThread, arg2);
+            sp120 = FUN_001050_cpakRepairId(&superThread, NULL, 0);
+            if (!(sp120 & 0xF) || ((sp120 >> 4) & 0xF) == 8 || ((sp120 >> 4) & 0xF) == 7) {
+              arg0->unk5D = 0xEC;
+            } else {
+              sp120 = (sp120 >> 4) & 0xF;
+              switch (sp120) {
+              case 1:
+                arg0->unk5D = 0xF0;
+                break;
+              case 2:
+                arg0->unk5D = 0xEA;
+                break;
+              case 4:
+                arg0->unk5D = 0xE9;
+                break;
+              case 10:
+                arg0->unk5D = 0xEB;
+                break;
+              case 11:
+                arg0->unk5D = 0xE9;
+                break;
+              default:
+                arg0->unk5D = 0xEB;
+                break;
+              }
+            }
+            return;
+          } else if (g_PV_arr[arg2].unk24 & 0x4000) {
+            D_800D3E18 = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            arg0->unk4 = 0;
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5D = 0xF6;
+            arg0->unk5C = 0xFF;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            D_800D3D10[0] = D_800D3D00[0];
+            if (arg0->unk60 == 0xFF) {
+              D_800D3D00[0] = 7;
+            }
+            if (arg0->unk60 == 0xFE) {
+              D_800D3D00[0] = 5;
+            }
+            if (arg0->unk60 == 0xFB) {
+              D_800D3D00[0] = 6;
+            }
+            if (arg0->unk60 == 0xFA) {
+              D_800D3D00[0] = 4;
+            }
+            arg0->unk60 = 0xF8;
+          }
+        }
+
+        if (arg0->unk5D == 0xEC) {
+          sp11C = sp1D0;
+          sp118 = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp11C, "CONTROLLER PAK", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp11C += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp11C, "SUCCESSFULLY REPAIRED", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp11C += 25;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp11C, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp118 += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp118, sp11C, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp118 += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp118, sp11C, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          sp11C += 15;
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3E1C = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            arg0->unk4 = 0;
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5D = 0xF6;
+            arg0->unk5C = 0xFF;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            D_800D3D10[0] = D_800D3D00[0];
+            if (arg0->unk60 == 0xFF) {
+              D_800D3D00[0] = 7;
+            }
+            if (arg0->unk60 == 0xFE) {
+              D_800D3D00[0] = 5;
+            }
+            if (arg0->unk60 == 0xFB) {
+              D_800D3D00[0] = 6;
+            }
+            if (arg0->unk60 == 0xFA) {
+              D_800D3D00[0] = 4;
+            }
+            arg0->unk60 = 0xF8;
+          }
+        }
+
+        if (arg0->unk5D == 0xF0) {
+          sp114 = sp1D0;
+          sp110 = sp1D4;
+          weird_lots_of_magic_number_setting_66xrefs(&g_gdl, D_80129028, NULL, sp1D4 - 10, sp1D0 - 10, 0xFF, 0xFF, 0xFF, 0xFF);
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp114, "NO CONTROLLER PAK", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp114 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp114, "PLEASE INSERT CONTROLLER", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp114 += 15;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp114, "PAK AND TRY AGAIN", 0xFF, 0xFF, 0xFF, 0xFF);
+          sp114 += 25;
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp1D4, sp114, "PRESS ", 0xFF, 0xFF, 0, 0xFF);
+          sp110 += get_text_width(&D_80128F28, "PRESS ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp110, sp114, "A ", 0x5A, 0x50, 0xB9, 0xFF);
+          sp110 += get_text_width(&D_80128F28, "A ");
+          displayText_XY_RGBA_2(&g_gdl, &D_80128F28, sp110, sp114, "TO CONTINUE ", 0xFF, 0xFF, 0, 0xFF);
+          if (g_PV_arr[arg2].unk24 & 0x8000) {
+            D_800D3E20 = 0;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            arg0->unk4 = 0;
+            arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+            arg0->unk5D = 0xF6;
+            arg0->unk5C = 0xFF;
+            D_800D42B4[8].unk24 = GUI_NULL;
+            D_800D3D10[0] = D_800D3D00[0];
+            if (arg0->unk60 == 0xFF) {
+              D_800D3D00[0] = 7;
+            }
+            if (arg0->unk60 == 0xFE) {
+              D_800D3D00[0] = 5;
+            }
+            if (arg0->unk60 == 0xFB) {
+              D_800D3D00[0] = 6;
+            }
+            if (arg0->unk60 == 0xFA) {
+              D_800D3D00[0] = 4;
+            }
+            arg0->unk60 = 0xF8;
+          }
+        }
+        */
+      }
+
+    } else if (D_800D3DD4 == 0) {
+
+      if ((arg0->unk5C == 0xFF) || ((arg2 == 0) && (arg0->unk5C != 0))) {
+
+        if (g_PV_arr[arg2].unk24 & 0x8000) {
+          if ((D_800D5D48 == temp_s0) || (D_800D5850 == temp_s0)) {
+            arg0->unk61 = FALSE;
+          }
+          arg0->unk5C = arg2;
+          Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+          if ((arg0->textList->pack & 0xF) == 0xE) {
+            arg0->textList->pack &= ~((1 << arg0->unk5C) << 4);
+          } else {
+            arg0->textList->pack = ((1 << arg0->unk5C) << 4) | (arg0->textList->pack & 0xF);
+          }
+        }
+
+        if ((g_PV_arr[arg2].unk24 & 0x4000) && (arg2 == 0)) {
+          if (D_800D3D94 != 0) {
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            return;
+          }
+
+          if (((D_800D5D48 == temp_s0) || (D_800D5850 == temp_s0)) && arg0->unk61) {
+            arg0->unk61 = FALSE;
+            arg0->unk5C = arg2;
+            arg0->unk5D = 0;
+            if ((arg0->textList->pack & 0xF) == 0xE) {
+              arg0->textList->pack &= ~((1 << arg0->unk5C) << 4);
+            } else {
+              arg0->textList->pack = ((1 << arg0->unk5C) << 4) | (arg0->textList->pack & 0xF);
+            }
+            return;
+          }
+
+          func_80091A8C(arg1);
+          Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_5);
+          if (arg0->unk60 == 0xF9) {
+            return;
+          }
+
+          arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+
+          if ((arg0->unk60 == 0xFF) || (arg0->unk60 == 0xFE) || (arg0->unk60 == 0xFB) || (arg0->unk60 == 0xFA)) {
+            arg0->unk5D = 0xF6;
+            arg0->unk60 = 0xF8;
+          }
+
+          if (arg0->unk60 == 0xFC) {
+            arg0->unk5D = 0xFE;
+            arg0->unk60 = 0xFC;
+          }
+
+          if (D_800D5D48 == temp_s0) {
+            D_800D5B28.textList = arg0->textList;
+            D_800D5B8C.textList = arg0->textList;
+            D_800D5BF0.textList = arg0->textList;
+            func_800A2E2C();
+          }
+        }
+
+        if ((arg2 == 0) && (arg0->unk5C != 0)) {
+
+          if (g_PV_arr[arg2].unk24 & 0x800) {
+            if (D_800D3D94 != 0) {
+              Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+              return;
+            }
+
+            D_800D3D00[arg2] = func_80091440(arg1, D_800D3D00[arg2], &D_800D3D10[arg2]);
+          }
+
+          if (g_PV_arr[arg2].unk24 & 0x400) {
+            if (D_800D3D94 != 0) {
+              Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            } else if (D_800D5850 == temp_s0) {
+              D_800D3D00[arg2] = func_80091744(arg1, D_800D3D00[arg2], &D_800D3D10[arg2]);
+            } else if (D_800D3D00[arg2] == 3) {
+              D_800D3D00[arg2] = 7;
+            } else {
+              D_800D3D00[arg2] = func_80091744(arg1, D_800D3D00[arg2], &D_800D3D10[arg2]);
+            }
+          }
+        }
+
+      } else if ((arg0->unk5C == arg2) || (arg2 == 0)) {
+
+        if (arg0->unk5D == 0) {
+          sp10C = arg0->textList;
+
+          if (sp218->unk84 & 0x4000) {
+            if (arg0->unk5C == 0) {
+              arg0->textList->pack = (((arg0->textList->pack >> 4) & 0xF & ~((1 << arg0->unk5C) & 0xF)) << 4) | (arg0->textList->pack & 0xF);
+              if ((arg0->unk60 == 0xFF) || (arg0->unk60 == 0xFE) || (arg0->unk60 == 0xFB) || (arg0->unk60 == 0xFA)) {
+                arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+                arg0->unk5D = 0xF6;
+                arg0->unk5C = 0xFF;
+                D_800D42B4[8].unk24 = GUI_NULL;
+                D_800D3D10[0] = D_800D3D00[0];
+                if (arg0->unk60 == 0xFF) {
+                  D_800D3D00[0] = 7;
+                }
+                if (arg0->unk60 == 0xFE) {
+                  D_800D3D00[0] = 5;
+                }
+                if (arg0->unk60 == 0xFB) {
+                  D_800D3D00[0] = 6;
+                }
+                if (arg0->unk60 == 0xFA) {
+                  D_800D3D00[0] = 4;
+                }
+                arg0->unk60 = 0xF8;
+              } else if (arg0->unk60 == 0xFC) {
+                arg0->unk5D = 0;
+                arg0->unk60 = 0xFC;
+                arg0->unk5C = 0xFF;
+              } else if (arg0->unk60 == 0xF9) {
+                arg0->unk61 = FALSE;
+                arg0->unk5C = 0xFF;
+                arg0->unk5D = 0;
+              } else if (!arg0->unk61) {
+                if (D_800D3D94 != 0) {
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+                } else {
+                  func_80091A8C(arg1);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_5);
+                  if (D_800D5D48 == temp_s0) {
+                    D_800D5B28.textList = arg0->textList;
+                    D_800D5B8C.textList = arg0->textList;
+                    D_800D5BF0.textList = arg0->textList;
+                    func_800A2E2C();
+                  }
+                  arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+                  arg0->unk61 = FALSE;
+                }
+              } else {
+                arg0->unk61 = FALSE;
+                arg0->unk5C = 0xFF;
+                arg0->unk5D = 0;
+              }
+
+              return;
+            }
+          }
+
+          if ((sp218->unk84 & 0x400) || (sp218->unk84 & 0x100)) {
+            sp108 = arg0->textList;
+            if ((sp108->pack & 0xF) != 0xE) {
+              sp108->pack = (((sp108->pack >> 4) & 0xF & ~(1 << arg0->unk5C)) << 4) | (sp108->pack & 0xF);
+            }
+
+            do {
+              if (((sp108->next->pack & 0xF) == 0xE) || ((sp108->next->pack & 0xF) == 0xF) || ((sp108->next->pack & 0xF) == 4) || ((sp108->next->pack & 0xF) == 9)) {
+                arg0->textList = sp108->next;
+                break;
+              }
+
+              if (sp108->next->ptr != NULL) {
+                if ((((Player *) sp108->next->ptr)->unkD4 & 0xF) == 0xC) {
+                  if (((((Player *) sp108->next->ptr)->unkD4 >> 4) & 0xF) == arg0->unk5C) {
+                    arg0->textList = sp108->next;
+                    break;
+                  }
+                } else if (((sp108->next->pack >> 4) & 0xF) == 0) {
+                  arg0->textList = sp108->next;
+                  if ((arg0->textList->pack & 0xF) != 0xE) {
+                    arg0->textList->pack = ((1 << arg0->unk5C) << 4) | (arg0->textList->pack & 0xF);
+                  }
+                  break;
+                }
+              } else {
+                if (((sp108->next->pack >> 4) & 0xF) == 0) {
+                  arg0->textList = sp108->next;
+                  if ((sp108->pack & 0xF) != 0xE) {
+                    arg0->textList->pack = ((1 << arg0->unk5C) << 4) | (arg0->textList->pack & 0xF);
+                  }
+                  break;
+                }
+              }
+
+              sp108 = sp108->next;
+            } while (arg0->textList != sp108);
+
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+            return;
+          }
+
+          if ((sp218->unk84 & 0x200) || (sp218->unk84 & 0x800)) {
+            sp104 = arg0->textList;
+            if ((sp104->pack & 0xF) != 0xE) {
+              sp104->pack = (((sp104->pack >> 4) & 0xF & ~(1 << arg0->unk5C)) << 4) | (sp104->pack & 0xF);
+            }
+
+            do {
+              if (((sp104->last->pack & 0xF) == 0xE) || ((sp104->last->pack & 0xF) == 0xF) || ((sp104->last->pack & 0xF) == 4) || ((sp104->last->pack & 0xF) == 9)) {
+                arg0->textList = sp104->last;
+                break;
+              }
+
+              if (sp104->last->ptr != NULL) {
+                if ((((Player *) sp104->last->ptr)->unkD4 & 0xF) == 0xC) {
+                  if (((((Player *) sp104->last->ptr)->unkD4 >> 4) & 0xF) == arg0->unk5C) {
+                    arg0->textList = sp104->last;
+                    break;
+                  }
+                } else if (((sp104->last->pack >> 4) & 0xF) == 0) {
+                  arg0->textList = sp104->last;
+                  if ((arg0->textList->pack & 0xF) != 0xE) {
+                    arg0->textList->pack = ((1 << arg0->unk5C) << 4) | (arg0->textList->pack & 0xF);
+                  }
+                  break;
+                }
+              } else {
+                if (((sp104->last->pack >> 4) & 0xF) == 0) {
+                  arg0->textList = sp104->last;
+                  if ((sp104->pack & 0xF) != 0xE) {
+                    arg0->textList->pack = ((1 << arg0->unk5C) << 4) | (arg0->textList->pack & 0xF);
+                  }
+                  break;
+                }
+              }
+
+              sp104 = sp104->last;
+            } while (arg0->textList != sp104);
+
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+            return;
+          }
+
+          if (sp218->unk84 & 0x8000) {
+
+            if (arg0->textList->pack == 0x4) {
+              return;
+            }
+
+            if ((D_800D5D48 == temp_s0) || (D_800D5850 == temp_s0)) {
+              arg0->unk61 = TRUE;
+            }
+
+            switch (arg0->unk60) {
+            case 0xF9:
+              if (sp10C->salt[0] != 0xFF) {
+                if (g_sram_ptr->music_mode == 1) {  // CHOOSE
+                  g_sram_ptr->song = sp10C->salt[0];  // TODO: is this wrong?
+                  save_to_sram(g_sram_ptr);
+                } else {  // TODO: this does the same thing as above -- why?
+                  g_sram_ptr->song = sp10C->salt[0];
+                  save_to_sram(g_sram_ptr);
+                }
+                D_800D3D88 = TRUE;
+                return;
+              }
+              break;
+
+            case 0xFF:
+              if (arg0->textList->ptr != NULL) {
+                arg0->unk5D = 0xFB;
+              }
+              return;
+
+            case 0xFB:
+              /*
+              if ((sp10C->pack & 0xF) == 0xC) {
+                spD7 = 0x1A;  // cpak note extension name base 'A' (N64 font code)
+                spCC = 0;
+                bzero(cpaknote_3.ext_name, 4);
+                bzero(cpaknote_3.game_name, 16);
+                cpaknote_3.file_size = 128;
+                cpaknote_3.game_code = 0x4E524945;  // 'NRIE'
+                cpaknote_3.company_code = 0x3031;   // '01'
+                sprintf(cpaknote_3.game_name, "%c%c%c%c%c%c%c%c%c", 0x27, 0x1E, 0x30, 0x2D, 0x1E, 0x2D, 0x2B, 0x22, 0x2C);  // 'NEWTETRIS' (using N64 font codes)
+                cpaknote_3.ext_name[0] = spD7;
+                spC4 = n64HeapAlloc(128);
+                pfs_err_3 = FUN_001050_cpakInit(&superThread, arg0->unk5C);
+                if ((pfs_err_3 >> 4) & 0xF) {
+                  arg0->unk5D = 0xFA;
+                  n64HeapUnalloc(spC4);
+                  return;
+                }
+                D_800D3DD0 = ((Player *) arg0->textList->ptr)->unkC4;
+                func_800798F0(arg0->textList->ptr, g_sram_ptr, ((Player *) arg0->textList->ptr)->unkC4);
+                ((Player *) arg0->textList->ptr)->unkC4 = 0;
+
+                for (spCC = 0; spCC < 16; spCC++) {
+                  cpaknote_3.ext_name[0] = spD7 + spCC;
+                  pfs_err_3 = FUN_001050_cpakFindFile(&superThread, &cpaknote_3, arg0->unk5C);
+                  if (!((pfs_err_3 >> 4) & 0xF)) {
+                    file_no_3 = pfs_err_3;
+                    pfs_err_3 = FUN_001050_cpakRead(&superThread, file_no_3, 32, 0, spC4, arg0->unk5C);
+                    if ((pfs_err_3 >> 4) & 0xF) {
+                      arg0->unk5D = 0xFA;
+                      n64HeapUnalloc(spC4);
+                      return;
+                    }
+                    if (func_8007AADC(spC4, ((Player *) arg0->textList->ptr)->salt[0], ((Player *) arg0->textList->ptr)->salt[1])) {
+                      pfs_err_3 = FUN_001050_cpakDeleteFile(&superThread, &cpaknote_3, arg0->unk5C);
+                      if ((pfs_err_3 >> 4) & 0xF) {
+                        arg0->unk5D = 0xFA;
+                        n64HeapUnalloc(spC4);
+                        return;
+                      }
+                      pfs_err_3 = FUN_001050_cpakAllocFile(&superThread, &cpaknote_3, arg0->unk5C);
+                      if ((pfs_err_3 >> 4) & 0xF) {
+                        arg0->unk5D = 0xFA;
+                        n64HeapUnalloc(spC4);
+                        return;
+                      }
+                      file_no_3 = pfs_err_3;
+                      bzero(spC4, 128);
+                      func_8007B420(arg0->textList->ptr);
+                      func_8007AF88(arg0->textList->ptr, spC4, 0);
+                      pfs_err_3 = FUN_001050_cpakWrite(&superThread, file_no_3, 128, 0, spC4, arg0->unk5C);
+                      if ((pfs_err_3 >> 4) & 0xF) {
+                        arg0->unk5D = 0xFA;
+                        n64HeapUnalloc(spC4);
+                        return;
+                      }
+                      wonders2_80045fdc_sets_num_won_compl_q();
+                      save_to_sram(g_sram_ptr);
+                      break;
+                    }
+                  }
+                }
+
+                arg0->unk5D = 0xF2;
+                n64HeapUnalloc(spC4);
+                return;
+              }
+              */
+              break;
+
+            case 0xFE:
+              /*
+              switch (sp10C->pack & 0xF) {
+              case 0xD:
+                spA3 = 0x1A;  // cpak note extension name base 'A' (N64 font code)
+                sp98 = 0;
+                sp94 = 0;
+                bzero(cpaknote_4.ext_name, 4);
+                bzero(cpaknote_4.game_name, 16);
+                cpaknote_4.file_size = 128;
+                cpaknote_4.game_code = 0x4E524945;  // 'NRIE'
+                cpaknote_4.company_code = 0x3031;   // '01'
+                sprintf(cpaknote_4.game_name, "%c%c%c%c%c%c%c%c%c", 0x27, 0x1E, 0x30, 0x2D, 0x1E, 0x2D, 0x2B, 0x22, 0x2C);  // 'NEWTETRIS' (using N64 font codes)
+                cpaknote_4.ext_name[0] = spA3;
+                if ((FUN_001050_cpakInit(&superThread, arg0->unk5C) & 0xF) == 0xF) {
+                  arg0->unk5D = 0xFA;
+                  return;
+                }
+
+                if (((FUN_001050_cpakNumFiles(&superThread, arg0->unk5C) & 0xFF) >= 16) || (FUN_001050_cpakFreeBlocks(&superThread, NULL, arg0->unk5C) < 256)) {
+                  arg0->unk5D = 0xEF;
+                  return;
+                }
+
+                for (sp98 = 0, sp94 = 0; sp98 < 16; sp98++) {
+                  cpaknote_4.ext_name[0] = spA3 + sp98;
+                  sp9C = FUN_001050_cpakFindFile(&superThread, &cpaknote_4, arg0->unk5C);
+                  if (((sp9C >> 4) & 0xF) == 0) {
+                    // do nothing
+                  } else if (((sp9C >> 4) & 0xF) == 5) {
+                    sp9C = FUN_001050_cpakAllocFile(&superThread, &cpaknote_4, arg0->unk5C);
+                    if (((sp9C >> 4) & 0xF) != 0) {
+                      if (((sp9C >> 4) & 0xF) == 7) {
+                        arg0->unk5D = 0xEF;
+                      } else if (((sp9C >> 4) & 0xF) == 8) {
+                        arg0->unk5D = 0xEF;
+                      } else {
+                        arg0->unk5D = 0xFA;
+                      }
+                      return;
+                    }
+
+                    if (((sp9C >> 4) & 0xF) == 0) {
+                      for (sp100 = 0; sp100 < 32; sp100++) {
+                        if (func_8007AADC(g_sram_ptr->players + (sp100 * SRAM_PLAYER_SZ), arg0->textList->salt[0], arg0->textList->salt[1])) {
+                          sp9C = FUN_001050_cpakWrite(&superThread, sp9C, 128, 0, g_sram_ptr->players + (sp100 * SRAM_PLAYER_SZ), arg0->unk5C);
+                          if (((sp9C >> 4) & 0xF) != 0) {
+                            FUN_001050_cpakDeleteFile(&superThread, &cpaknote_4, arg0->unk5C);
+                            arg0->unk5D = 0xFA;
+                            return;
+                          }
+
+                          sp9C = FUN_001050_cpakFindFile(&superThread, &cpaknote_4, arg0->unk5C);
+                          if (((sp9C >> 4) & 0xF) == 0) {
+                            sp94 = 1;
+                            func_8007A62C(g_sram_ptr, sp100);
+                            bzero(g_sram_ptr->players + (sp100 * SRAM_PLAYER_SZ), SRAM_PLAYER_SZ);
+                            save_to_sram(g_sram_ptr);
+                            ((Player *) arg0->textList->ptr)->unkD4 = 0xC;
+                            arg0->textList->pack = (arg0->unk5C << 4) | 0xC;
+                            break;
+                          }
+
+                          FUN_001050_cpakDeleteFile(&superThread, &cpaknote_4, arg0->unk5C);
+                          arg0->unk5D = 0xFA;
+                          return;
+                        }
+                      }
+                    }
+                  }
+                  if (sp94 == 1) {
+                    arg0->unk5D = 0xF4;
+                    break;
+                  }
+                }
+                if (sp94 == 0) {
+                  arg0->unk5C = 0xFF;
+                  arg0->unk5D = 0xFA;
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+                }
+                break;
+
+              case 0xC:
+                sp73 = 0x1A;  // cpak note extension name base 'A' (N64 font code)
+                sp68 = 0;
+                sp64 = 0;
+                bzero(cpaknote_5.ext_name, 4);
+                bzero(cpaknote_5.game_name, 16);
+                cpaknote_5.file_size = 128;
+                cpaknote_5.game_code = 0x4E524945;  // 'NRIE'
+                cpaknote_5.company_code = 0x3031;   // '01'
+                sprintf(cpaknote_5.game_name, "%c%c%c%c%c%c%c%c%c", 0x27, 0x1E, 0x30, 0x2D, 0x1E, 0x2D, 0x2B, 0x22, 0x2C);  // 'NEWTETRIS' (using N64 font codes)
+                cpaknote_5.ext_name[0] = sp73;
+
+                if ((FUN_001050_cpakInit(&superThread, arg0->unk5C) & 0xF) == 0xF) {
+                  arg0->unk5D = 0xFA;
+                  return;
+                }
+
+                if (func_8007A660(g_sram_ptr) >= 16) {
+                  arg0->unk5D = 0xF3;
+                  return;
+                }
+
+                sp5C = n64HeapAlloc(128);
+                for (sp68 = 0, sp64 = 0; sp68 < 16; sp68++) {
+                  cpaknote_5.ext_name[0] = sp73 + sp68;
+                  pfs_err_5 = FUN_001050_cpakFindFile(&superThread, &cpaknote_5, arg0->unk5C);
+                  if (((pfs_err_5 >> 4) & 0xF) == 0) {
+                    file_no_5 = pfs_err_5;
+                    pfs_err_5 = FUN_001050_cpakRead(&superThread, file_no_5, 32, 0, sp5C, arg0->unk5C);
+                    if (((pfs_err_5 >> 4) & 0xF) != 0) {
+                      arg0->unk5D = 0xFA;
+                      n64HeapUnalloc(sp5C);
+                      return;
+                    }
+
+                    if (func_8007AADC(sp5C, ((Player *) arg0->textList->ptr)->salt[0], ((Player *) arg0->textList->ptr)->salt[1])) {
+                      pfs_err_5 = FUN_001050_cpakDeleteFile(&superThread, &cpaknote_5, arg0->unk5C);
+                      if (((pfs_err_5 >> 4) & 0xF) != 0) {
+                        arg0->unk5D = 0xFA;
+                        n64HeapUnalloc(sp5C);
+                        return;
+                      }
+
+                      arg0->textList->pack = (arg0->textList->pack & 0xF0) | 0xD;
+                      func_8007AF88(arg0->textList->ptr, g_sram_ptr->players, func_8007A5D4(g_sram_ptr) * SRAM_PLAYER_SZ);
+                      func_8007A648(g_sram_ptr, func_8007A5D4(g_sram_ptr));
+                      save_to_sram(g_sram_ptr);
+                      sp64 = 1;
+                    } else if (((pfs_err_5 >> 4) & 0xF) == 5) {
+                      arg0->unk5D = 0xFA;
+                      n64HeapUnalloc(sp5C);
+                      return;
+                    }
+
+                    if (sp64 == 1) {
+                      arg0->unk5D = 0xEE;
+                      n64HeapUnalloc(sp5C);
+                      break;
+                    }
+                  }
+                }
+
+                if (sp64 == 0) {
+                  arg0->unk5C = 0xFF;
+                  arg0->unk5D = 0xFA;
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+                  n64HeapUnalloc(sp5C);
+                }
+                break;
+              }
+              */
+              break;
+
+            case 0xFD:
+              switch (sp10C->pack & 0xF) {
+              case 0xF:
+                if (D_800D3DD4 == 0) {
+                  arg0->unk5 = 0;
+                  arg0->unk4 = 0;
+                  if ((D_800D5850 == temp_s0) && (func_8007A660(g_sram_ptr) >= 16)) {
+                    arg0->unk5D = 0xF3;
+                    return;
+                  }
+
+                  if ((D_800D5D48 == temp_s0) && (func_8007A660(g_sram_ptr) >= 14)) {
+                    arg0->unk5D = 0xF3;
+                    D_800D3DD4 = 1;
+                    return;
+                  }
+
+                  arg0->textList = func_8007A738(arg0->textList, arg0->unk5C);
+                  arg0->unk5D = 1;
+                  arg0->unk4 = 0;
+
+                  if (D_800D5850 == temp_s0) {
+                    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                    temp_s0[4].unk24 = GUI_NULL;
+                    temp_s0[5].unk24 = GUI_NULL;
+                    temp_s0[D_800D3D00[0]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[0]].unk0.r = 0xFF;
+                    temp_s0[D_800D3D00[0]].unk0.g = 0xFF;
+                    temp_s0[D_800D3D00[0]].unk0.b = 0xFF;
+                    D_800D3D10[0] = D_800D3D00[0];
+                    D_800D3D00[0] = 3;
+                  }
+
+                  if (D_800D5D48 == temp_s0) {
+                    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                    temp_s0[7].unk24 = GUI_NULL;
+                    temp_s0[8].unk24 = GUI_NULL;
+                    temp_s0[D_800D3D00[0]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[0]].unk0.r = 0xFF;
+                    temp_s0[D_800D3D00[0]].unk0.g = 0xFF;
+                    temp_s0[D_800D3D00[0]].unk0.b = 0xFF;
+                    D_800D3D10[0] = D_800D3D00[0];
+                    D_800D3D00[0] = 3;
+                  }
+
+                  D_800D3D94 |= 1 << arg0->unk5C;
+                }
+                return;
+
+              case 0xE:
+                arg0->unk5D = 0;
+                sp10C->pack = (1 << arg2) << 4 | sp10C->pack;  // (bug?) missing "& 0xF"
+
+                if ((D_800D3D94 == 0) && (arg0->unk5C == 0)) {
+                  if (D_800D5850 == temp_s0) {
+                    temp_s0[D_800D3D00[arg2]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.r = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.g = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.b = 0xA0;
+                    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                    D_800D3D10[0] = D_800D3D00[0];
+                    D_800D3D00[0] = 4;
+                  }
+
+                  if (D_800D5D48 == temp_s0) {
+                    temp_s0[D_800D3D00[arg2]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.r = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.g = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.b = 0xA0;
+                    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                    D_800D3D10[0] = D_800D3D00[0];
+                    D_800D3D00[0] = 7;
+                  }
+                }
+
+                arg0->unk5C = 0xFF;
+                break;
+
+              case 0xD:
+                arg0->unk5D = 0;
+                arg0->unk4 = 0;
+
+                temp_s0[D_800D3D00[arg2]].unk0.a = 0xA0;
+                temp_s0[D_800D3D00[arg2]].unk0.r = 0xA0;
+                temp_s0[D_800D3D00[arg2]].unk0.g = 0xA0;
+                temp_s0[D_800D3D00[arg2]].unk0.b = 0xA0;
+
+                sp10C->pack = ((1 << arg2) << 4) | (sp10C->pack & 0xF);
+
+                if ((D_800D3D94 == 0) && (arg0->unk5C == 0)) {
+                  if (D_800D5850 == temp_s0) {
+                    temp_s0[D_800D3D00[arg2]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.r = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.g = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.b = 0xA0;
+                    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                    D_800D3D10[0] = D_800D3D00[0];
+                    D_800D3D00[0] = 4;
+                  }
+
+                  if (D_800D5D48 == temp_s0) {
+                    temp_s0[D_800D3D00[arg2]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.r = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.g = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.b = 0xA0;
+                    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                    D_800D3D10[0] = D_800D3D00[0];
+                    D_800D3D00[0] = 7;
+                  }
+                }
+
+                arg0->unk5C = 0xFF;
+                break;
+
+              default:
+                arg0->unk5D = 0;
+                sp10C->pack = ((1 << arg2) << 4) | (sp10C->pack & 0xF);
+
+                if ((D_800D3D94 == 0) && (arg0->unk5C == 0)) {
+                  if (D_800D5850 == temp_s0) {
+                    temp_s0[D_800D3D00[arg2]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.r = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.g = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.b = 0xA0;
+                    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                    D_800D3D10[0] = D_800D3D00[0];
+                    D_800D3D00[0] = 4;
+                  }
+
+                  if (D_800D5D48 == temp_s0) {
+                    temp_s0[D_800D3D00[arg2]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.r = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.g = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.b = 0xA0;
+                    Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                    D_800D3D10[0] = D_800D3D00[0];
+                    D_800D3D00[0] = 7;
+                  }
+                }
+
+                arg0->unk5C = 0xFF;
+                break;
+              }
+              break;
+
+            case 0xFC:
+              arg0->unk5D = 0;
+              arg0->unk5C = 0xFF;
+              break;
+            }
+          }
+        }
+
+        if (arg0->unk5D == 1) {
+          sp48 = arg0->textList;
+
+          if (sp218->unk84 & 0x100) {  // R_JPAD / CONT_RIGHT
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+            if (arg0->unk4 == 8) {
+              arg0->unk4 = 7;
+            }
+            if (arg0->unk5 == 14) {
+              arg0->unk5 = 0;
+            } else if (arg0->unk5 == 29) {
+              arg0->unk5 = 15;
+            } else if (arg0->unk5 == 44) {
+              arg0->unk5 = 30;
+            } else {
+              arg0->unk5++;
+            }
+            sp48->text[arg0->unk4] = D_800D3DA0[arg0->unk5];
+          }
+
+          if (sp218->unk84 & 0x200) {  // L_JPAD / CONT_LEFT
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+            if (arg0->unk4 == 8) {
+              arg0->unk4 = 7;
+            }
+            if (arg0->unk5 == 0) {
+              arg0->unk5 = 14;
+            } else if (arg0->unk5 == 15) {
+              arg0->unk5 = 29;
+            } else if (arg0->unk5 == 30) {
+              arg0->unk5 = 44;
+            } else {
+              arg0->unk5--;
+            }
+            sp48->text[arg0->unk4] = D_800D3DA0[arg0->unk5];
+          }
+
+          if (sp218->unk84 & 0x800) {  // U_JPAD / CONT_UP
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+            if (arg0->unk4 == 8) {
+              arg0->unk4 = 7;
+            }
+            if ((arg0->unk5 - 15) < 0) {
+              arg0->unk5 += 30;
+            } else {
+              arg0->unk5 -= 15;
+            }
+            sp48->text[arg0->unk4] = D_800D3DA0[arg0->unk5];
+          }
+
+          if (sp218->unk84 & 0x400) {  // D_JPAD / CONT_DOWN
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+            if (arg0->unk4 == 8) {
+              arg0->unk4 = 7;
+            }
+            if ((arg0->unk5 + 15) >= 45) {
+              arg0->unk5 -= 30;
+            } else {
+              arg0->unk5 += 15;
+            }
+            sp48->text[arg0->unk4] = D_800D3DA0[arg0->unk5];
+          }
+
+          if (g_PV_arr[arg0->unk5C].unk24 & 0x1000) {  // START_BUTTON / CONT_START
+            arg0->unk5 = 44;
+            Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+            if (arg0->unk4 < 8) {
+              sp48->text[arg0->unk4] = D_800D3DA0[arg0->unk5];
+            }
+          }
+
+          if (g_PV_arr[arg0->unk5C].unk24 & 0x8000) {  // A_BUTTON / CONT_A
+
+            if (arg0->unk5 == 43) {  // BACKSPACE
+              if (arg0->unk4 > 0) {
+                Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+                sp48->text[arg0->unk4] = 0;
+                arg0->unk4--;
+              }
+
+            } else if (arg0->unk5 == 44) {  // OK
+              sp47 = FALSE;
+
+              if (arg0->unk4 == 0) {
+                Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+                return;
+              }
+
+              arg0->unk61 = TRUE;
+              sp48->text[arg0->unk4] = 0;
+              Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+
+              for (sp58 = 0; sp58 < 8; sp58++) {
+                ((Player *) sp48->ptr)->name[sp58] = sp48->text[sp58];
+              }
+
+              arg0->unk5D = 0;
+
+              if (D_800D5850 == temp_s0) {
+
+                if ((sp48->text[0] == 'H') &&
+                    (sp48->text[1] == 'A') &&
+                    (sp48->text[2] == 'L') &&
+                    (sp48->text[3] == 'U') &&
+                    (sp48->text[4] == 'C') &&
+                    (sp48->text[5] == 'I')) {
+                  /*
+                  if (func_800A35EC(1, 3) == 2) {
+                  */
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                  D_800D3CF0 = 4;
+                  /*
+                  }
+                  */
+                  sp47 = TRUE;
+                }
+
+                if ((sp48->text[0] == '2') &&
+                    (sp48->text[1] == 'F') &&
+                    ((sp48->text[2] ^ 0x10) != 0) &&
+                    (sp48->text[3] == 'S') &&
+                    (sp48->text[4] == 'T') &&
+                    (sp48->text[5] == '4') &&
+                    (sp48->text[6] == 'U')) {
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                  g_pieceFallAcceleration = 0.0001;
+                  sp47 = TRUE;
+                }
+
+                if (((sp48->text[0] ^ 0x3) != 0) &&
+                    (sp48->text[1] == '1') &&
+                    (sp48->text[2] == 'D') &&
+                    ((sp48->text[3] ^ 0x1E) != 0) &&
+                    (sp48->text[4] == 'R') &&
+                    (sp48->text[5] == 'S')) {
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                  D_800CF830 = 0;
+                  D_800CF834 = 0;
+                  D_800CF838 = 0;
+                  D_800CF83C = 0;
+                  g_sram_ptr->total_wonder_lines_odd_bits = 0;
+                  g_sram_ptr->total_wonder_lines_even_bits = 0;
+                  save_to_sram(g_sram_ptr);
+                  wonders2_80045e50_sets_num_won_compl_q();
+                  g_game.unkE4F8 = D_800CF838;
+                  sp47 = TRUE;
+                }
+
+                if ((sp48->text[0] == '1') &&
+                    (sp48->text[1] == 'N') &&
+                    (sp48->text[2] == '1') &&
+                    ((sp48->text[3] ^ 0x4) != 0) &&
+                    (sp48->text[4] == '5') &&
+                    ((sp48->text[5] ^ 0xF) != 0) &&
+                    (sp48->text[6] == '4') &&
+                    (sp48->text[7] == 'M')) {
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                  D_800CF830 = 0;
+                  D_800CF834 = 0;
+                  D_800CF838 = 0;
+                  D_800CF83C = 0;
+                  load_from_sram(1);
+                  wonders2_80045e50_sets_num_won_compl_q();
+                  g_game.unkE4F8 = D_800CF838;
+                  arg0->textList = FUN_SRAM_8007868c_tenliner_loop_arg0_t(arg0->textList);
+                  sp47 = TRUE;
+                }
+
+                D_800E1F50 = FALSE;
+                if ((sp48->text[0] == 'A') &&
+                    (sp48->text[1] == 'I') &&
+                    (sp48->text[2] == '2') &&
+                    ((sp48->text[3] ^ 0xC) != 0) &&
+                    (sp48->text[4] == 'Z') &&
+                    ((sp48->text[5] ^ 0x14) != 0) &&
+                    (sp48->text[6] == 'U') &&
+                    (sp48->text[7] == '?')) {
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                  D_800E1F50 = TRUE;
+                  sp47 = TRUE;
+                }
+
+                if ((sp48->text[0] == '1') &&
+                    (sp48->text[1] == 'M') &&
+                    (sp48->text[2] == 'I') &&
+                    (sp48->text[3] == 'L') &&
+                    (sp48->text[4] == 'L') &&
+                    (sp48->text[5] == 'I') &&
+                    (sp48->text[6] == 'O') &&
+                    (sp48->text[7] == 'N')) {
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_1);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+                  Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                  set_total_wonder_lines(g_sram_ptr, 1000000);
+                  save_to_sram(g_sram_ptr);
+                  sp47 = TRUE;
+                }
+              }
+
+              D_800D3D94 &= ~(1 << arg0->unk5C);
+              if (D_800D3D94 == 0) {
+                Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                if (D_800D3D94 == 0) {
+                  if (D_800D5850 == temp_s0) {
+                    temp_s0[4].unk24 = GUI_TOGGLE | GUI_FUNC | GUI_TITLE;
+                    temp_s0[5].unk24 = GUI_TOGGLE | GUI_FUNC | GUI_TITLE;
+                    temp_s0[D_800D3D00[arg2]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.r = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.g = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.b = 0xA0;
+                    if (!sp47 && (arg0->unk5C == 0)) {
+                      D_800D3D10[0] = D_800D3D00[0];
+                      D_800D3D00[0] = 4;
+                    }
+                  }
+                  if (D_800D5D48 == temp_s0) {
+                    temp_s0[7].unk24 = GUI_TOGGLE | GUI_FUNC | GUI_TITLE;
+                    temp_s0[8].unk24 = GUI_TOGGLE | GUI_FUNC | GUI_TITLE;
+                    temp_s0[D_800D3D00[arg2]].unk0.a = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.r = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.g = 0xA0;
+                    temp_s0[D_800D3D00[arg2]].unk0.b = 0xA0;
+                    if (!sp47 && (arg0->unk5C == 0)) {
+                      D_800D3D10[0] = D_800D3D00[0];
+                      D_800D3D00[0] = 7;
+                    }
+                  }
+                }
+              }
+              if (sp47) {
+                arg0->textList = func_8007AEB0(arg0->textList);
+                arg0->textList = &D_800D2D80;  // "GUEST"
+              } else {
+                func_8007A078(sp48, arg0->unk5C);
+                arg0->unk5C = 0xFF;
+              }
+              return;
+
+            } else if (sp48->text[0] != ' ') {
+              if (arg0->unk4 < 8) {
+                Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_4);
+                arg0->unk4++;
+              }
+              if (arg0->unk4 == 8) {
+                arg0->unk4 = 8;
+                arg0->unk5 = 44;
+                return;
+              }
+
+            } else {
+              Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+            }
+
+            sp48->text[arg0->unk4] = D_800D3DA0[arg0->unk5];
+          }
+
+          if (g_PV_arr[arg0->unk5C].unk24 & 0x4000) {  // B_BUTTON / CONT_B
+            if (arg0->unk4 > 0) {
+              Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_3);
+              sp48->text[arg0->unk4] = 0;
+              arg0->unk4--;
+              sp48->text[arg0->unk4] = D_800D3DA0[arg0->unk5];
+            } else {
+              arg0->unk61 = FALSE;
+              D_800D3D94 &= ~(1 << arg0->unk5C);
+              Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_5);
+              if (D_800D3D94 == 0) {
+                Audio2_Play_SFX(&D_801235B0, &g_menuSfxBank, SFX_MENU_2);
+                if (D_800D5850 == temp_s0) {
+                  temp_s0[4].unk24 = GUI_TOGGLE | GUI_FUNC | GUI_TITLE;
+                  temp_s0[5].unk24 = GUI_TOGGLE | GUI_FUNC | GUI_TITLE;
+                }
+                if (D_800D5D48 == temp_s0) {
+                  temp_s0[7].unk24 = GUI_TOGGLE | GUI_FUNC | GUI_TITLE;
+                  temp_s0[8].unk24 = GUI_TOGGLE | GUI_FUNC | GUI_TITLE;
+                }
+              }
+              arg0->textList = func_8007AEB0(arg0->textList);
+              arg0->textList = &D_800D2D80;  // "GUEST"
+              arg0->unk5D = 0;
+            }
+          }
+
+          sp58 = 0;
+          sp54 = arg0->unkC + 5;
+          sp50 = arg0->unk10 + 8;
+          do {
+            if ((sp48->text[sp58] == 0) || (sp58 == 8)) {
+              continue;
+            }
+
+            if (arg0->unk4 == sp58) {
+              sp54 = displayText_XY_RGBA_3(&g_gdl, &D_80128F28, sp54, sp50, sp48->text[sp58], 255 * arg3, 255 * arg3, 255 * arg3, 255 * arg3);
+            } else {
+              sp54 = displayText_XY_RGBA_3(&g_gdl, &D_80128F28, sp54, sp50, sp48->text[sp58], 0xFF, 0xFF, 0xFF, 0xFF);
+            }
+          } while (++sp58 < 9);
+        }
+      }
+    }
+  } else {
+    arg0->unk62++;
+  }
 }
 
 static void func_80099674(UnkStruct_78 *arg0) {
@@ -921,11 +2722,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
 
     D_800D3E40 = 8;
 
-    /*
     if (FUN_001050_getControllerErrNo(&superThread, 0) != 0) {
-    */
-    if (D_800CFED4 < 1) {
-
       main_8004A34C_threeliner();
       func_80090A44();
       D_800CFEE8 = 0;  // does this enter haluci (no controller) mode?  yes
@@ -934,11 +2731,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
     }
     if (D_800D3D30) {
 
-      /*
       if (FUN_001050_getControllerErrNo(&superThread, 1) != 0) {
-      */
-      if (D_800CFED4 < 2) {
-
         if (D_800D3D00[0] == 4) {
           D_800D3D10[0] = D_800D3D00[0];
           D_800D3D00[0] = 3;
@@ -1057,11 +2850,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
 
       for (spB8 = 3; spB8 >= 0; spB8--) {
 
-        /*
         if ((FUN_001050_getControllerErrNo(&superThread, spB8) == 0) && ((spB8 != 3) || (FUN_001050_getControllerErrNo(&superThread, 2) == 0)) && (D_800D3D00[spB8] == var_s1) && (arg0->unk114 != 0)) {
-        */
-        if ((D_800CFED4 > spB8) && ((spB8 != 3) || (D_800CFED4 > 2)) && (D_800D3D00[spB8] == var_s1) && (arg0->unk114 != 0)) {
-
           if (temp_s0[var_s1].unk24 & GUI_TEXTBOX) {
             gui_textbox_1 = temp_s0[var_s1].unk30;
             switch (gui_textbox_1->unk5C) {
@@ -1139,11 +2928,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
         if (D_800D5D48 == temp_s0) {
           for (spB8 = 3; spB8 >= 0; spB8--) {
 
-            /*
             if ((FUN_001050_getControllerErrNo(&superThread, spB8) == 0) && ((spB8 != 3) || (FUN_001050_getControllerErrNo(&superThread, 2) == 0)) && (spB8 + 3 == var_s1)) {
-            */
-            if ((D_800CFED4 > spB8) && ((spB8 != 3) || (D_800CFED4 > 2)) && (spB8 + 3 == var_s1)) {
-
               if (gui_textbox_3->unk5C == 0xFF) {
                 if (D_800D3D00[0] == var_s1) {
                   displayText_XY_RGBA_2(&g_gdl, &D_80128F28, gui_textbox_3->unkC + 5, gui_textbox_3->unk10 + 8, gui_textbox_3->textList->text, 0xFF, 255 * D_800D3E24, 255 * D_800D3E24, temp_s0[var_s1].unk0.a * D_800D3E2C);
@@ -1474,11 +3259,7 @@ static void func_80099674(UnkStruct_78 *arg0) {
 
     for (var_s2 = 0; var_s2 < 4; var_s2++) {
 
-      /*
       if (((var_s2 != 3) || (FUN_001050_getControllerErrNo(&superThread, 2) == 0)) && (temp_s0[D_800D3D00[var_s2]].unk24 & GUI_TEXTBOX) && (arg0->unk114 != 0)) {
-      */
-      if (((var_s2 != 3) || (D_800CFED4 > 2)) && (temp_s0[D_800D3D00[var_s2]].unk24 & GUI_TEXTBOX) && (arg0->unk114 != 0)) {
-
         if (((GUI_Textbox *) temp_s0[D_800D3D00[var_s2]].unk30)->unk60 != 0xFD) {
           if (var_s2 == 0) {
             func_80091D60(temp_s0[D_800D3D00[var_s2]].unk30, arg0, var_s2, D_800D3E24);

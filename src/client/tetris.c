@@ -7,6 +7,8 @@
 
 extern void PieceHold_Cross_Swap(PieceHold *, CurrentPiece *, PieceHold *);
 
+extern int classic_flag;
+
 ////////////////////////////////////////
 
 Tetris *g_tetris_ptr;
@@ -35,12 +37,19 @@ static void Tetris_CheckButtons(void) {
         Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, SFX_GAME_1);
       }
       if (temp_s1->unk8C & 0x10) {           // R_TRIG / CONT_R
-        if ((g_currentplayer ^ XSWAP_PAIR) < g_playercount) {
-          PieceHold_Cross_Swap(&tetris_ptr->pieceHold, currentPiece_ptr, &g_game.tetris_ptr_arr[g_currentplayer ^ XSWAP_PAIR]->pieceHold);
-        } else {
-          PieceHold_Cross_Swap(&tetris_ptr->pieceHold, currentPiece_ptr, &g_game.tetris_ptr_arr[g_currentplayer ^ XSWAP_SELF]->pieceHold);
+        if (!classic_flag) {
+          if ((g_currentplayer ^ XSWAP_PAIR) < g_playercount) {
+            PieceHold_Cross_Swap(&tetris_ptr->pieceHold, currentPiece_ptr, &g_game.tetris_ptr_arr[g_currentplayer ^ XSWAP_PAIR]->pieceHold);
+          } else {
+            PieceHold_Cross_Swap(&tetris_ptr->pieceHold, currentPiece_ptr, &g_game.tetris_ptr_arr[g_currentplayer ^ XSWAP_SELF]->pieceHold);
+          }
+          Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, SFX_GAME_1);
         }
-        Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, SFX_GAME_1);
+      }
+      if (temp_s1->unk8C & 0x4) {            // D_CBUTTONS / CONT_D
+        if (!classic_flag) {
+          CurrentPiece_80067dd8_big_fiftyliner((g_currentPiece_ptr->pieceType + 1) % 7);
+        }
       }
       if (temp_s1->unk84 & 0x200) {          // L_JPAD / CONT_LEFT
         currentPiece_ptr->possibleMoves |= 0x1;
@@ -78,6 +87,7 @@ static void Tetris_CheckButtons(void) {
         Audio2_Play_SFX(&D_801235B0, &g_gameSfxBank, SFX_GAME_14);
       }
     }
+
     if ((g_playercount >= 3) && (g_landfill_ptr->type == LANDFILLTYPE_DIRECTED)) {
       if (temp_s1->unk8C & 0x2) {            // L_CBUTTONS / CONT_C
         func_80072508(currentplayer);

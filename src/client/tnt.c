@@ -50,6 +50,7 @@ static int intro_flag = false;
 static int haluci_flag = false;
 static unsigned int currentPieceFrames = 0;
 int verbose_flag = false;
+int classic_flag = false;
 int g_screen = -1;
 config_t g_images_cfg;
 config_t g_anims_cfg;
@@ -579,6 +580,8 @@ static bool contq_enqueue(void) {
   if (key[ALLEGRO_KEY_A])     contpad.button |= 0x0002;  // L_CBUTTONS   / CONT_C
   if (key[ALLEGRO_KEY_F])     contpad.button |= 0x0001;  // R_CBUTTONS   / CONT_F
 
+  if (key[ALLEGRO_KEY_SPACE]) contpad.button |= 0x0004;  // D_CBUTTONS   / CONT_D
+
   if (net_flag) {
     snapshot_contpad(0, &contpad);
 
@@ -921,6 +924,7 @@ int main(int argc, char *argv[]) {
     {
       {"help",      no_argument,       NULL, 'h'},
       {"verbose",   no_argument,       NULL, 'v'},
+      {"classic",   no_argument,       &classic_flag, true},
       {"sprint",    no_argument,       &gametype, GAMETYPE_SPRINT},
       {"ultra",     no_argument,       &gametype, GAMETYPE_ULTRA},
       {"hotpotato", no_argument,       &landfilltype, LANDFILLTYPE_HOTPOTATO},

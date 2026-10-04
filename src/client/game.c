@@ -6,6 +6,7 @@
 
 extern unsigned int game_id;
 extern int set_game_id;
+extern int classic_flag;
 
 ////////////////////////////////////////
 
@@ -442,7 +443,9 @@ void Game_line_782_game_c(Game *game_ptr) {
     game_ptr->unk1 = 0;
     if (game_ptr->unkE508) {
       FUN_026900_80060770_sevenliner(&game_ptr->unkE4FC, D_801109F4);
-      Game_SetAlpha(game_ptr, game_ptr->unkE4FC.alpha);
+      if (classic_flag) {
+        Game_SetAlpha(game_ptr, game_ptr->unkE4FC.alpha);
+      }
       if (game_ptr->unkE4FC.unk4 == 0) {
         game_ptr->unkE508 = FALSE;
       }

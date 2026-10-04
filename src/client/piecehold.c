@@ -1,5 +1,9 @@
 #include "common.h"
 
+extern int classic_flag;
+
+////////////////////////////////////////
+
 static Point D_800D04C0[8] = {
   { 0x003D, 0x0034 },
   { 0x003D, 0x0034 },
@@ -353,7 +357,9 @@ void PieceHold_Swap(PieceHold *pieceHold_ptr, CurrentPiece *currentPiece_ptr) {
   PieceHoldPiece_MakeShadowActive(&pieceHoldPiece_ptr->shadow, currentPiece_ptr->pieceType, pieceHold_ptr->unk1490, pieceDef_ptr->center, pieceDef_ptr->starting_rot_state << 14, 0xC0, pieceHold_ptr->num_anim_frames);
 
   pieceHold_ptr->buf_idx = 1 - pieceHold_ptr->buf_idx;
-  PieceHold_Disable(pieceHold_ptr);
+  if (classic_flag) {
+    PieceHold_Disable(pieceHold_ptr);
+  }
 }
 
 void PieceHold_Enable(PieceHold *pieceHold_ptr) {

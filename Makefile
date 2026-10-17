@@ -52,7 +52,7 @@ CFLAGS += -Wstrict-prototypes -Wsequence-point -Wextra
 
 LDFLAGS :=
 
-CONFIG_LIB := -lconfig
+CONFIG_LIB := -lconfig -linih
 
 ENET_LIB := -lenet
 

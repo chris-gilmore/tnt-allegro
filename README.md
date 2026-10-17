@@ -3,11 +3,11 @@
 ### Install dependencies
 Redhat-based
 ```
-$ sudo dnf install allegro5-devel allegro5-addon-image-devel libconfig-devel enet-devel
+$ sudo dnf install allegro5-devel allegro5-addon-image-devel libconfig-devel inih-devel enet-devel
 ```
 Debian-based
 ```
-$ sudo apt-get install liballegro5-dev liballegro-image5-dev libconfig-dev libenet-dev
+$ sudo apt-get install liballegro5-dev liballegro-image5-dev libconfig-dev libinih-dev libenet-dev
 ```
 
 ### Make `tnt-allegro`

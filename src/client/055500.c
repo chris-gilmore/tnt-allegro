@@ -6,8 +6,15 @@ extern config_t g_images_cfg;
 extern int g_screen;
 extern f32 D_8012903C_f;
 extern int verbose_flag;
+extern unsigned int last_game_id;
 
 extern u8 FUN_001050_getControllerErrNo(SuperThread *, u8);
+
+extern Logfile record_logfile, replay_logfile;
+extern void tnt_open_logfile_to_record(Logfile *, unsigned int);
+extern void tnt_open_logfile_for_replay(Logfile *, unsigned int);
+extern int tnt_is_logfile_open(Logfile *);
+extern FILE *tnt_open_game_ini(void);
 
 ////////////////////////////////////////
 
@@ -573,11 +580,33 @@ void func_80090E08(void) {
     if (g_screen != -1) {
       game_ptr->unkE4F8 = g_screen;
     }
-    printf("Screen: %d\n", game_ptr->unkE4F8);
 
     FUN_027BF0_check_music_settings_and_play(game_ptr->unkE4F8);
     Audio_LoadSFX(&g_gameSfxBank);
+
+
+    unsigned int begin_frame = frametime_count();
+
+    // open files
+    tnt_open_logfile_for_replay(&replay_logfile, begin_frame);
+    tnt_open_logfile_to_record(&record_logfile, begin_frame);
+
     Game_Init(D_800CFED4, handicap);
+
+    if (tnt_is_logfile_open(&record_logfile)) {
+      FILE *hdr_fp = tnt_open_game_ini();
+      if (hdr_fp != NULL) {
+        fprintf(hdr_fp, "[game]\n");
+        fprintf(hdr_fp, "game_id = 0x%08x\n", last_game_id);
+        fprintf(hdr_fp, "screen = %d\n", game_ptr->unkE4F8);
+        fprintf(hdr_fp, "num_players = %d\n", D_800CFED4);
+        fprintf(hdr_fp, "game_type = %d\n", game_ptr->gameType);
+        fprintf(hdr_fp, "garbage_type = %d\n", game_ptr->landfill.type);
+        fclose(hdr_fp);
+      }
+    }
+
+
     if (D_800D3D20 != 0) {
       D_800D3D20 = 0;
     }

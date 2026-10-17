@@ -4,9 +4,13 @@
 #define OS_CYCLES_TO_NSEC(c) ((u64)(c) * 64 / 3)
 #endif
 
-extern unsigned int game_id;
+extern unsigned int game_id, last_game_id;
 extern int set_game_id;
 extern int classic_flag;
+
+extern Logfile record_logfile, replay_logfile;
+extern int tnt_is_logfile_open(Logfile *);
+extern void tnt_close_logfile(Logfile *);
 
 ////////////////////////////////////////
 
@@ -305,6 +309,12 @@ static void Game_QueryGameOver(Game *game_ptr) {
     game_ptr->unk0 = 1;
     game_ptr->unk1 = 2;  // state = GAMEOVER
   }
+
+  if ((tnt_is_logfile_open(&record_logfile) || tnt_is_logfile_open(&replay_logfile)) && Game_80051104_sevenliner_num_players(game_ptr) == 0) {
+    // close files
+    tnt_close_logfile(&record_logfile);
+    tnt_close_logfile(&replay_logfile);
+  }
 }
 
 static void Game_800515f8_twoliner(Game *game_ptr) {
@@ -577,7 +587,7 @@ void Game_Init(u8 numPlayers, u8 *handicap_arr) {
   if (set_game_id) {
     g_sram_ptr->game_id = game_id;
   }
-  printf("Game id: '0x%08x'\n", g_sram_ptr->game_id);
+  last_game_id = g_sram_ptr->game_id;
 
   gameVars.seed = OS_CYCLES_TO_NSEC(g_sram_ptr->game_id);
   save_to_sram(g_sram_ptr);

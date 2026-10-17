@@ -2,6 +2,11 @@
 #include <getopt.h>
 #include <time.h>
 #include <dirent.h>
+#include <sys/stat.h>
+
+// dnf: inih-devel
+// apt: inih-dev
+#include <ini.h>
 
 // dnf: libconfig-devel
 // apt: libconfig-dev
@@ -26,15 +31,18 @@
 #include <enet/enet.h>
 #include "enet_common.h"
 
-static FILE *fp;
+static FILE *fp = NULL;
 static int record = false;
 static int replay = false;
 static bool save_frames = false;
 static char *frames_dir = NULL;
 static unsigned int framecount = 0;
+static unsigned int begin_frame = 0;
 int ringcount = 0;
 unsigned int game_id = 0;
+unsigned int last_game_id = 0;
 int set_game_id = FALSE;
+unsigned int rand_seed = 0;
 static unsigned char g_opponent = 0;
 static unsigned int gametype = GAMETYPE_MARATHON;
 static unsigned int landfilltype = LANDFILLTYPE_NONE;
@@ -51,10 +59,214 @@ static int haluci_flag = false;
 static unsigned int currentPieceFrames = 0;
 int verbose_flag = false;
 int classic_flag = false;
+int auto_flag = false;
 int g_screen = -1;
 config_t g_images_cfg;
 config_t g_anims_cfg;
 config_t g_effects_cfg;
+
+Logfile record_logfile = {0};
+Logfile replay_logfile = {0};
+static char *record_logfile_name = NULL;
+static char *replay_logfile_name = NULL;
+
+static char games_dirname[64];
+static char game_dirname[96];
+
+static char line[200];
+static unsigned int frmcnt = 0;
+static unsigned int button[4] = { 0, 0, 0, 0 };
+
+u8 tnt_is_logfile_open(Logfile *logfile) {
+  return logfile->is_open;
+}
+
+void tnt_close_logfile(Logfile *logfile) {
+  if (logfile->fp != NULL) {
+    fclose(logfile->fp);
+    logfile->fp = NULL;
+  }
+  logfile->is_open = false;
+}
+
+
+typedef struct {
+  unsigned int srand;
+} SessionINI;
+
+typedef struct {
+  unsigned int game_id;
+  unsigned int game_type;
+  unsigned int garbage_type;
+} GameINI;
+
+#define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
+
+static int session_ini_handler(void *user, const char *section, const char *name, const char *value) {
+  SessionINI *pconfig = (SessionINI *) user;
+
+  if (MATCH("session", "srand")) {
+    pconfig->srand = strtoul(value, NULL, 0);
+  } else {
+    return false;  /* unknown section/name, error */
+  }
+  return true;
+}
+
+u8 tnt_load_session_ini(char *fname, SessionINI *session_ini) {
+  if (fname == NULL) {
+    return false;
+  }
+
+  size_t len = strlen(fname) + 5;  // 5 characters for ".ini\0"
+  char *session_ini_fname = malloc(len);
+
+  if (session_ini_fname == NULL) {
+    perror("Failed to allocate memory for filename");
+    return false;
+  }
+
+  snprintf(session_ini_fname, len, "%s.ini", fname);
+
+  if (ini_parse(session_ini_fname, session_ini_handler, session_ini) < 0) {
+    printf("Can't load '%s'\n", session_ini_fname);
+    free(session_ini_fname);
+    return false;
+  }
+
+  free(session_ini_fname);
+  return true;
+}
+
+
+FILE *tnt_open_game_ini(void) {
+  char filename[128];
+
+  if (game_dirname == NULL) {
+    return NULL;
+  }
+
+  sprintf(filename, "%s/game.ini", game_dirname);
+  return fopen(filename, "w");
+}
+
+static int game_ini_handler(void *user, const char *section, const char *name, const char *value) {
+  GameINI *pconfig = (GameINI *) user;
+
+  if (MATCH("game", "game_id")) {
+    pconfig->game_id = strtoul(value, NULL, 0);
+  } else if (MATCH("game", "game_type")) {
+    pconfig->game_type = atoi(value);
+  } else if (MATCH("game", "garbage_type")) {
+    pconfig->garbage_type = atoi(value);
+  } else {
+    return false;  /* unknown section/name, error */
+  }
+  return true;
+}
+
+u8 tnt_load_game_ini(char *fname, GameINI *game_ini) {
+  if (fname == NULL) {
+    return false;
+  }
+
+  size_t len = strlen(fname) + 5;  // 5 characters for ".ini\0"
+  char *game_ini_fname = malloc(len);
+
+  if (game_ini_fname == NULL) {
+    perror("Failed to allocate memory for filename");
+    return false;
+  }
+
+  snprintf(game_ini_fname, len, "%s.ini", fname);
+
+  if (ini_parse(game_ini_fname, game_ini_handler, game_ini) < 0) {
+    printf("Can't load '%s'\n", game_ini_fname);
+    free(game_ini_fname);
+    return false;
+  }
+
+  free(game_ini_fname);
+  return true;
+}
+
+void tnt_open_logfile_to_record(Logfile *logfile, unsigned int beginframe) {
+  begin_frame = beginframe;
+
+  if (auto_flag) {
+    long long unixtime = time(NULL);
+    char filename[128];
+
+    sprintf(game_dirname, "%s/%lld", games_dirname, unixtime);
+    mkdir(game_dirname, 0777);
+
+    sprintf(filename, "%s/game", game_dirname);
+
+    if (record_logfile_name != NULL) free(record_logfile_name);
+    record_logfile_name = strdup(filename);
+  }
+
+  tnt_close_logfile(logfile);
+
+  if (record_logfile_name != NULL && !logfile->is_open) {
+    logfile->fp = fopen(record_logfile_name, "w");
+    if (logfile->fp == NULL) {
+      printf("Cannot open file: '%s'\n", record_logfile_name);
+    } else {
+      printf("Recording game to file: %s\n", record_logfile_name);
+      logfile->is_open = true;
+    }
+  }
+}
+
+void tnt_open_logfile_for_replay(Logfile *logfile, unsigned int beginframe) {
+  begin_frame = beginframe;
+
+  tnt_close_logfile(logfile);
+
+  if (replay_logfile_name != NULL && !logfile->is_open) {
+    logfile->fp = fopen(replay_logfile_name, "r");
+    if (logfile->fp == NULL) {
+      printf("Cannot open file: '%s'\n", replay_logfile_name);
+    } else {
+      GameINI gameINI;
+      Game *game_ptr = &g_game;
+
+      tnt_load_game_ini(replay_logfile_name, &gameINI);
+      printf("-- game_ini.game_id = 0x%08x\n", gameINI.game_id);
+      game_id = gameINI.game_id;
+      set_game_id = TRUE;
+
+      printf("-- game_ini.game_type = %d\n", gameINI.game_type);
+      gametype = gameINI.game_type;
+      game_ptr->gameType = gametype;
+
+      printf("-- game_ini.garbage_type = %d\n", gameINI.garbage_type);
+      landfilltype = gameINI.garbage_type;
+      game_ptr->landfill.type = landfilltype;
+
+      printf("Replaying game from file: %s\n", replay_logfile_name);
+      logfile->is_open = true;
+
+      if (fgets(line, sizeof(line), logfile->fp)) {
+        sscanf(line, "%u %u %u %u %u", &frmcnt, &button[0], &button[1], &button[2], &button[3]);
+
+        if (frames_dir != NULL) {
+          DIR *dir = opendir(frames_dir);
+          if (dir) {
+            closedir(dir);
+            printf("Saving frames to dir: %s\n", frames_dir);
+            save_frames = true;
+          } else {
+            printf("Dir '%s' does not exist or permission denied\n", frames_dir);
+          }
+        }
+      } else {
+        tnt_close_logfile(logfile);
+      }
+    }
+  }
+}
 
 static void print_joystick_info(int i) {
   ALLEGRO_JOYSTICK *joy = al_get_joystick(i);
@@ -217,8 +429,10 @@ static void disp_post_draw(void) {
       } else {
         last_framecount++;
       }
-      snprintf(filename, sizeof(filename), "%s/image-%08d.png", frames_dir, last_framecount);
-      al_save_bitmap(filename, al_get_backbuffer(disp));
+      if (last_framecount > begin_frame) {
+        snprintf(filename, sizeof(filename), "%s/image-%08d.png", frames_dir, last_framecount);
+        al_save_bitmap(filename, al_get_backbuffer(disp));
+      }
     }
   }
 
@@ -595,6 +809,11 @@ static bool contq_enqueue(void) {
     if (record) {
       fprintf(fp, "%u", framecount);
     }
+    if (tnt_is_logfile_open(&record_logfile)) {
+      fprintf(record_logfile.fp, "%u", framecount);
+      //printf("%u", framecount);
+    }
+
     //for (int i = 0; i < 4; i++) {
     for (int i = 0; i < D_800CFED4; i++) {
       //if (i == 1 || i == 2) {  // 4TEST
@@ -606,6 +825,10 @@ static bool contq_enqueue(void) {
       if (record) {
         fprintf(fp, " %u", contpad.button);
       }
+      if (tnt_is_logfile_open(&record_logfile)) {
+        fprintf(record_logfile.fp, " %u", contpad.button);
+        //printf(" %u", contpad.button);
+      }
 
       FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
 
@@ -614,31 +837,44 @@ static bool contq_enqueue(void) {
     if (record) {
       fprintf(fp, "\n");
     }
+    if (tnt_is_logfile_open(&record_logfile)) {
+      fprintf(record_logfile.fp, "\n");
+      //printf("\n");
+    }
     return true;
   }
 }
 
-static char line[200];
-static unsigned int frmcnt = 0;
-static unsigned int button[4] = { 0, 0, 0, 0 };
-
-static bool replay_contq_enqueue(bool *done_ptr) {
+static bool replay_contq_enqueue_and_record(bool *done_ptr, FILE *replay_fp) {
   OSContPad contpad;
 
-  //for (int i = 0; i < 4; i++) {
+  if (tnt_is_logfile_open(&record_logfile)) {
+    fprintf(record_logfile.fp, "%u", framecount);
+    //printf("%u", framecount);
+  }
   for (int i = 0; i < D_800CFED4; i++) {
     contpad.button = button[i];
+
+    if (tnt_is_logfile_open(&record_logfile)) {
+      fprintf(record_logfile.fp, " %u", contpad.button);
+      //printf(" %u", contpad.button);
+    }
+
     FUN_069580_800A3300_nineliner_mod300(controller_queues[i], &contpad);
   }
+  if (tnt_is_logfile_open(&record_logfile)) {
+    fprintf(record_logfile.fp, "\n");
+    //printf("\n");
+  }
 
-  if (!fgets(line, sizeof(line), fp)) {
+  if (!fgets(line, sizeof(line), replay_fp)) {
     *done_ptr = true;
     return false;
   }
 
   sscanf(line, "%u %u %u %u %u", &frmcnt, &button[0], &button[1], &button[2], &button[3]);
   if (frmcnt == 0) {
-    if (fgets(line, sizeof(line), fp)) {
+    if (fgets(line, sizeof(line), replay_fp)) {
       sscanf(line, "%u %u %u %u %u", &frmcnt, &button[0], &button[1], &button[2], &button[3]);
     } else {
       *done_ptr = true;
@@ -694,10 +930,16 @@ void player_deinit(void) {
 // Game stuff
 
 void game_init(unsigned short num_players) {
-  register Game *game_ptr = &g_game;
+  Game *game_ptr = &g_game;
   static const char *gametype_str[] = { "Marathon", "Sprint", "Ultra" };
   static const char *landfilltype_str[] = { "None", "HotPotato", "Directed" };
   static const char *opponent_str[] = { "Off", "Easy", "Medium", "Hard", "Very hard", "Master" };
+
+  /*
+  if (!classic_flag) {
+    g_pieceFallAcceleration = 0;
+  }
+  */
 
   func_800905E8(0);
 
@@ -798,18 +1040,23 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
         done = true;
       }
 
-      if (replay) {
+      if (replay || tnt_is_logfile_open(&replay_logfile)) {
         if (!redraw) {
           if (lag_flag) {
             framecount += 2;
           } else {
             framecount++;
           }
+          // TODO
           // assert framecount == frmcnt
 
           update_metrics();
 
-          redraw = replay_contq_enqueue(&done);
+          if (replay) {
+            redraw = replay_contq_enqueue_and_record(&done, fp);
+          } else {
+            redraw = replay_contq_enqueue_and_record(&done, replay_logfile.fp);
+          }
         }
       } else {
         if (lag_flag) {
@@ -840,6 +1087,10 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
         } else {
           if (record) {
             fprintf(fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
+          }
+          if (tnt_is_logfile_open(&record_logfile)) {
+            fprintf(record_logfile.fp, "%u %u %u %u %u\n", 0, 0, 0, 0, 0);
+            //printf("%u %u %u %u %u\n", 0, 0, 0, 0, 0);
           }
 
           // From 00E2A0.c, has_rounds_and_floors_large_liner()
@@ -890,6 +1141,7 @@ static void print_usage(const char *prog_name) {
   printf("  -3 NAME        (default: 'PLAYER 3')\n");
   printf("  -s SCREEN      (default: random) 0=Mayan 1=Greek 2=Egyptian 3=Celtic 4=African 5=Japanese 6=Russian 7=Finale\n");
   printf("  -g GAMEID      (default: random) GAMEID modulo 0x0C000000\n");
+  printf("  -r SRAND       (default: time(NULL)) srand(SRAND)\n");
   printf("\ngame mode:\n");
   printf("  Choose one of these game modes.  (default: Marathon)\n\n");
   printf("  --sprint\n");
@@ -906,6 +1158,9 @@ static void print_usage(const char *prog_name) {
 enum {
   OPT_HOST = 1000,
   OPT_PORT,
+  OPT_RECORD,
+  OPT_REPLAY,
+  OPT_FRAMES,
 };
 
 int main(int argc, char *argv[]) {
@@ -918,8 +1173,12 @@ int main(int argc, char *argv[]) {
   char *p3opt = NULL;
   char *sopt = NULL;
   char *gopt = NULL;
+  char *ropt = NULL;
   char *hostopt = NULL;
   char *portopt = NULL;
+  char *recordopt = NULL;
+  char *replayopt = NULL;
+  char *framesopt = NULL;
   static struct option long_options[] =
     {
       {"help",      no_argument,       NULL, 'h'},
@@ -935,10 +1194,14 @@ int main(int argc, char *argv[]) {
       {"lag",       no_argument,       &lag_flag, true},
       {"intro",     no_argument,       &intro_flag, true},
       {"haluci",    no_argument,       &haluci_flag, true},
+      {"record",    required_argument, NULL, OPT_RECORD},
+      {"replay",    required_argument, NULL, OPT_REPLAY},
+      {"frames",    required_argument, NULL, OPT_FRAMES},
+      {"auto",      no_argument,       &auto_flag, true},
       {NULL, 0, NULL, 0}
     };
 
-  while ((c = getopt_long(argc, argv, "hvn:o:0:1:2:3:s:g:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "hvn:o:0:1:2:3:s:g:r:", long_options, NULL)) != -1) {
     switch (c) {
     case 0:
       break;
@@ -972,11 +1235,23 @@ int main(int argc, char *argv[]) {
     case 'g':
       gopt = optarg;
       break;
+    case 'r':
+      ropt = optarg;
+      break;
     case OPT_HOST:
       hostopt = optarg;
       break;
     case OPT_PORT:
       portopt = optarg;
+      break;
+    case OPT_RECORD:
+      recordopt = optarg;
+      break;
+    case OPT_REPLAY:
+      replayopt = optarg;
+      break;
+    case OPT_FRAMES:
+      framesopt = optarg;
       break;
     case '?':
       print_usage(argv[0]);
@@ -986,38 +1261,92 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  if (optind < argc) {
-    if (access(argv[optind], F_OK) == 0) {  // file exists
-      fp = fopen(argv[optind], "r");
-      if (fp == NULL) {
-        printf("Cannot open file: '%s'\n", argv[optind]);
-      } else {
-        printf("Replaying moves from file: '%s'\n", argv[optind]);
-        replay = true;
-        if (optind + 1 < argc) {
-          DIR *dir = opendir(argv[optind + 1]);
-          if (dir) {
-            closedir(dir);
-            printf("Saving frames to dir: '%s'\n", argv[optind + 1]);
-            save_frames = true;
-            frames_dir = strdup(argv[optind + 1]);
-          } else {
-            printf("Dir '%s' does not exist or permission denied\n", argv[optind + 1]);
+  if (ropt != NULL) {
+    rand_seed = strtoul(ropt, NULL, 0);
+  } else {
+    rand_seed = time(NULL);
+  }
+
+  if (auto_flag) {
+    long long unixtime = time(NULL);
+    char session_dirname[50];
+    char filename[128];
+
+    mkdir(".session", 0777);
+
+    sprintf(session_dirname, ".session/%lld", unixtime);
+    mkdir(session_dirname, 0777);
+
+    sprintf(games_dirname, "%s/games", session_dirname);
+    mkdir(games_dirname, 0777);
+
+    FILE *hdr_fp;
+    sprintf(filename, "%s/session.ini", session_dirname);
+    hdr_fp = fopen(filename, "w");
+    if (hdr_fp != NULL) {
+      fprintf(hdr_fp, "[session]\n");
+      fprintf(hdr_fp, "srand = 0x%08x\n", rand_seed);
+      fclose(hdr_fp);
+    }
+
+    sprintf(filename, "%s/session", session_dirname);
+    fp = fopen(filename, "w");
+    if (fp == NULL) {
+      printf("Cannot open file: '%s'\n", filename);
+    } else {
+      printf("Recording session to file: %s\n", filename);
+      record = true;
+    }
+  } else {
+    if (optind < argc) {
+      if (access(argv[optind], F_OK) == 0) {  // file exists
+        fp = fopen(argv[optind], "r");
+        if (fp == NULL) {
+          printf("Cannot open file: '%s'\n", argv[optind]);
+        } else {
+          SessionINI sessionINI;
+          tnt_load_session_ini(argv[optind], &sessionINI);
+          rand_seed = sessionINI.srand;
+
+          printf("Replaying session from file: %s\n", argv[optind]);
+          replay = true;
+          if (optind + 1 < argc) {
+            DIR *dir = opendir(argv[optind + 1]);
+            if (dir) {
+              closedir(dir);
+              printf("Saving frames to dir: %s\n", argv[optind + 1]);
+              save_frames = true;
+              frames_dir = strdup(argv[optind + 1]);
+            } else {
+              printf("Dir '%s' does not exist or permission denied\n", argv[optind + 1]);
+            }
           }
         }
+      } else {  // file does not exist
+        fp = fopen(argv[optind], "w");
+        if (fp == NULL) {
+          printf("Cannot open file: '%s'\n", argv[optind]);
+        } else {
+          printf("Recording session to file: %s\n", argv[optind]);
+          record = true;
+        }
       }
-    } else {  // file does not exist
-      fp = fopen(argv[optind], "w");
-      if (fp == NULL) {
-        printf("Cannot open file: '%s'\n", argv[optind]);
-      } else {
-        printf("Recording moves to file: '%s'\n", argv[optind]);
-        record = true;
-      }
+    }
+
+    if (recordopt != NULL) {
+      record_logfile_name = strdup(recordopt);
+    }
+
+    if (replayopt != NULL && !replay) {
+      replay_logfile_name = strdup(replayopt);
+    }
+
+    if (framesopt != NULL && !replay) {
+      frames_dir = strdup(framesopt);
     }
   }
 
-  srand(time(NULL));
+  srand(rand_seed);
   FUN_026900_sets_g8011FA70_to_arg0(osGetTime());  // sets seed for FUN_026900_PRNG_1()
 
   unsigned short num_players = 1;
@@ -1146,6 +1475,12 @@ int main(int argc, char *argv[]) {
 
   if (fp != NULL) fclose(fp);
   if (frames_dir != NULL) free(frames_dir);
+
+  tnt_close_logfile(&record_logfile);
+  tnt_close_logfile(&replay_logfile);
+
+  if (record_logfile_name != NULL) free(record_logfile_name);
+  if (replay_logfile_name != NULL) free(replay_logfile_name);
 
   game_deinit();
   player_deinit();

@@ -221,4 +221,9 @@ typedef struct {
 #include "newtetris/setplayer.h"
 #include "newtetris/0691B0.h"
 
+typedef struct {
+  FILE *fp;
+  u8 is_open;
+} Logfile;
+
 #endif /* !_COMMON_H_ */

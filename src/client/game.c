@@ -7,10 +7,15 @@
 extern unsigned int game_id, last_game_id;
 extern int set_game_id;
 extern int classic_flag;
+extern unsigned int g_sprint_goal;
+extern unsigned int g_ultra_goal;
+extern unsigned int g_holdCount;
+extern unsigned int g_piecesDropped;
 
 extern Logfile record_logfile, replay_logfile;
 extern int tnt_is_logfile_open(Logfile *);
 extern void tnt_close_logfile(Logfile *);
+extern FILE *tnt_open_game_res(void);
 
 ////////////////////////////////////////
 
@@ -311,6 +316,22 @@ static void Game_QueryGameOver(Game *game_ptr) {
   }
 
   if ((tnt_is_logfile_open(&record_logfile) || tnt_is_logfile_open(&replay_logfile)) && Game_80051104_sevenliner_num_players(game_ptr) == 0) {
+    if (tnt_is_logfile_open(&record_logfile)) {
+      FILE *res_fp = tnt_open_game_res();
+      if (res_fp != NULL) {
+        fprintf(res_fp, "[result]\n");
+        fprintf(res_fp, "line_count = %d\n", getLineCount(&game_ptr->tetris_ptr_arr[0]->gameStats.linesInfo));
+        fprintf(res_fp, "num_pieces = %d\n", g_piecesDropped);
+        fprintf(res_fp, "hold_count = %d\n", g_holdCount);
+        fclose(res_fp);
+
+        printf("[result]\n");
+        printf("line_count = %d\n", getLineCount(&game_ptr->tetris_ptr_arr[0]->gameStats.linesInfo));
+        printf("num_pieces = %d\n", g_piecesDropped);
+        printf("hold_count = %d\n", g_holdCount);
+      }
+    }
+
     // close files
     tnt_close_logfile(&record_logfile);
     tnt_close_logfile(&replay_logfile);
@@ -560,10 +581,11 @@ void Game_Init(u8 numPlayers, u8 *handicap_arr) {
   case GAMETYPE_MARATHON:
     break;
   case GAMETYPE_SPRINT:
-    game_ptr->unkE4F0 = 10800;  // 3 minutes (in jiffies)
+    //game_ptr->unkE4F0 = 10800;  // 3 minutes (in jiffies)
+    game_ptr->unkE4F0 = g_sprint_goal;
     break;
   case GAMETYPE_ULTRA:
-    game_ptr->unkE4F4 = 150;
+    game_ptr->unkE4F4 = g_ultra_goal;
     break;
   default:
     debug_print_reason_routine_linenum("Unknown GAMETYPE", "game.c", 1049);

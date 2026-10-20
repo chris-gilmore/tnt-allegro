@@ -7,6 +7,8 @@ extern int g_screen;
 extern f32 D_8012903C_f;
 extern int verbose_flag;
 extern unsigned int last_game_id;
+extern unsigned int g_holdCount;
+extern unsigned int g_piecesDropped;
 
 extern u8 FUN_001050_getControllerErrNo(SuperThread *, u8);
 
@@ -603,8 +605,18 @@ void func_80090E08(void) {
         fprintf(hdr_fp, "game_type = %d\n", game_ptr->gameType);
         fprintf(hdr_fp, "garbage_type = %d\n", game_ptr->landfill.type);
         fclose(hdr_fp);
+
+        printf("[game]\n");
+        printf("game_id = 0x%08x\n", last_game_id);
+        printf("screen = %d\n", game_ptr->unkE4F8);
+        printf("num_players = %d\n", D_800CFED4);
+        printf("game_type = %d\n", game_ptr->gameType);
+        printf("garbage_type = %d\n", game_ptr->landfill.type);
       }
     }
+
+    g_holdCount = 0;
+    g_piecesDropped = 0;
 
 
     if (D_800D3D20 != 0) {

@@ -43,6 +43,12 @@ unsigned int game_id = 0;
 unsigned int last_game_id = 0;
 int set_game_id = FALSE;
 unsigned int rand_seed = 0;
+static bool holdCount_update = false;
+unsigned int g_holdCount = 0;
+static bool piecelock_update = false;
+unsigned int g_piecesDropped = 0;
+unsigned int g_sprint_goal = 10800;
+unsigned int g_ultra_goal = 150;
 static unsigned char g_opponent = 0;
 static unsigned int gametype = GAMETYPE_MARATHON;
 static unsigned int landfilltype = LANDFILLTYPE_NONE;
@@ -60,6 +66,7 @@ static unsigned int currentPieceFrames = 0;
 int verbose_flag = false;
 int classic_flag = false;
 int auto_flag = false;
+int premove_flag = false;
 int g_screen = -1;
 config_t g_images_cfg;
 config_t g_anims_cfg;
@@ -267,6 +274,26 @@ void tnt_open_logfile_for_replay(Logfile *logfile, unsigned int beginframe) {
     }
   }
 }
+
+void tnt_piecelock_callback(void) {
+  piecelock_update = true;
+}
+
+void tnt_piecehold_swap_callback(void) {
+  holdCount_update = true;
+}
+
+FILE *tnt_open_game_res(void) {
+  char filename[128];
+
+  if (game_dirname == NULL) {
+    return NULL;
+  }
+
+  sprintf(filename, "%s/game.res", game_dirname);
+  return fopen(filename, "w");
+}
+
 
 static void print_joystick_info(int i) {
   ALLEGRO_JOYSTICK *joy = al_get_joystick(i);
@@ -806,6 +833,8 @@ static bool contq_enqueue(void) {
     enet_peer_send(server, 0, packet);
     return send_receive(client);
   } else {
+    Game *game_ptr = &g_game;
+
     if (record) {
       fprintf(fp, "%u", framecount);
     }
@@ -821,6 +850,14 @@ static bool contq_enqueue(void) {
       //}
 
       //print_contpad(i, &contpad);
+
+      // TODO: is this premove?
+      if (premove_flag) {
+        int time_remaining = game_ptr->unkE4F0 - game_ptr->unkE4E8;
+        if (time_remaining == 22) {  // piece lock delay is 20
+          contpad.button = 2048;  // press 'up' (drop piece)
+        }
+      }
 
       if (record) {
         fprintf(fp, " %u", contpad.button);
@@ -1068,6 +1105,15 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
         update_metrics();
 
         redraw = contq_enqueue();
+
+        if (holdCount_update) {
+          g_holdCount++;
+          holdCount_update = false;
+        }
+        if (piecelock_update) {
+          g_piecesDropped++;
+          piecelock_update = false;
+        }
       }
 
       break;
@@ -1161,6 +1207,7 @@ enum {
   OPT_RECORD,
   OPT_REPLAY,
   OPT_FRAMES,
+  OPT_GOAL,
 };
 
 int main(int argc, char *argv[]) {
@@ -1179,6 +1226,7 @@ int main(int argc, char *argv[]) {
   char *recordopt = NULL;
   char *replayopt = NULL;
   char *framesopt = NULL;
+  char *goalopt = NULL;
   static struct option long_options[] =
     {
       {"help",      no_argument,       NULL, 'h'},
@@ -1186,6 +1234,7 @@ int main(int argc, char *argv[]) {
       {"classic",   no_argument,       &classic_flag, true},
       {"sprint",    no_argument,       &gametype, GAMETYPE_SPRINT},
       {"ultra",     no_argument,       &gametype, GAMETYPE_ULTRA},
+      {"goal",      required_argument, NULL, OPT_GOAL},
       {"hotpotato", no_argument,       &landfilltype, LANDFILLTYPE_HOTPOTATO},
       {"directed",  no_argument,       &landfilltype, LANDFILLTYPE_DIRECTED},
       {"net",       no_argument,       &net_flag, true},
@@ -1198,6 +1247,7 @@ int main(int argc, char *argv[]) {
       {"replay",    required_argument, NULL, OPT_REPLAY},
       {"frames",    required_argument, NULL, OPT_FRAMES},
       {"auto",      no_argument,       &auto_flag, true},
+      {"premove",   no_argument,       &premove_flag, true},
       {NULL, 0, NULL, 0}
     };
 
@@ -1252,6 +1302,9 @@ int main(int argc, char *argv[]) {
       break;
     case OPT_FRAMES:
       framesopt = optarg;
+      break;
+    case OPT_GOAL:
+      goalopt = optarg;
       break;
     case '?':
       print_usage(argv[0]);
@@ -1343,6 +1396,17 @@ int main(int argc, char *argv[]) {
 
     if (framesopt != NULL && !replay) {
       frames_dir = strdup(framesopt);
+    }
+  }
+
+  if (goalopt != NULL) {
+    switch (gametype) {
+    case GAMETYPE_SPRINT:
+      g_sprint_goal = atoi(goalopt);
+      break;
+    case GAMETYPE_ULTRA:
+      g_ultra_goal = atoi(goalopt);
+      break;
     }
   }
 

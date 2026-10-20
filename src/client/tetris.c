@@ -8,6 +8,7 @@
 extern void PieceHold_Cross_Swap(PieceHold *, CurrentPiece *, PieceHold *);
 
 extern int classic_flag;
+extern unsigned int g_ultra_goal;
 
 ////////////////////////////////////////
 
@@ -201,7 +202,7 @@ static void Tetris_SetSprintHandicap(Tetris *tetris_ptr, GameVars *gameVars_ptr)
 }
 
 static void Tetris_SetUltraHandicap(Tetris *tetris_ptr, GameVars *gameVars_ptr) {
-  tetris_ptr->ultraGoal = gameVars_ptr->handicap * 10 + 150;
+  tetris_ptr->ultraGoal = gameVars_ptr->handicap * 10 + g_ultra_goal;
   FrameAct_80053F40_oneliner(&tetris_ptr->unk6840, 0);
 }
 

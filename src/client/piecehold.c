@@ -2,6 +2,8 @@
 
 extern int classic_flag;
 
+extern void tnt_piecehold_swap_callback(void);
+
 ////////////////////////////////////////
 
 static Point D_800D04C0[8] = {
@@ -360,6 +362,8 @@ void PieceHold_Swap(PieceHold *pieceHold_ptr, CurrentPiece *currentPiece_ptr) {
   if (classic_flag) {
     PieceHold_Disable(pieceHold_ptr);
   }
+
+  tnt_piecehold_swap_callback();
 }
 
 void PieceHold_Enable(PieceHold *pieceHold_ptr) {

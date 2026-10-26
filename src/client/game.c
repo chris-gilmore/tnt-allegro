@@ -1,4 +1,5 @@
 #include "common.h"
+#include <sqlite3.h>
 
 #ifndef OS_CYCLES_TO_NSEC
 #define OS_CYCLES_TO_NSEC(c) ((u64)(c) * 64 / 3)
@@ -11,11 +12,15 @@ extern unsigned int g_sprint_goal;
 extern unsigned int g_ultra_goal;
 extern unsigned int g_holdCount;
 extern unsigned int g_piecesDropped;
+extern sqlite3_int64 sqlite_games_id;
 
 extern Logfile record_logfile, replay_logfile;
+extern char *record_logfile_name;
 extern int tnt_is_logfile_open(Logfile *);
 extern void tnt_close_logfile(Logfile *);
 extern FILE *tnt_open_game_res(void);
+
+unsigned int g_game_ended;
 
 ////////////////////////////////////////
 
@@ -315,26 +320,63 @@ static void Game_QueryGameOver(Game *game_ptr) {
     game_ptr->unk1 = 2;  // state = GAMEOVER
   }
 
-  if ((tnt_is_logfile_open(&record_logfile) || tnt_is_logfile_open(&replay_logfile)) && Game_80051104_sevenliner_num_players(game_ptr) == 0) {
-    if (tnt_is_logfile_open(&record_logfile)) {
-      FILE *res_fp = tnt_open_game_res();
-      if (res_fp != NULL) {
-        fprintf(res_fp, "[result]\n");
-        fprintf(res_fp, "line_count = %d\n", getLineCount(&game_ptr->tetris_ptr_arr[0]->gameStats.linesInfo));
-        fprintf(res_fp, "num_pieces = %d\n", g_piecesDropped);
-        fprintf(res_fp, "hold_count = %d\n", g_holdCount);
-        fclose(res_fp);
+  if (!g_game_ended && Game_80051104_sevenliner_num_players(game_ptr) == 0) {
+    g_game_ended = true;
 
-        printf("[result]\n");
-        printf("line_count = %d\n", getLineCount(&game_ptr->tetris_ptr_arr[0]->gameStats.linesInfo));
-        printf("num_pieces = %d\n", g_piecesDropped);
-        printf("hold_count = %d\n", g_holdCount);
+    printf("[result]\n");
+    printf("score = %d\n", getLineCount(&game_ptr->tetris_ptr_arr[0]->gameStats.linesInfo));
+    printf("pieces_dropped = %d\n", g_piecesDropped);
+    printf("swaps = %d\n", g_holdCount);
+
+    if ((tnt_is_logfile_open(&record_logfile) || tnt_is_logfile_open(&replay_logfile))) {
+      if (tnt_is_logfile_open(&record_logfile)) {
+        FILE *res_fp = tnt_open_game_res();
+        if (res_fp != NULL) {
+          fprintf(res_fp, "[result]\n");
+          fprintf(res_fp, "score = %d\n", getLineCount(&game_ptr->tetris_ptr_arr[0]->gameStats.linesInfo));
+          fprintf(res_fp, "pieces_dropped = %d\n", g_piecesDropped);
+          fprintf(res_fp, "swaps = %d\n", g_holdCount);
+          fclose(res_fp);
+        }
+
+        if (sqlite_games_id != 0) {
+          sqlite3 *db;
+          int rc = sqlite3_open("tnt.db", &db);
+
+          if (rc != SQLITE_OK) {
+            fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+            sqlite3_close(db);
+          } else {
+            sqlite3_stmt *stmt;
+            const char *update_sql = "UPDATE games SET (moves, score, pieces_dropped, swaps) = (?, ?, ?, ?) WHERE id = ?;";
+
+            rc = sqlite3_prepare_v2(db, update_sql, -1, &stmt, NULL);
+            if (rc != SQLITE_OK) {
+              fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+            } else {
+              sqlite3_bind_text(stmt, 1, record_logfile_name, -1, SQLITE_STATIC);  // TODO
+              sqlite3_bind_int(stmt, 2, getLineCount(&game_ptr->tetris_ptr_arr[0]->gameStats.linesInfo));
+              sqlite3_bind_int(stmt, 3, g_piecesDropped);
+              sqlite3_bind_int(stmt, 4, g_holdCount);
+              sqlite3_bind_int(stmt, 5, sqlite_games_id);
+
+              rc = sqlite3_step(stmt);
+              if (rc != SQLITE_DONE) {
+                fprintf(stderr, "Update failed: %s\n", sqlite3_errmsg(db));
+              }
+
+              sqlite3_finalize(stmt);
+            }
+
+            sqlite3_close(db);
+          }
+        }
       }
-    }
 
-    // close files
-    tnt_close_logfile(&record_logfile);
-    tnt_close_logfile(&replay_logfile);
+      // close files
+      tnt_close_logfile(&record_logfile);
+      tnt_close_logfile(&replay_logfile);
+    }
   }
 }
 

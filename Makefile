@@ -52,15 +52,19 @@ CFLAGS += -Wstrict-prototypes -Wsequence-point -Wextra
 
 LDFLAGS :=
 
-CONFIG_LIB := -lconfig -linih
+CONFIG_LIB := -lconfig
+
+INI_LIB := -linih
 
 ENET_LIB := -lenet
+
+SQLITE_LIB := -lsqlite3
 
 ALLEGRO_LIBRARIES := allegro-5 allegro_font-5 allegro_primitives-5 allegro_image-5 allegro_main-5 #allegro_ttf-5
 
 client: ALLEGRO_LIBS = $(shell pkg-config --libs $(ALLEGRO_LIBRARIES))
 
-LIBS = $(CONFIG_LIB) $(ENET_LIB) $(ALLEGRO_LIBS) -lm
+LIBS = $(CONFIG_LIB) $(INI_LIB) $(ENET_LIB) $(SQLITE_LIB) $(ALLEGRO_LIBS) -lm
 
 
 #==============================================================================#

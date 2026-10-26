@@ -1,5 +1,6 @@
 #include "common.h"
 #include <libconfig.h>
+#include <sqlite3.h>
 #include <allegro5/allegro5.h>
 
 extern config_t g_images_cfg;
@@ -7,8 +8,11 @@ extern int g_screen;
 extern f32 D_8012903C_f;
 extern int verbose_flag;
 extern unsigned int last_game_id;
+extern int classic_flag;
 extern unsigned int g_holdCount;
 extern unsigned int g_piecesDropped;
+extern unsigned int g_game_ended;
+extern sqlite3_int64 sqlite_games_id;
 
 extern u8 FUN_001050_getControllerErrNo(SuperThread *, u8);
 
@@ -595,6 +599,14 @@ void func_80090E08(void) {
 
     Game_Init(D_800CFED4, handicap);
 
+    printf("[game]\n");
+    printf("game_id = 0x%08x\n", last_game_id);
+    printf("screen = %d\n", game_ptr->unkE4F8);
+    printf("num_players = %d\n", D_800CFED4);
+    printf("game_type = %d\n", game_ptr->gameType);
+    printf("garbage_type = %d\n", game_ptr->landfill.type);
+    printf("is_classic = %d\n", classic_flag);
+
     if (tnt_is_logfile_open(&record_logfile)) {
       FILE *hdr_fp = tnt_open_game_ini();
       if (hdr_fp != NULL) {
@@ -604,20 +616,75 @@ void func_80090E08(void) {
         fprintf(hdr_fp, "num_players = %d\n", D_800CFED4);
         fprintf(hdr_fp, "game_type = %d\n", game_ptr->gameType);
         fprintf(hdr_fp, "garbage_type = %d\n", game_ptr->landfill.type);
+        fprintf(hdr_fp, "is_classic = %d\n", classic_flag);
         fclose(hdr_fp);
 
-        printf("[game]\n");
-        printf("game_id = 0x%08x\n", last_game_id);
-        printf("screen = %d\n", game_ptr->unkE4F8);
-        printf("num_players = %d\n", D_800CFED4);
-        printf("game_type = %d\n", game_ptr->gameType);
-        printf("garbage_type = %d\n", game_ptr->landfill.type);
+        sqlite_games_id = 0;
+
+        sqlite3 *db;
+        int rc = sqlite3_open("tnt.db", &db);
+
+        if (rc != SQLITE_OK) {
+          fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(db));
+          sqlite3_close(db);
+        } else {
+          const char *sql =
+            "CREATE TABLE IF NOT EXISTS games ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            "created_at TEXT DEFAULT CURRENT_TIMESTAMP, "
+            "game_id INTEGER, "
+            "num_players INTEGER, "
+            "game_type INTEGER, "
+            "garbage_type INTEGER, "
+            "is_classic INTEGER, "
+            "moves TEXT, "
+            "score INTEGER, "
+            "pieces_dropped INTEGER, "
+            "swaps INTEGER);";
+
+          char *err_msg = NULL;
+          rc = sqlite3_exec(db, sql, NULL, NULL, &err_msg);
+
+          if (rc != SQLITE_OK) {
+            fprintf(stderr, "SQL error: %s\n", err_msg);
+            sqlite3_free(err_msg);
+          }
+
+          sqlite3_stmt *stmt;
+          const char *insert_sql = "INSERT INTO games (game_id, num_players, game_type, garbage_type, is_classic) VALUES (?, ?, ?, ?, ?);";
+
+          rc = sqlite3_prepare_v2(db, insert_sql, -1, &stmt, NULL);
+          if (rc != SQLITE_OK) {
+            fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+          } else {
+            sqlite3_exec(db, "BEGIN TRANSACTION;", NULL, NULL, NULL);
+
+            sqlite3_bind_int(stmt, 1, last_game_id);
+            sqlite3_bind_int(stmt, 2, D_800CFED4);
+            sqlite3_bind_int(stmt, 3, game_ptr->gameType);
+            sqlite3_bind_int(stmt, 4, game_ptr->landfill.type);
+            sqlite3_bind_int(stmt, 5, classic_flag);
+
+            rc = sqlite3_step(stmt);
+            if (rc != SQLITE_DONE) {
+              fprintf(stderr, "Execution failed: %s\n", sqlite3_errmsg(db));
+            }
+
+            sqlite_games_id = sqlite3_last_insert_rowid(db);
+
+            sqlite3_exec(db, "COMMIT;", NULL, NULL, NULL);
+
+            sqlite3_finalize(stmt);
+          }
+
+          sqlite3_close(db);
+        }
       }
     }
 
     g_holdCount = 0;
     g_piecesDropped = 0;
-
+    g_game_ended = false;
 
     if (D_800D3D20 != 0) {
       D_800D3D20 = 0;

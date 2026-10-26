@@ -12,6 +12,10 @@
 // apt: libconfig-dev
 #include <libconfig.h>
 
+// dnf: sqlite-devel
+// apt: libsqlite3-dev
+#include <sqlite3.h>
+
 // dnf: allegro5-devel
 // apt: liballegro5-dev
 #include <allegro5/allegro5.h>
@@ -31,6 +35,8 @@
 #include <enet/enet.h>
 #include "enet_common.h"
 
+unsigned int display_width = 960;
+unsigned int display_height = 720;
 static FILE *fp = NULL;
 static int record = false;
 static int replay = false;
@@ -47,6 +53,7 @@ static bool holdCount_update = false;
 unsigned int g_holdCount = 0;
 static bool piecelock_update = false;
 unsigned int g_piecesDropped = 0;
+sqlite3_int64 sqlite_games_id = 0;
 unsigned int g_sprint_goal = 10800;
 unsigned int g_ultra_goal = 150;
 static unsigned char g_opponent = 0;
@@ -74,7 +81,7 @@ config_t g_effects_cfg;
 
 Logfile record_logfile = {0};
 Logfile replay_logfile = {0};
-static char *record_logfile_name = NULL;
+char *record_logfile_name = NULL;
 static char *replay_logfile_name = NULL;
 
 static char games_dirname[64];
@@ -105,6 +112,7 @@ typedef struct {
   unsigned int game_id;
   unsigned int game_type;
   unsigned int garbage_type;
+  int is_classic;
 } GameINI;
 
 #define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
@@ -166,13 +174,15 @@ static int game_ini_handler(void *user, const char *section, const char *name, c
     pconfig->game_type = atoi(value);
   } else if (MATCH("game", "garbage_type")) {
     pconfig->garbage_type = atoi(value);
+  } else if (MATCH("game", "is_classic")) {
+    pconfig->is_classic = atoi(value);
   } else {
     return false;  /* unknown section/name, error */
   }
   return true;
 }
 
-u8 tnt_load_game_ini(char *fname, GameINI *game_ini) {
+static u8 tnt_load_game_ini(char *fname, GameINI *game_ini) {
   if (fname == NULL) {
     return false;
   }
@@ -240,17 +250,20 @@ void tnt_open_logfile_for_replay(Logfile *logfile, unsigned int beginframe) {
       Game *game_ptr = &g_game;
 
       tnt_load_game_ini(replay_logfile_name, &gameINI);
-      printf("-- game_ini.game_id = 0x%08x\n", gameINI.game_id);
+      //printf("-- game_ini.game_id = 0x%08x\n", gameINI.game_id);
       game_id = gameINI.game_id;
       set_game_id = TRUE;
 
-      printf("-- game_ini.game_type = %d\n", gameINI.game_type);
+      //printf("-- game_ini.game_type = %d\n", gameINI.game_type);
       gametype = gameINI.game_type;
       game_ptr->gameType = gametype;
 
-      printf("-- game_ini.garbage_type = %d\n", gameINI.garbage_type);
+      //printf("-- game_ini.garbage_type = %d\n", gameINI.garbage_type);
       landfilltype = gameINI.garbage_type;
       game_ptr->landfill.type = landfilltype;
+
+      //printf("-- game_ini.is_classic = %d\n", gameINI.is_classic);
+      classic_flag = gameINI.is_classic;
 
       printf("Replaying game from file: %s\n", replay_logfile_name);
       logfile->is_open = true;
@@ -410,11 +423,6 @@ static void disconnect_client(ENetHost *client, ENetPeer *server) {
 s32 screen_1_width = BUFFER_W;
 s32 screen_1_height = BUFFER_H;
 
-//#define DISP_W 800
-//#define DISP_H 600
-#define DISP_W 960
-#define DISP_H 720
-
 static ALLEGRO_DISPLAY *disp;
 static ALLEGRO_BITMAP *cfbuffer;
 
@@ -424,7 +432,7 @@ static void disp_init(void) {
   al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
   al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
 
-  disp = al_create_display(DISP_W, DISP_H);
+  disp = al_create_display(display_width, display_height);
   must_init(disp, "display");
 
   cfbuffer = al_create_bitmap(BUFFER_W, BUFFER_H);
@@ -447,7 +455,7 @@ static void disp_post_draw(void) {
   static unsigned int last_framecount = 0;
 
   al_set_target_backbuffer(disp);
-  al_draw_scaled_bitmap(cfbuffer, 0, 0, BUFFER_W, BUFFER_H, 0, 0, DISP_W, DISP_H, 0);
+  al_draw_scaled_bitmap(cfbuffer, 0, 0, BUFFER_W, BUFFER_H, 0, 0, display_width, display_height, 0);
 
   if (save_frames) {
     while (last_framecount < framecount) {
@@ -972,11 +980,9 @@ void game_init(unsigned short num_players) {
   static const char *landfilltype_str[] = { "None", "HotPotato", "Directed" };
   static const char *opponent_str[] = { "Off", "Easy", "Medium", "Hard", "Very hard", "Master" };
 
-  /*
   if (!classic_flag) {
     g_pieceFallAcceleration = 0;
   }
-  */
 
   func_800905E8(0);
 
@@ -1001,6 +1007,11 @@ void game_init(unsigned short num_players) {
     printf("Opponent: '%s'\n", opponent_str[g_opponent]);
     printf("Game type: '%s'\n", gametype_str[game_ptr->gameType]);
     printf("Garbage type: '%s'\n", landfilltype_str[game_ptr->landfill.type]);
+    if (classic_flag) {
+      printf("Classic mode: True\n");
+    } else {
+      printf("Classic mode: False\n");
+    }
 
     printf("Player 0 name: '%s'\n", p0_name);
     strncpy(game_ptr->players[0].name, p0_name, 8);
@@ -1089,6 +1100,15 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
           update_metrics();
 
+          if (holdCount_update) {
+            g_holdCount++;
+            holdCount_update = false;
+          }
+          if (piecelock_update) {
+            g_piecesDropped++;
+            piecelock_update = false;
+          }
+
           if (replay) {
             redraw = replay_contq_enqueue_and_record(&done, fp);
           } else {
@@ -1104,8 +1124,6 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
 
         update_metrics();
 
-        redraw = contq_enqueue();
-
         if (holdCount_update) {
           g_holdCount++;
           holdCount_update = false;
@@ -1114,6 +1132,8 @@ static void main_loop(ALLEGRO_EVENT_QUEUE* queue) {
           g_piecesDropped++;
           piecelock_update = false;
         }
+
+        redraw = contq_enqueue();
       }
 
       break;
@@ -1188,6 +1208,8 @@ static void print_usage(const char *prog_name) {
   printf("  -s SCREEN      (default: random) 0=Mayan 1=Greek 2=Egyptian 3=Celtic 4=African 5=Japanese 6=Russian 7=Finale\n");
   printf("  -g GAMEID      (default: random) GAMEID modulo 0x0C000000\n");
   printf("  -r SRAND       (default: time(NULL)) srand(SRAND)\n");
+  printf("  --width W      (default: 960)\n");
+  printf("  --height H     (default: 720)\n");
   printf("\ngame mode:\n");
   printf("  Choose one of these game modes.  (default: Marathon)\n\n");
   printf("  --sprint\n");
@@ -1208,6 +1230,8 @@ enum {
   OPT_REPLAY,
   OPT_FRAMES,
   OPT_GOAL,
+  OPT_WIDTH,
+  OPT_HEIGHT,
 };
 
 int main(int argc, char *argv[]) {
@@ -1226,6 +1250,8 @@ int main(int argc, char *argv[]) {
   char *recordopt = NULL;
   char *replayopt = NULL;
   char *framesopt = NULL;
+  char *widthopt = NULL;
+  char *heightopt = NULL;
   char *goalopt = NULL;
   static struct option long_options[] =
     {
@@ -1248,6 +1274,8 @@ int main(int argc, char *argv[]) {
       {"frames",    required_argument, NULL, OPT_FRAMES},
       {"auto",      no_argument,       &auto_flag, true},
       {"premove",   no_argument,       &premove_flag, true},
+      {"width",     required_argument, NULL, OPT_WIDTH},
+      {"height",    required_argument, NULL, OPT_HEIGHT},
       {NULL, 0, NULL, 0}
     };
 
@@ -1303,6 +1331,12 @@ int main(int argc, char *argv[]) {
     case OPT_FRAMES:
       framesopt = optarg;
       break;
+    case OPT_WIDTH:
+      widthopt = optarg;
+      break;
+    case OPT_HEIGHT:
+      heightopt = optarg;
+      break;
     case OPT_GOAL:
       goalopt = optarg;
       break;
@@ -1313,6 +1347,18 @@ int main(int argc, char *argv[]) {
       abort();
     }
   }
+
+  if (widthopt != NULL && heightopt != NULL) {
+    display_width = atoi(widthopt);
+    display_height = atoi(heightopt);
+  } else if (widthopt != NULL) {
+    display_width = atoi(widthopt);
+    display_height = display_width * 3 / 4;
+  } else if (heightopt != NULL) {
+    display_height = atoi(heightopt);
+    display_width = display_height * 4 / 3;
+  }
+  printf("Resolution: %dx%d\n", display_width, display_height);
 
   if (ropt != NULL) {
     rand_seed = strtoul(ropt, NULL, 0);

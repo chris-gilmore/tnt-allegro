@@ -86,6 +86,7 @@ typedef struct {
 #include <string.h>
 #include <math.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "rmon.h"
 #include "os_time.h"

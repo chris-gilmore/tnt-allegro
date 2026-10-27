@@ -11,7 +11,7 @@ extern unsigned int last_game_id;
 extern int classic_flag;
 extern unsigned int g_holdCount;
 extern unsigned int g_piecesDropped;
-extern unsigned int g_game_ended;
+extern bool g_game_ended;
 extern sqlite3_int64 sqlite_games_id;
 
 extern u8 FUN_001050_getControllerErrNo(SuperThread *, u8);

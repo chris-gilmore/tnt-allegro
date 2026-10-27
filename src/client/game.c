@@ -20,7 +20,7 @@ extern int tnt_is_logfile_open(Logfile *);
 extern void tnt_close_logfile(Logfile *);
 extern FILE *tnt_open_game_res(void);
 
-unsigned int g_game_ended;
+bool g_game_ended;
 
 ////////////////////////////////////////
 

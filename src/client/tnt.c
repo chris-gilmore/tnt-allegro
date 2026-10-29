@@ -980,10 +980,6 @@ void game_init(unsigned short num_players) {
   static const char *landfilltype_str[] = { "None", "HotPotato", "Directed" };
   static const char *opponent_str[] = { "Off", "Easy", "Medium", "Hard", "Very hard", "Master" };
 
-  if (!classic_flag) {
-    g_pieceFallAcceleration = 0;
-  }
-
   func_800905E8(0);
 
   D_800CFEE8 = 4;  // main menu
@@ -1003,6 +999,7 @@ void game_init(unsigned short num_players) {
     }
     D_800D3CF0 = 1;  // game mode
     game_ptr->gameType = gametype;
+    /*
     printf("Num players: %d\n", D_800CFED4);
     printf("Opponent: '%s'\n", opponent_str[g_opponent]);
     printf("Game type: '%s'\n", gametype_str[game_ptr->gameType]);
@@ -1012,20 +1009,21 @@ void game_init(unsigned short num_players) {
     } else {
       printf("Classic mode: False\n");
     }
+    */
 
-    printf("Player 0 name: '%s'\n", p0_name);
+    //printf("Player 0 name: '%s'\n", p0_name);
     strncpy(game_ptr->players[0].name, p0_name, 8);
     game_ptr->players[0].name[8] = 0;
 
-    printf("Player 1 name: '%s'\n", p1_name);
+    //printf("Player 1 name: '%s'\n", p1_name);
     strncpy(game_ptr->players[1].name, p1_name, 8);
     game_ptr->players[1].name[8] = 0;
 
-    printf("Player 2 name: '%s'\n", p2_name);
+    //printf("Player 2 name: '%s'\n", p2_name);
     strncpy(game_ptr->players[2].name, p2_name, 8);
     game_ptr->players[2].name[8] = 0;
 
-    printf("Player 3 name: '%s'\n", p3_name);
+    //printf("Player 3 name: '%s'\n", p3_name);
     strncpy(game_ptr->players[3].name, p3_name, 8);
     game_ptr->players[3].name[8] = 0;
   }
